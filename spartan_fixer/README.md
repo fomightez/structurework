@@ -63,7 +63,7 @@ $ `python SPARTAN08_Fixer.py --help`
                       the defaults of 'A' and '1', respectively, for
                       those values if none provided.
 
-### typical examples of use of command line version
+### Typical examples of use of command line version
 #### Typical run
 $ `python SPARTAN08_Fixer.py spartanPDBfile.pdb`
 
@@ -84,7 +84,7 @@ $ `python SPARTAN08_Fixer.py TheDirectory --ChainDesig Z --StartNo 16`
 
 
 ## Development
-Developed by Wayne Decatur in collaboration with [Nick Greeves](http://www.liv.ac.uk/chemistry/staff/nicholas-greeves/) and Rui Li.
+Developed by [Wayne Decatur](https://github.com/fomightez) in collaboration with [Nick Greeves](http://www.liv.ac.uk/chemistry/staff/nicholas-greeves/) and Rui Li.
 
 [home]: https://github.com/fomightez/spartan_fixer
 [webserver]: http://fomightez.pythonanywhere.com/spartan_fixer/
