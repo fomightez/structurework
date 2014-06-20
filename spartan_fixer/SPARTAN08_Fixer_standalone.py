@@ -21,13 +21,12 @@
 # from PDB format.
 # v.0.7 added argument for designating file to act on. Also added an
 # optional argument to bypass asking user to enter anything and just go with
-# default. Also Added a way to set chain designation and from command line.
+# default. Also sdded a way to set chain designation and from command line.
 #
 #
 #
 # TO RUN:
-# set up to use BASH redirect for running file, for example, enter on
-# the command line, the line
+# For example, enter on the command line, the line
 #-----------------------------------
 # python SPARTAN08_Fixer.py FILEtoACTon.pdb
 #-----------------------------------
