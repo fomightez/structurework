@@ -7,12 +7,14 @@ The fixed files can then easily be used in Jmol.
 
 ## Features :
 
- - Available in webserver form so no installation needed, unless you have A LOT of files to convert
+ - Available in [webserver] form so no installation needed, unless you have A LOT of files to convert
  - command line version allows single files or entire folders of PDB files to be converted automagically.
  - conforms to PDB format specifications as described [here][2] and [here][3]
 
 ##Webserver
 [fomightez.pythonanywhere.com/spartan_fixer/][webserver]
+* At the above site, you can find a server where you can paste in a file and have it processed by the SPARTAN08_Fixer program.
+* If you have a lot of files to convert or need greater customization in your workflow than you'll want the command line version in this repository.
 
 
 ## Usage :
