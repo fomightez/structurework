@@ -16,6 +16,9 @@ The fixed files can then easily be used in Jmol.
 * At the above site, you can find a server where you can paste in a file and have it processed by the SPARTAN08_Fixer program.
 * If you have a lot of files to convert or need greater customization in your workflow than you'll want the [command line version SPARTAN08_Fixer_standalone.py DOWNLOADABLE in this repository](https://github.com/fomightez/structurework/blob/master/spartan_fixer/SPARTAN08_Fixer_standalone.py).
 
+##Downloading
+The command line version, called SPARTAN08_Fixer_standalone.py, downloadable [here in this repository](https://github.com/fomightez/structurework/blob/master/spartan_fixer/SPARTAN08_Fixer_standalone.py).
+
 
 ## Usage :
 
