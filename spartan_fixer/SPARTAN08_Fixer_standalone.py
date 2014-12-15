@@ -218,8 +218,8 @@ def THE_MAIN_FUNCTION(InputFile,Chain_ID_user_wants,Number_to_start_numbering_wi
     def Print_Lines_Of_Output_List(a_list,OutputFile):
         #from http://stackoverflow.com/questions/4675728/redirect-stdout-to-a-file-in-python, see MARCOG's answer and mgold's comments
         # this lets me simply develop with output going to stdout which I can redirect from command line
-        # but when I want to add file handing to make nicer user experience just need to add the next line
-        # and close stream. SEE ORIGINAL IN v.6.9 for development one
+        # but when I want to add file handing to make nicer user experience just need to add the next two lines
+        # and after close stream and restore process. SEE ORIGINAL IN v.6.9 for development one
         stdout=sys.stdout
         sys.stdout = open(OutputFile, 'w')
         for the_line in a_list:
