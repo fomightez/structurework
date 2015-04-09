@@ -21,7 +21,8 @@
 # from PDB format.
 # v.0.7 added argument for designating file to act on. Also added an
 # optional argument to bypass asking user to enter anything and just go with
-# default. Also sdded a way to set chain designation and from command line.
+# default. Also added a way to set chain designation and from command line.
+# Added ability to process all files ending in '.pdb' in a folder.
 #
 #
 #
