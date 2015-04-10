@@ -61,7 +61,7 @@ for line in filter(None, PDB_text.splitlines()):
         output_file.close()
         # reset everything for next model
         model_number += 1
-        new_file_text = ''
+        new_file_text = ""
     elif not line.startswith("MODEL"):
         new_file_text += line + '\n'
 ###-***********************END MAIN PORTION OF SCRIPT***********************-###
