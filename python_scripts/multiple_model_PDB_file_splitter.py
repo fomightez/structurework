@@ -181,7 +181,7 @@ if os.path.isfile(args.InputFile):
     #root_path = path_to_folder_with_file # LEFT HERE FOR USE IN DEBUGGING
     #fastq_file = open(root_path + FASTA_protein_sequence_records_file , "r")# LEFT HERE FOR USE IN DEBUGGING; JUST UNCOMMENT THIS AND ABOVE LINE AND COMMENTOUT NEXT LINE
     multi_model_PDB_file = args.InputFile
-    logging.debug(multi_model_PDB_file)
+    #logging.debug(multi_model_PDB_file)
     number_of_models = 0 #initiate with zero as value of number of models recognized
 
 
@@ -192,8 +192,8 @@ if os.path.isfile(args.InputFile):
         extract_models(multi_model_PDB_file))
 
     #FOR DEBUGGING
-    logging.debug(number_of_models)
-    logging.debug(output_files_prefix)
+    #logging.debug(number_of_models)
+    #logging.debug(output_files_prefix)
 
     #give user some stats and feeback
     sys.stderr.write("\nConcluded. \n")
