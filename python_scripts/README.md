@@ -16,7 +16,6 @@ Requires the PDB file include both MODEL and ENDMDL records for each of the mode
 Nothing but the fairly standard modules such as os, sys, and argparse. Written in Python 2.7.
 
 
-####Example of input and output for multiple_model_PDB_file_splitter.py:
 ##### EXAMPLE RUN
 
 TO RUN:
@@ -44,7 +43,6 @@ Requires the PDB file include both MODEL and ENDMDL records for each of the mode
 None at all. Written in Python 2.7.
 
 
-####Example of input and output for super_basic_multiple_model_PDB_file_splitter.py:
 ##### EXAMPLE RUN
 
 TO RUN:
