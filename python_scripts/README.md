@@ -27,7 +27,7 @@ where `ensemble.pdb` is the name of the file containing multiple PDB structure m
 
 
 
-# -------------------------------------------------------------------
+# --------------------------------------------------- 
  
  
 
