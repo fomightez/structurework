@@ -69,7 +69,7 @@
 
 import os
 import sys
-import logging
+#import logging
 import argparse
 from argparse import RawTextHelpFormatter
 #import urllib
