@@ -16,18 +16,14 @@
 #
 # v.0.1. Started
 #
-# made by adding some features to my super_basic_multiple_model_PDB_file_splitter.py
+# This version made by adding some features to my
+# super_basic_multiple_model_PDB_file_splitter.py
 #
 # INSPIRED by: general need to have something to obviate my need to do this by
 # hand and code at
 # 'Split NMR-style multiple model pdb files into individual models' at
 # http://strucbio.biologie.uni-konstanz.de/ccp4wiki/index.php/Split_NMR-style_multiple_model_pdb_files_into_individual_models
 
-# TO DO:
-# - add argparse manual
-# - edit argparse to allow you to designate file to process in command line
-# - edit argparse to allow you to customize file name pre-appended to number.pdb
-# - remove 'PDB_file' from 'USER ADJUSTABLE VALUES ' once uses arguments
 #
 #
 #
