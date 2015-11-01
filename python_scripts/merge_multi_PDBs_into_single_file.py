@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 # merge_multi_PDBs_into_single_file by Wayne Decatur
-# ver 0.1
+# ver 0.2
 #
 # fuse_pdbs function code from Claudia Millan Nebot
 #
@@ -20,10 +20,15 @@
 #
 #
 # v.0.1.
-# To do: make so can specify order by putting a number after underscore in front
+# basics done
+# v.0.2.
+# Made so the default numbering for first model is 1 and not zero. Since
+# `model 0` has special meaning as select all models in Jmol as described at
+#  http://www.bioinformatics.org/pipermail/molvis-list/2007q2/000427.html .
+#
+# To do: Make so can specify order by putting a number after underscore in front
 # of the `.pdb` suffix
-# How do we add "End" to end of file but no in middle?
-# How do we get so it doesn't add Model 0 since that has special all treatment in Jmol, see http://www.bioinformatics.org/pipermail/molvis-list/2007q2/000427.html ( or has this been fixed?)
+# How do we add "End" to end of file but not in middle?
 #
 #
 # TO RUN:
@@ -75,7 +80,10 @@ from Bio.PDB import *
 parser = argparse.ArgumentParser(prog='merge_multi_PDBs_into_single_file.py',description="merge_multi_PDBs_into_single_file is a program that takes\nstructures in the PDB format and combines them all into\na single PDB file with each structure as an individual model.\n \nWritten by Wayne Decatur --> Fomightez @ Github or Twitter. \n\n\nActual example what to enter on command line to run program:\npython merge_multi_PDBs_into_single_file DIRECTORYcontainingPDBs", formatter_class=RawTextHelpFormatter)
 #learned how to control line breaks in description above from http://stackoverflow.com/questions/3853722/python-argparse-how-to-insert-newline-the-help-text
 #DANG THOUGH THE 'RawTextHelpFormatter' setting seems to apply to all the text then. Not really what I wanted.
-parser.add_argument("Directory", help="directory containing PDB files to merge into single file. REQUIRED.")
+parser.add_argument("Directory", help=
+    "directory containing PDB files to merge into single file. REQUIRED.")
+parser.add_argument("-i", "--initial", type=int,default=1,help=
+    "If not to be 1, provide the number to assign first model.\n It will be incremented for each subsequent model.")
 #I would also like trigger help to display if no arguments provided because need at least a directory
 if len(sys.argv)==1:    #from http://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
     parser.print_help()
@@ -87,13 +95,20 @@ args = parser.parse_args()
 ###---------------------------HELPER FUNCTIONS---------------------------------###
 
 
-def fuse_pdbs(list_of_filepaths,current_path):
+def fuse_pdbs(list_of_filepaths,current_path, initial_model_number=1):
     '''
-    function written by Claudia Millan Nebot
+    Original function written by Claudia Millan Nebot. It has been adapted to
+    enable different
 
     The function takes as input a list of filepaths for several individual PDB
     files and combines them into a single file that is saved as path_pdb, where
     the path portion of the name specifies the directory to save the file.
+
+    This updated version of this function defaults to the initial model number
+    being one to avoid it being zero since `model O` is used to select all models
+    in the popular structure viewing tool Jmol, as described at
+    http://www.bioinformatics.org/pipermail/molvis-list/2007q2/000427.html .
+    The default can be changed though as an argument to the program.
     '''
     list_of_structures=[]
     parser=PDBParser()
@@ -101,18 +116,21 @@ def fuse_pdbs(list_of_filepaths,current_path):
         structure=parser.get_structure(pdb_file[:-4],pdb_file)
         list_of_structures.append(structure)
     main_structure=list_of_structures[0]
-    for x,structure in enumerate(list_of_structures):
-        #print "Processing ",structure," ",x
+    for indx,structure in enumerate(list_of_structures):
+        #print "Processing ",structure,"; it will be model #",str(initial_model_number + indx)
+        sys.stderr.write("\nProcessing "+ str(structure) +"; it will be model #"+ str(initial_model_number + indx))
         model=structure[0]
-        if x!=0:
-            model.id=x
-            model.serial_num=x
+        model.id=initial_model_number + indx
+        model.serial_num=initial_model_number + indx
+        # Next comparison is so the first structure doesn't get added again since
+        # ohe first was assigned in order to make the `main_structure` above.
+        if indx !=0:
             main_structure.add(model)
     #print Selection.unfold_entities(main_structure,'M')
     io=PDBIO()
     io.set_structure(main_structure)
     io.save(current_path,write_end=False)
-    sys.stderr.write("The PDB-formatted file "+current_path+" has been created.\n")
+    sys.stderr.write("\n\nThe PDB-formatted file "+current_path+" has been created.\n")
 
 ###--------------------------END OF HELPER FUNCTIONS---------------------------###
 
@@ -124,6 +142,7 @@ def fuse_pdbs(list_of_filepaths,current_path):
 ###----------------------MAIN PART OF SCRIPT--------------------------------###
 current_path = str(args.Directory) + ".pdb"
 list_of_filepaths_for_PDB_files = []
+initial_number_for_model = args.initial
 
 # If provided argument is a DIRECTORY loop through collecting information on
 # each PDB file.
@@ -145,4 +164,4 @@ elif os.path.isdir(args.Directory):
 
 #Now that the name and path info on each PDB file has been collected, extract
 #the data from each and merge into one
-fuse_pdbs(list_of_filepaths_for_PDB_files,current_path)
+fuse_pdbs(list_of_filepaths_for_PDB_files,current_path,initial_number_for_model)
