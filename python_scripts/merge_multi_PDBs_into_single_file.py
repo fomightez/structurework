@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 # merge_multi_PDBs_into_single_file by Wayne Decatur
-# ver 0.2
+# ver 0.3
 #
 # fuse_pdbs function code from Claudia Millan Nebot
 #
@@ -25,9 +25,21 @@
 # Made so the default numbering for first model is 1 and not zero. Since
 # `model 0` has special meaning as select all models in Jmol as described at
 #  http://www.bioinformatics.org/pipermail/molvis-list/2007q2/000427.html .
+# v.0.3.
+# Added a mechanism where you can specify an order of models within final file by
+# putting a whole number after underscore in front of the `.pdb` suffix. If every
+# PDB file in the directory follows that pattern, the ascending order of those
+# numbers will be used to sequence the models in the produced file. Note: The
+# specific number used after the underscore is disregarded when numbering the
+# models; you still need to provide the initial number for the models if you want
+# anything other than 1 and the numbering will be incremented automatically.
+# For example, calling the program to run with
+# `python merge_multi_PDBs_into_single_file.py test_folder`, if `test_folder`
+# contains `1crn_3.pdb`, `1tup_5.pdb`, and `1ehz_7.pdb`, the final file will
+# have three models numbered 1 through 3 and they will correspond to 1crn, 1tup,
+# and 1ehz.
 #
-# To do: Make so can specify order by putting a number after underscore in front
-# of the `.pdb` suffix
+# To do:
 # How do we add "End" to end of file but not in middle?
 #
 #
@@ -77,13 +89,13 @@ from Bio.PDB import *
 
 
 #argparser from http://docs.python.org/2/library/argparse.html#module-argparse and http://docs.python.org/2/howto/argparse.html#id1
-parser = argparse.ArgumentParser(prog='merge_multi_PDBs_into_single_file.py',description="merge_multi_PDBs_into_single_file is a program that takes\nstructures in the PDB format and combines them all into\na single PDB file with each structure as an individual model.\n \nWritten by Wayne Decatur --> Fomightez @ Github or Twitter. \n\n\nActual example what to enter on command line to run program:\npython merge_multi_PDBs_into_single_file DIRECTORYcontainingPDBs", formatter_class=RawTextHelpFormatter)
+parser = argparse.ArgumentParser(prog='merge_multi_PDBs_into_single_file.py',description="merge_multi_PDBs_into_single_file is a program that takes\nstructures in the PDB format and combines them all into\na single PDB file with each structure as an individual model.\n\nBy providing a whole number following the '--initial' flag when calling the program\nyou can specify any value for numbering first model in the sequence of models.\nIf nothing is provided, the first model will be 'mode 1' by default.\n\nYou can control the order of the models in final file by placing an underscore followed by a\nwhole number in front of the '.pdb' portion of the file names. This must be done to all PDB files\nand then the order of the numbers will be mirrored in the order in the final file. The\nactual numbers used are not regarded when numbering the models in the final file; they are only\nused to determine the sequence.\n \nWritten by Wayne Decatur --> Fomightez @ Github or Twitter. \n\n\nActual example what to enter on command line to run program:\npython merge_multi_PDBs_into_single_file DIRECTORYcontainingPDBs", formatter_class=RawTextHelpFormatter)
 #learned how to control line breaks in description above from http://stackoverflow.com/questions/3853722/python-argparse-how-to-insert-newline-the-help-text
 #DANG THOUGH THE 'RawTextHelpFormatter' setting seems to apply to all the text then. Not really what I wanted.
 parser.add_argument("Directory", help=
     "directory containing PDB files to merge into single file. REQUIRED.")
 parser.add_argument("-i", "--initial", type=int,default=1,help=
-    "If not to be 1, provide the number to assign first model.\n It will be incremented for each subsequent model.")
+    "If not to be 1, provide a whole number to assign first model.\n It will be incremented for each subsequent model.")
 #I would also like trigger help to display if no arguments provided because need at least a directory
 if len(sys.argv)==1:    #from http://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
     parser.print_help()
@@ -93,6 +105,35 @@ args = parser.parse_args()
 
 
 ###---------------------------HELPER FUNCTIONS---------------------------------###
+def extract_ordering_number(filepath):
+    '''
+    extacts the number after an underscore in front of ".pdb" in filepath and
+    returns it as an integer.
+    '''
+    extracted_string = filepath.split("_")[1][0:-4]
+    try:
+        return int(extracted_string)
+    except ValueError:
+        return None
+
+def after_underscore_is_integer(filepath):
+    '''
+    returns true only if there is an integer after an underscore in front of
+    ".pdb" at end of file path
+    '''
+    if "_" not in filepath:
+        return False
+    else:
+        return True if extract_ordering_number(filepath) is int else False
+
+
+def order_the_list_based_on_user_specifications(list_of_filepaths):
+    '''
+    function takes a list of filepaths and orders them based on the number after
+    an underscore in front of ".pdb" in filepath.
+    That list is then returned.
+    '''
+    return sorted(list_of_filepaths, key=extract_ordering_number)
 
 
 def fuse_pdbs(list_of_filepaths,current_path, initial_model_number=1):
@@ -162,6 +203,23 @@ elif os.path.isdir(args.Directory):
             list_of_filepaths_for_PDB_files.append(pathname)
 
 
-#Now that the name and path info on each PDB file has been collected, extract
-#the data from each and merge into one
+# Determine if pathnames specify any order. ###
+# All PDB files need to follow the pattern and so check if all the names have an
+# underscore and an interger in front of the '.pdb' portion of name.
+# If so, then will never hit `break` of for loop and will sort the list based
+# on the integer in front of the the `.pdb`.
+# If any lack underscore or don't have an integer, for loop `break`s and
+# script continues on to next block of code. ## This is similar to last example
+# under `` at http://simeonvisser.com/posts/using-else-in-python.html
+for filepath in list_of_filepaths_for_PDB_files:
+    #if "_" not in filepath or not after_underscore_is_integer(filepath):
+    if not after_underscore_is_integer(filepath):
+        break
+else:
+    list_of_filepaths_for_PDB_files = order_the_list_based_on_user_specifications(
+        list_of_filepaths_for_PDB_files)
+
+
+#Now that the name and path info on each PDB file has been collected, and any
+# possible order specified dtermined, extract the data from each and merge into one
 fuse_pdbs(list_of_filepaths_for_PDB_files,current_path,initial_number_for_model)
