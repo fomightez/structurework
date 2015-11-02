@@ -96,7 +96,11 @@ For example, calling the program to run with `python merge_multi_PDBs_into_singl
 - model #2 1tup
 - model #3 1ehz.
 
-Calling the program to run with `python merge_multi_PDBs_into_single_file.py test_folder -i 3`, if `test_folder` contains
+Calling the program to run with
+
+	python merge_multi_PDBs_into_single_file.py test_folder -i 3
+
+, if `test_folder` contains
 
 - `1crn_3.pdb`
 - `1tup_5.pdb`
