@@ -84,8 +84,15 @@ The default numbering for first model is 1 and not zero. Since `model 0` has spe
 <br>
 There is mechanism where you can specify an order of models within final file by putting a whole number after underscore in front of the `.pdb` suffix. If every PDB file in the directory follows that pattern, the ascending order of those numbers will be used to sequence the models in the produced file The specific number used after the underscore is disregarded when numbering the models; you still need to provide the initial number for the models if you want anything other than 1 and the numbering will be incremented automatically.
 <br>
-For example, calling the program to run with `python merge_multi_PDBs_into_single_file.py test_folder`, if `test_folder` contains `1crn_3.pdb`, `1tup_5.pdb`, and `1ehz_7.pdb`, the final file will have three models numbered 1 through 3 and they will correspond to 1crn, 1tup, and 1ehz.
+For example, calling the program to run with `python merge_multi_PDBs_into_single_file.py test_folder`, if `test_folder` contains
 
+- `1crn_3.pdb`
+- `1tup_5.pdb`
+- `1ehz_7.pdb`
+, the final file will have three models
 
+- model #1 1crn
+- model #2 1tup
+- model #3 1ehz.
 
 # ---------------------------------------------------
