@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 # multiple_model_PDB_file_splitter.py by Wayne Decatur
-# ver 0.1
+# ver 0.2
 #
 #*******************************************************************************
 # USES Python 2.7
@@ -10,6 +10,8 @@
 # records for each of the models.
 # An example of a program that makes a PDB-fromatted multi-model file is
 # RNA composer at http://rnacomposer.ibch.poznan.pl/Home .
+# Note that you can also you can also point it at a directory and then it will
+# process all the files ending in '.pdb' or '.PDB' in that folder.
 #
 # Dependencies:
 #
@@ -20,9 +22,12 @@
 # super_basic_multiple_model_PDB_file_splitter.py
 #
 # INSPIRED by: general need to have something to obviate my need to do this by
-# hand and code at
+# hand and by code at
 # 'Split NMR-style multiple model pdb files into individual models' at
 # http://strucbio.biologie.uni-konstanz.de/ccp4wiki/index.php/Split_NMR-style_multiple_model_pdb_files_into_individual_models
+#
+# v.0.2. Added handling of all PDB files in a directory when passed a directory
+# as an argument when calling the program to run.
 
 #
 #
@@ -32,9 +37,13 @@
 # Enter on the command line of your terminal, the line
 #-----------------------------------
 # python multiple_model_PDB_file_splitter.py many_model.pdb
+#           ----OR----
+# python multiple_model_PDB_file_splitter.py directory/
 #-----------------------------------
 # Where 'many_model.pdb' would be replaced with your PDB file containing
 # multiple models.
+# Alternatively,you can point it at a directory and then it will process
+# all the files ending in '.pdb' or '.PDB' in that folder.
 #
 #
 #
@@ -65,7 +74,8 @@
 
 import os
 import sys
-#import logging
+from stat import *
+import logging
 import argparse
 from argparse import RawTextHelpFormatter
 #import urllib
@@ -149,34 +159,12 @@ def extract_models(multi_model_PDB_file):
 
 
 
-###--------------------------END OF HELPER FUNCTIONS---------------------------###
 
-
-
-
-
-
-
-###-----------------Actual Main function of script---------------------------###
-###----------------------GET FILE AND PREPARE TO PARSE-----------------------###
-#file to be provided as a argument when call program.
-#argparser from http://docs.python.org/2/library/argparse.html#module-argparse and http://docs.python.org/2/howto/argparse.html#id1
-parser = argparse.ArgumentParser(
-    prog='multiple_model_PDB_file_splitter.py',description="multiple_model_PDB_file_splitter.py is designed to split a multi-model PDB\nfile into multiple files of the individual structure models.\nRequires the PDB file include both MODEL and ENDMDL records for each of the models.\n\nWritten by Wayne Decatur --> Fomightez @ Github or Twitter.  \n \n \n \n \nActual example what to enter on command line to run program:\npython multiple_model_PDB_file_splitter.py multi_model.pdb\n \n \n \n ", formatter_class=RawTextHelpFormatter
-    )
-#learned how to control line breaks in description above from http://stackoverflow.com/questions/3853722/python-argparse-how-to-insert-newline-the-help-text
-#DANG THOUGH THE 'RawTextHelpFormatter' setting seems to apply to all the text for argument choices. I don't know yet if that is what really what I wanted.
-parser.add_argument("InputFile", help="name of file containing multiple PDB formatted structure models. REQUIRED.")
-#I would also like trigger help to display if no arguments provided because need at least input file
-if len(sys.argv)==1:    #from http://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
-    parser.print_help()
-    sys.exit(1)
-args = parser.parse_args()
-
-if os.path.isfile(args.InputFile):
+###----DEFINING FUNCTION CALL AND SETTING STAGE FOR MAIN PART OF SCRIPT--------###
+def THE_MAIN_FUNCTION(File_or_Directory):
     #root_path = path_to_folder_with_file # LEFT HERE FOR USE IN DEBUGGING
     #fastq_file = open(root_path + FASTA_protein_sequence_records_file , "r")# LEFT HERE FOR USE IN DEBUGGING; JUST UNCOMMENT THIS AND ABOVE LINE AND COMMENTOUT NEXT LINE
-    multi_model_PDB_file = args.InputFile
+    multi_model_PDB_file = File_or_Directory
     #logging.debug(multi_model_PDB_file)
     number_of_models = 0 #initiate with zero as value of number of models recognized
 
@@ -205,10 +193,64 @@ if os.path.isfile(args.InputFile):
             "\nhave been created in same directory as the input file.\n\n")
 
 
-else:
-    sys.stderr.write("SORRY. " + args.InputFile + " IS NOT RECOGNIZED AS A FILE.\n\n")
+
+
+
+
+
+
+###--------------------------END OF HELPER FUNCTIONS---------------------------###
+
+
+
+
+
+
+
+###-----------------Actual Main function of script---------------------------###
+###----------------------GET FILE AND PREPARE TO PARSE-----------------------###
+#file to be provided as a argument when call program.
+#argparser from http://docs.python.org/2/library/argparse.html#module-argparse and http://docs.python.org/2/howto/argparse.html#id1
+parser = argparse.ArgumentParser(
+    prog='multiple_model_PDB_file_splitter.py',description="multiple_model_PDB_file_splitter.py is designed to split a multi-model PDB\nfile into multiple files of the individual structure models.\nRequires the PDB file include both MODEL and ENDMDL records for each of the models.\n\nWritten by Wayne Decatur --> Fomightez @ Github or Twitter.  \n \n \n \n \nActual example what to enter on command line to run program:\npython multiple_model_PDB_file_splitter.py multi_model.pdb\n \n \n \n ", formatter_class=RawTextHelpFormatter
+    )
+#learned how to control line breaks in description above from http://stackoverflow.com/questions/3853722/python-argparse-how-to-insert-newline-the-help-text
+#DANG THOUGH THE 'RawTextHelpFormatter' setting seems to apply to all the text for argument choices. I don't know yet if that is what really what I wanted.
+parser.add_argument("File_or_Directory", help="name of file containing multiple PDB formatted structure models. REQUIRED. \n\nThe required input data can also be a group of files ending in '.pdb' (case does not matter)\ncontained within a folder. In that case put the folder as the input path\nand the PDB-formatted files in that direct each will be preocessed.")
+#I would also like trigger help to display if no arguments provided because need at least input file
+if len(sys.argv)==1:    #from http://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
     parser.print_help()
     sys.exit(1)
+args = parser.parse_args()
+
+
+
+
+
+
+
+
+
+
+
+###--DETERMINE IF INPUT IS FILE TO DO MAIN PART PROCESSING ON OR DIRECTORY ----###
+# If it is a DIRECTORY loop through doing main part on each PDB file
+#from http://stackoverflow.com/questions/3204782/how-to-check-if-a-file-is-a-directory-or-regular-file-in-python
+if os.path.isfile(args.File_or_Directory):
+    THE_MAIN_FUNCTION(args.File_or_Directory)
+elif os.path.isdir(args.File_or_Directory):
+    for f in os.listdir(args.File_or_Directory):
+        pathname = os.path.join(args.File_or_Directory, f)
+        mode = os.stat(pathname).st_mode #need to import stat module
+        if S_ISREG(mode) and pathname[-4:].upper() == ".PDB":
+            # It's a PDB file, call the function
+            THE_MAIN_FUNCTION(pathname)
+else:
+    sys.stderr.write("SORRY. " + args.File_or_Directory + " IS NOT RECOGNIZED AS A PDB FILE.\n\n")
+    parser.print_help()
+    sys.exit(1)
+
+
 
 
 #*******************************************************************************
