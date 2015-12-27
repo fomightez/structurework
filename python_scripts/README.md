@@ -6,6 +6,8 @@ Python scripts by Wayne Decatur for working with biological structure data.
 
 >Takes a formatted pdb file with multiple models and splits each model into individual files. You specify the file with multiple models in the call to the program.
 
+>  Note that you can also you can also point it at a directory and then it will process all the files ending in '.pdb' or '.PDB' in that folder, similar to the `-r`, recursive, option in many BaSH commands.
+
 >An example of a program that makes a PDB-fromatted multi-model file is RNA composer at http://rnacomposer.ibch.poznan.pl/Home .
 
 
@@ -23,7 +25,11 @@ Enter on the command line, the line
 
 	python multiple_model_PDB_file_splitter.py ensemble.pdb
 
-where `ensemble.pdb` is the name of the file containing multiple PDB structure models.
+or
+
+	python multiple_model_PDB_file_splitter.py directory/
+
+where `ensemble.pdb` is the name of the file containing multiple PDB structure models, or `directory` is the name of a directory containing files ending in `.pdb` or `.PDB` to split.
 
 
 
