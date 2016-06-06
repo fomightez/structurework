@@ -92,7 +92,7 @@ There is mechanism where you can specify an order of models within final file by
 <br>
 For example, calling the program to run with
 
-python merge_multi_PDBs_into_single_file.py test_folder
+	python merge_multi_PDBs_into_single_file.py test_folder
 
 , if `test_folder` contains
 
