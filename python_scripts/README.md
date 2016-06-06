@@ -86,7 +86,7 @@ Navigate to the directory above a folder containing several PDBs you wish to com
 where `directory_of_pdbs` is the name of the directory containing several PDBs you wish to combine as model.
 
 ####Advanced Options
-The default numbering for first model is 1 and not zero. Since `model 0` has special meaning as select all models in Jmol as described at http://www.bioinformatics.org/pipermail/molvis-list/2007q2/000427.html .  By providing a whole number following the '--initial' flag when calling the programyou can specify any value for numbering first model in the sequence of models.
+The default numbering for first model is 1 and not zero. Since `model 0` has special meaning as select all models in Jmol as described at http://www.bioinformatics.org/pipermail/molvis-list/2007q2/000427.html .  By providing a whole number following the `--initial` flag when calling the program you can specify any value for numbering first model in the sequence of models.
 <br>
 There is mechanism where you can specify an order of models within final file by putting a whole number after underscore in front of the `.pdb` suffix. If every PDB file in the directory follows that pattern, the ascending order of those numbers will be used to sequence the models in the produced file The specific number used after the underscore is disregarded when numbering the models; you still need to provide the initial number for the models if you want anything other than 1 and the numbering will be incremented automatically.
 <br>
@@ -106,7 +106,7 @@ python merge_multi_PDBs_into_single_file.py test_folder
 - model #2 1tup
 - model #3 1ehz.
 
-Another example with the advanced options, invoking the program to run with
+Another example with the advanced options, in this case the `--initial` flag that can be abbreviated as `-i`, invoking the program to run with
 
 	python merge_multi_PDBs_into_single_file.py test_folder -i 3
 
