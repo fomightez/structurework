@@ -124,4 +124,4 @@ Another example with the advanced options, invoking the program to run with
 
 # ---------------------------------------------------
 
-Also see [a gist](https://gist.github.com/fomightez/2601c0f5a13b85cd21b9377169c79836) I forked from [Joao Rodrigues](https://gist.github.com/JoaoRodrigues/e3a4f2139d10888c679eb1657a4d7080) for aligning structures using Biopython. See [here] about it.
+Also see [a gist](https://gist.github.com/fomightez/2601c0f5a13b85cd21b9377169c79836) I forked from [Joao Rodrigues](https://gist.github.com/JoaoRodrigues/e3a4f2139d10888c679eb1657a4d7080) for aligning structures using Biopython. See [here](http://thread.gmane.org/gmane.comp.python.bio.general/8782/focus=8783) about it.
