@@ -33,7 +33,7 @@ where `ensemble.pdb` is the name of the file containing multiple PDB structure m
 
 
 
-# ---------------------------------------------------
+----
 
 
 
@@ -60,8 +60,7 @@ Enter on the command line, the line
 
 where `ensemble.pdb` is the name of the file containing multiple PDB structure models. You'll need to edit the `PDB_text` value to be the text of the pdb file you wish to split up.
 
-
-# ---------------------------------------------------
+----
 
 
 - merge_multi_PDBs_into_single_file.py
@@ -122,7 +121,7 @@ Another example with the advanced options, in this case the `--initial` flag tha
 - model #4 1tup
 - model #5 1ehz.
 
-# ---------------------------------------------------
+----
 
 Also see [a gist](https://gist.github.com/fomightez/2601c0f5a13b85cd21b9377169c79836) I forked from [Joao Rodrigues](https://gist.github.com/JoaoRodrigues/e3a4f2139d10888c679eb1657a4d7080) for aligning structures using Biopython. See [here](http://thread.gmane.org/gmane.comp.python.bio.general/8782/focus=8783) about it.
 
