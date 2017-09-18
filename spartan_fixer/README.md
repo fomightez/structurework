@@ -11,18 +11,18 @@ The fixed files can then easily be used in Jmol.
  - command line version allows single files or entire folders of PDB files to be converted automagically.
  - conforms to PDB format specifications as described [here][2] and [here][3]
 
-##Webserver
+## Webserver
 [fomightez.pythonanywhere.com/spartan_fixer/][webserver]
 * At the above site, you can find a server where you can paste in a file and have it processed by the SPARTAN08_Fixer program.
 * If you have a lot of files to convert or need greater customization in your workflow than you'll want the [command line version SPARTAN08_Fixer_standalone.py downloadable in this repository](https://github.com/fomightez/structurework/blob/master/spartan_fixer/SPARTAN08_Fixer_standalone.py).
 
-##Downloading
+## Downloading
 The command line version, called SPARTAN08_Fixer_standalone.py, downloadable [here in this repository](https://github.com/fomightez/structurework/blob/master/spartan_fixer/SPARTAN08_Fixer_standalone.py).
 
 
 ## Usage :
 
-###MANUAL/HELP OPTION for command line version
+### MANUAL/HELP OPTION for command line version
 
 $ `python SPARTAN08_Fixer.py --help`
 
