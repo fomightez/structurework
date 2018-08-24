@@ -133,3 +133,7 @@ Related
 --------
 
 see [Dockerfiles for Structural Analysis (Structural Bioinformatics) Docker images](https://github.com/fomightez/Dockerfiles#dockerfiles-for-structural-analysis-structural-bioinformatics-docker-images).
+
+Related resources by others
+--------
+[atomium](https://github.com/samirelanduk/atomium) is a Python library for opening and saving .pdb, .cif and .xyz files, and presenting and manipulating the information contained within. Documentation is at https://atomium.samireland.com/ .
