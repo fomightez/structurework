@@ -15,7 +15,8 @@ Collection of links to launchable Jupyter environment where various structure/fu
 
 - [cl_demo-binder](https://github.com/fomightez/cl_demo-binder) - launchable, working Jupyter-baseed environment that has a collection of demonstrations useful resources on command line for manipulating structure files
 
-See also
+
+Related 'Docker-ized' Utilities
 -------
 
 [Dockerfiles for Structural Analysis (Structural Bioinformatics) Docker images](https://github.com/fomightez/Dockerfiles#dockerfiles-for-structural-analysis-structural-bioinformatics-docker-images).
