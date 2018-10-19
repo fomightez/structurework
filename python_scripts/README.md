@@ -14,8 +14,9 @@ Python scripts by Wayne Decatur for working with biological structure data.
 #### Limitations
 Requires the PDB file include both MODEL and ENDMDL records for each of the models.
 
-#### Dependencies
-Nothing but the fairly standard modules such as os, sys, and argparse. Written in Python 2.7.
+#### Dependencies and version compatibility  
+Nothing but the fairly standard modules such as os, sys, and argparse.  
+Originally developed in Python 2.7, but confirmed to work in Python 3.6.
 
 
 ##### EXAMPLE RUN
@@ -47,8 +48,9 @@ where `ensemble.pdb` is the name of the file containing multiple PDB structure m
 #### Limitations
 Requires the PDB file include both MODEL and ENDMDL records for each of the models.
 
-#### Dependencies
-None at all. Written in Python 2.7.
+#### Dependencies and version compatibility
+None at all.  
+Originally developed in Python 2.7, but confirmed to work in Python 3.6.
 
 
 ##### EXAMPLE RUN
