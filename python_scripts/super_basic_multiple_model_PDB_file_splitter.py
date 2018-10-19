@@ -4,7 +4,8 @@
 # ver 0.1
 #
 #*******************************************************************************
-# USES Python 2.7
+# Originally developed in Python 2.7, but confirmed to work in Python 3.6.
+#
 # PURPOSE: Takes a formatted pdb file with multiple models and splits each model
 # into individual files. Requires the PDB file include both MODEL and ENDMDL
 # records for each of the models.
