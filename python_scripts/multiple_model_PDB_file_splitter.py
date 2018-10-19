@@ -4,14 +4,16 @@
 # ver 0.2
 #
 #*******************************************************************************
-# USES Python 2.7
-# PURPOSE: Takes a formatted pdb file with multiple models and splits each model
+## PURPOSE: Takes a formatted pdb file with multiple models and splits each model
 # into individual files. Requires the PDB file include both MODEL and ENDMDL
 # records for each of the models.
 # An example of a program that makes a PDB-fromatted multi-model file is
 # RNA composer at http://rnacomposer.ibch.poznan.pl/Home .
 # Note that you can also you can also point it at a directory and then it will
 # process all the files ending in '.pdb' or '.PDB' in that folder.
+#
+#
+# Originally developed in Python 2.7, but confirmed to work in Python 3.6.
 #
 # Dependencies:
 #
