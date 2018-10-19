@@ -73,6 +73,8 @@ where `ensemble.pdb` is the name of the file containing multiple PDB structure m
 #### Limitations
 For now the merged file will not have have `END` at the end like most multi-model PDB files. It seems that everything but the cutting-edge unrealeased Biopython had a bug that caused `END` to be placed after every model upon appending.
 
+The files to be merged need are specified by the ones that end in '.pdb' or '.PDB' in the specified directory.
+
 #### Dependencies
 Biopython and the fairly standard modules such as os, sys, and argparse. Written in Python 2.7.
 
