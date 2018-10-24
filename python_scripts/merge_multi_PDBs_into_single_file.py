@@ -9,25 +9,12 @@
 # python merge_multi_PDBs_into_single_file.py --help
 #
 #*************************************************************************
-# USES Python 2.7
-#
-# DEPENDENCIES:
-# Biopython and other typical modules like argparse, os
-#
 # Purpose: Takes a directory containing structures in the PDB format and
 # combines them all into a single PDB file with each structure as an individual
 # model.
-#
-#
-# v.0.1.
-# basics done
-# v.0.2.
-# Made so the default numbering for first model is 1 and not zero. Since
-# `model 0` has special meaning as select all models in Jmol as described at
-#  http://www.bioinformatics.org/pipermail/molvis-list/2007q2/000427.html .
-# v.0.3.
-# Added a mechanism where you can specify an order of models within final file by
-# putting a whole number after underscore in front of the `.pdb` suffix. If every
+# 
+# You can specify an order of models within final file by putting a whole number 
+# after underscore in front of the `.pdb` or `.PDB` suffix. If every
 # PDB file in the directory follows that pattern, the ascending order of those
 # numbers will be used to sequence the models in the produced file. Note: The
 # specific number used after the underscore is disregarded when numbering the
@@ -39,8 +26,42 @@
 # have three models numbered 1 through 3 and they will correspond to 1crn, 1tup,
 # and 1ehz.
 #
+# Note the default numbering for the first model is 1 and not zero. Since
+# `model 0` has special meaning as select all models in Jmol as described at
+# http://www.bioinformatics.org/pipermail/molvis-list/2007q2/000427.html . By
+# providing a whole number following the '--initial' flag when calling the program
+# you can specify any value for numbering first model in the sequence of models.
+#
+#
+#
+# 
+# Originally developed in Python 2.7, but confirmed to work in Python 3.6.
+#
+# DEPENDENCIES:
+# Biopython and other typical modules like argparse, os
+#
+#
+# VERSION HISTORY:
+# v.0.1.
+# basics done
+# v.0.2.
+# Made so the default numbering for first model is 1 and not zero. 
+# v.0.3.
+# Added a mechanism where you can specify an order of models within final file.
+# Improved `after_underscore_is_integer()` evaluation/`extract_ordering_number()`
+# parsing.
+#
+#
 # To do:
-# How do we add "End" to end of file but not in middle?
+# - fix check of integer after underscore in front of `.pdb` or `.pdb`. Right
+# now it is too simplistic and breakes if there is a first underscore earlier in 
+# in the file name. <-- would rsplit fix that? Plus, currently it can think there
+# is an underscore and number if underscore elsewhere in name and `integer` in
+# front of the `.pdb` or `.PDB`, I think. I think `test_test4.pdb` would be
+# recognized as a match now and IT SHOULD NOT. rsplit should help there, I think
+# too. ONE MORE THING TO CHECK WHEN UPDATING THIS PART IS TO SEE IF the number 
+# integer supplied read correctly if double digits?
+# - How do we add "End" to end of file but not in middle?
 #
 #
 # TO RUN:
@@ -110,7 +131,10 @@ def extract_ordering_number(filepath):
     extacts the number after an underscore in front of ".pdb" in filepath and
     returns it as an integer.
     '''
-    extracted_string = filepath.split("_")[1][0:-4]
+    extracted_string = filepath[0:-4].rsplit("_",1)[1] #updated to rsplit b/c
+    # realized pattern file_22_1crn.pdb aas getting recognized as specifying 
+    # model number by `extracted_string = filepath.split("_")[1][0:-4]` when it 
+    # shouldn't have.
     try:
         return int(extracted_string)
     except ValueError:
@@ -181,7 +205,7 @@ def fuse_pdbs(list_of_filepaths,current_path, initial_model_number=1):
 
 
 ###----------------------MAIN PART OF SCRIPT--------------------------------###
-current_path = str(args.Directory) + ".pdb"
+name_of_file_to_generate = str(args.Directory) + ".pdb"
 list_of_filepaths_for_PDB_files = []
 initial_number_for_model = args.initial
 
@@ -222,4 +246,4 @@ else:
 
 #Now that the name and path info on each PDB file has been collected, and any
 # possible order specified dtermined, extract the data from each and merge into one
-fuse_pdbs(list_of_filepaths_for_PDB_files,current_path,initial_number_for_model)
+fuse_pdbs(list_of_filepaths_for_PDB_files,name_of_file_to_generate,initial_number_for_model)
