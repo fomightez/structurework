@@ -143,12 +143,21 @@ def extract_ordering_number(filepath):
 def after_underscore_is_integer(filepath):
     '''
     returns true only if there is an integer after an underscore in front of
-    ".pdb" at end of file path
+    ".pdb" at end of file path. A zero counts as integer here so 
+    a series such as `model_0.pdb`, `model_1.pdb`, `model_2.pdb`, etc, would 
+    # work to signal order to put models in as well.
     '''
     if "_" not in filepath:
         return False
     else:
-        return True if extract_ordering_number(filepath) is int else False
+        return True if extract_ordering_number(filepath) is not None else False #because 
+        #`extract_ordering_number()` returns None if it cannot cast to integer
+        # `return True if extract_ordering_number(filepath) else False` alone 
+        # could almost be used to check if after_underscore is integer, EXCEPT
+        # in the case that returned integer is zero, because returning zero
+        # for `extract_ordering_number(filepath)` evaluates as False. Instead 
+        # better if check `extract_ordering_number(filepath) is 
+        # not None` then only `None` evaluates to False and zero is fine.
 
 
 def order_the_list_based_on_user_specifications(list_of_filepaths):
