@@ -11,9 +11,9 @@ Related 'Binderized' Utilities
 
 Collection of links to launchable Jupyter environment where various structure/function analysis tools work. Many of my recent scripts are built with use in these environments in mind:
 
-- [bio3d-binder](https://github.com/fomightez/bio3d-binder) - launchable, working Jupyter-baseed environment with the Bio3D package for Macromolecular Structure Analysis running in R+Jupyter (RStudio is an option there, too) with some examples (*R-based*).
+- [bio3d-binder](https://github.com/fomightez/bio3d-binder) - launchable, working Jupyter-based environment with the Bio3D package for Macromolecular Structure Analysis running in R+Jupyter (RStudio is an option there, too) with some examples (*R-based*).
 
-- [cl_demo-binder](https://github.com/fomightez/cl_demo-binder) - launchable, working Jupyter-baseed environment that has a collection of demonstrations of useful resources on command line for manipulating structure files
+- [cl_demo-binder](https://github.com/fomightez/cl_demo-binder) - launchable, working Jupyter-based environment that has a collection of demonstrations of useful resources on command line for manipulating structure files
 
 
 Related 'Docker-ized' Utilities
