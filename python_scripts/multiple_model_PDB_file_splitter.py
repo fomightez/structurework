@@ -115,7 +115,7 @@ def generate_output_files_prefix(file_name):
 def extract_models(multi_model_PDB_file):
     '''
     This function takes a file containing several PDB-formatted structure models
-    and extracts each individual mode. Saving each individual model to a
+    and extracts each individual model. Saving each individual model to a
     new file based on the name of the original file.
 
     Arguments for the function are as follows:
