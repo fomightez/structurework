@@ -10,7 +10,7 @@ Python scripts by Wayne Decatur for working with biological structure data.
 
 >An example of a program that makes a PDB-fromatted multi-model file is RNA composer at http://rnacomposer.ibch.poznan.pl/Home .
 
-There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/cl_demo-binder%20split%20and%20combine%20multimodel%20PDB%20files.ipynb#Python-script-method-to-split).
+There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/notebooks/Split%20and%20combine%20multimodel%20PDB%20files.ipynb#Python-script-method-to-split).
 
 #### Limitations
 Requires the PDB file include both MODEL and ENDMDL records for each of the models.
@@ -34,7 +34,7 @@ or
 where `ensemble.pdb` is the name of the file containing multiple PDB structure models, or `directory` is the name of a directory containing files ending in `.pdb` or `.PDB` to split.
 
 
-There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/cl_demo-binder%20split%20and%20combine%20multimodel%20PDB%20files.ipynb#Python-script-method-to-split).
+There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/notebooks/Split%20and%20combine%20multimodel%20PDB%20files.ipynb#Python-script-method-to-split).
 
 ----
 
@@ -46,7 +46,7 @@ There is a [demo of this script within the 'Split and Combine multimodel PDB fil
 
 >An example of a program that makes a PDB-fromatted multi-model file is RNA composer at http://rnacomposer.ibch.poznan.pl/Home .
 
-There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/cl_demo-binder%20split%20and%20combine%20multimodel%20PDB%20files.ipynb#Basic-Python-method-to-split).
+There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/notebooks/Split%20and%20combine%20multimodel%20PDB%20files.ipynb#Basic-Python-method-to-split).
 
 #### Limitations
 Requires the PDB file include both MODEL and ENDMDL records for each of the models.
@@ -66,7 +66,7 @@ Enter on the command line, the line
 where `ensemble.pdb` is the name of the file containing multiple PDB structure models. You'll need to edit the `PDB_text` value to be the text of the pdb file you wish to split up.
 
 
-There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/cl_demo-binder%20split%20and%20combine%20multimodel%20PDB%20files.ipynb#Basic-Python-method-to-split).
+There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/notebooks/Split%20and%20combine%20multimodel%20PDB%20files.ipynb#Basic-Python-method-to-split).
 
 ----
 
@@ -75,7 +75,7 @@ There is a [demo of this script within the 'Split and Combine multimodel PDB fil
 
 >Takes a directory containing structures in the PDB format and combines them all into a single PDB file with each structure as an individual model.
 
-There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/cl_demo-binder%20split%20and%20combine%20multimodel%20PDB%20files.ipynb#Python-script-method-to-merge).
+There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/notebooks/Split%20and%20combine%20multimodel%20PDB%20files.ipynb#Python-script-method-to-merge).
 
 
 #### Limitations
@@ -135,7 +135,7 @@ Another example with the advanced options, in this case the `--initial` flag tha
 
 #### Demo
 
-There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/cl_demo-binder%20split%20and%20combine%20multimodel%20PDB%20files.ipynb#Python-script-method-to-merge).
+There is a [demo of this script within the 'Split and Combine multimodel PDB files' notebook launchable in this repo](https://github.com/fomightez/cl_demo-binder); the specific section can be viewed nicely displayed [here](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/notebooks/Split%20and%20combine%20multimodel%20PDB%20files.ipynb#Python-script-method-to-merge).
 
 ----
 
