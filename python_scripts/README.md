@@ -157,6 +157,8 @@ Related resources by others
 
 - [atomium](https://github.com/samirelanduk/atomium) is a Python library for opening and saving .pdb, .cif and .xyz files, and presenting and manipulating the information contained within. Documentation is at https://atomium.samireland.com/ .
 
-- [Biopandas](https://github.com/rasbt/biopandas) for working with molecular structures in pandas DataFrames. Documentation at http://rasbt.github.io/biopandas/.
+- [Sebastian Raschka's Biopandas](https://github.com/rasbt/biopandas) for working with molecular structures in pandas DataFrames. Documentation at http://rasbt.github.io/biopandas/.
 
 -  [Bio3D](https://github.com/fomightez/bio3d-binder), an R package for the analysis of macromolecular structure, sequence and trajectory data. (***R- and not Python-based, but definitely related***).
+
+- [Marcin Magnus's rna-pdb-tools: a toolbox to analyze structures and simulations of RNA](https://github.com/mmagnus/rna-pdb-tools)
