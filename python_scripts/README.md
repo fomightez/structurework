@@ -1,6 +1,6 @@
 # Structure work scripts
 
-Python scripts by Wayne Decatur for working with biological structure data.
+**Python scripts by Wayne Decatur for working with biological structure data.**
 
 - multiple_model_PDB_file_splitter.py
 
