@@ -20,3 +20,10 @@ Related 'Docker-ized' Utilities
 -------
 
 [Dockerfiles for Structural Analysis (Structural Bioinformatics) Docker images](https://github.com/fomightez/Dockerfiles#dockerfiles-for-structural-analysis-structural-bioinformatics-docker-images).
+
+Related non-Python tips
+-----------------------
+
+>"Learned a handy pair of grep flags - "grep -F -f". I find it useful for grabbing the intersection of two #cryoem particle star files, e.g. from masked classification of different domains. (here particle list is just the rlnImageName column of http://class1.star )" [Source](https://twitter.com/OliBClarke/status/1100400145286524928)
+
+    grep -F -f particle_list_class1 class2.star >& class12_instersect.star &
