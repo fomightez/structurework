@@ -27,3 +27,9 @@ Related non-Python tips
 >"Learned a handy pair of grep flags - "grep -F -f". I find it useful for grabbing the intersection of two #cryoem particle star files, e.g. from masked classification of different domains. (here particle list is just the rlnImageName column of http://class1.star )" [Source](https://twitter.com/OliBClarke/status/1100400145286524928)
 
     grep -F -f particle_list_class1 class2.star >& class12_instersect.star &
+
+
+Related resources by others
+---------------------------
+
+[rna-tools (previously rna-pdb-tools): a toolbox to analyze sequences, structures and simulations of RNA](https://github.com/mmagnus/rna-tools/blob/master/index-of-tools.md)
