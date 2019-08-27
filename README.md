@@ -1,7 +1,7 @@
 structurework
 =============
 
-Repository for programs and Python scripts for molecular structure analysis.
+Repository for programs and [Python scripts](https://github.com/fomightez/structurework/tree/master/python_scripts) for molecular structure analysis.
 
 See the sub-folders in this repository for specifics. (Sorely need to improve on this.)
 
