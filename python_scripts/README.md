@@ -23,7 +23,7 @@ Originally developed in Python 2.7, but confirmed to work in Python 3.6.
 
 ##### EXAMPLE RUN
 
-TO RUN:
+TO RUN:  
 Enter on the command line, the line
 
 	python multiple_model_PDB_file_splitter.py ensemble.pdb
@@ -60,7 +60,7 @@ Originally developed in Python 2.7, but confirmed to work in Python 3.6.
 
 ##### EXAMPLE RUN
 
-TO RUN:
+TO RUN:  
 Enter on the command line, the line
 
 	python super_basic_multiple_model_PDB_file_splitter.py ensemble.pdb
@@ -91,7 +91,7 @@ Biopython and the fairly standard modules such as os, sys, and argparse. Written
 
 ##### EXAMPLE RUN
 
-TO RUN:
+TO RUN:  
 Navigate to the directory above a folder containing several PDBs you wish to combine as model. Enter on the command line, the line
 
 	python merge_multi_PDBs_into_single_file.pyensemble.pdb directory_of_pdbs
