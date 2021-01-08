@@ -15,9 +15,6 @@ Written to run from command line or pasted/loaded inside a Jupyter notebook cell
 The main ways to run the script are demonstrated in xxxxxx
 
 
-Alternatively, you can use the HHpred webserver to make these result files using your favorite web browser. For example, go to [HHpred site here](https://toolkit.tuebingen.mpg.de/tools/hhpred) and paste in a protein sequence. Feel free to adjust the search options if you'd like before hitting the 'Submit' button in the bottom right. After the submitted job finishes, from the 'Results' tab, you can select 'Download HHR' to retrieve a HH-suite3 results file in `.hhr` format to your local machine. You can upload that to a running session launched from [here](https://github.com/fomightez/hhsuite3-binder) and edit some of the examples in the series of notebooks there to use the hhsuite3_results_to_df.py script on your data present in your downloaded `.hhr` file.
-
-
 Example calls to run the `xxxxx.py` script from command line:
 ```
 python xxxxx.py xxxxxxx
