@@ -15,7 +15,7 @@ Collection of links to launchable Jupyter environment where various structure/fu
 
 - [cl_demo-binder](https://github.com/fomightez/cl_demo-binder) - launchable, working Jupyter-based environment that has a collection of demonstrations of useful resources on command line (or useable in Jupyter sessions) for manipulating structure files.
 
-- [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) - launchable, working Jupyter-based environment that has a collection of demonstrations of my useful resources for analyzing data from [PDBsum](http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=index.html). The [pdbsum-utilities sub-folder in this repo](https://github.com/fomightez/structurework/pdbsum-utilities) is related as it host many of the scripts and code backing the data analyses.
+- [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) - launchable, working Jupyter-based environment that has a collection of demonstrations of my useful resources for analyzing data from [PDBsum](http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=index.html). The [pdbsum-utilities sub-folder in this repo](https://github.com/fomightez/structurework/tree/master/pdbsum_utilities) is related as it host many of the scripts and code backing the data analyses.
 
 
 Related 'Docker-ized' Utilities
