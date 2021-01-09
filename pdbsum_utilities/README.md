@@ -2,6 +2,8 @@
 
 Utility scripts for working with data from [PDBsum](http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=index.html).
 
+Associated demonstrations launchable in active form right in your browser available at my [pdbsum-binder](https://github.com/fomightez/pdbsum-binder).
+
 Note to self: **MENTION AS COMMENT at https://www.biostars.org/p/11880/#12024 WHEN ADD SOME CONTENT HERE**
 
 # The scripts
