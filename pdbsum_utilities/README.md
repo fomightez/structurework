@@ -21,7 +21,7 @@ Written to run from command line or pasted/loaded inside a Jupyter notebook cell
 The main ways to run the script are demonstrated in the notebook `Working with PDBsum in Jupyter Basics.ipynb` that can be found when sessions are launched from [here](https://github.com/fomightez/pdbsum-binder).
 
 
-Example calls to run the `xxxxx.py` script from command line:
+Example calls to run the `pdsum_prot_interactions_list_to_df.py` script from command line:
 ```
 python pdsum_prot_interactions_list_to_df.py data.txt
 ```
