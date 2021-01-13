@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-# pdsum_prot_interactions_list_to_df.py
+# pdbsum_prot_interactions_list_to_df.py
 __author__ = "Wayne Decatur" #fomightez on GitHub
 __license__ = "MIT"
 __version__ = "0.1.0"
 
 
-# pdsum_prot_interactions_list_to_df.py by Wayne Decatur
+# pdbsum_prot_interactions_list_to_df.py by Wayne Decatur
 # ver 0.1
 #
 #*******************************************************************************
@@ -66,9 +66,9 @@ __version__ = "0.1.0"
 # Examples,
 # Enter on the command line of your terminal, the line
 #-----------------------------------
-# python pdsum_prot_interactions_list_to_df.py DATA_FILE_NAME
+# python pdbsum_prot_interactions_list_to_df.py DATA_FILE_NAME
 #-----------------------------------
-# Issue `pdsum_prot_interactions_list_to_df.py -h` for details.
+# Issue `pdbsum_prot_interactions_list_to_df.py -h` for details.
 # 
 # More examples from running from the command line are at the links below: 
 # https://git.io/XXXX
@@ -78,7 +78,7 @@ __version__ = "0.1.0"
 # To use this after importing/pasting or loading into a cell in a Jupyter 
 # notebook, specify at least the data file (or data as a string) in the 
 # call to the main function similar to below:
-# df = pdsum_prot_interactions_list_to_df.("test.out")
+# df = pdbsum_prot_interactions_list_to_df.("test.out")
 # df
 #
 #
@@ -91,7 +91,7 @@ __version__ = "0.1.0"
 '''
 CURRENT ACTUAL CODE FOR RUNNING/TESTING IN A NOTEBOOK WHEN IMPORTED/LOADED OR 
 PASTED IN ANOTHER CELL:
-df = pdsum_prot_interactions_list_to_df.("data.txt")
+df = pdbsum_prot_interactions_list_to_df.("data.txt")
 df
 '''
 #
@@ -191,7 +191,7 @@ def type_2_key_and_text_to_value(text,title_underline):
 #*******************************************************************************
 ###------------------------'main' function of script---------------------------##
 
-def pdsum_prot_interactions_list_to_df(data_file, return_df = True, pickle_df=True):
+def pdbsum_prot_interactions_list_to_df(data_file, return_df = True, pickle_df=True):
     '''
     Main function of script. 
     PDBsum list of interactions to Pandas dataframe.
@@ -421,7 +421,7 @@ def main():
         kwargs['pickle_df'] = False
     kwargs['return_df'] = False #probably don't want dataframe returned if 
     # calling script from command line
-    pdsum_prot_interactions_list_to_df(data_file,**kwargs)
+    pdbsum_prot_interactions_list_to_df(data_file,**kwargs)
     # using https://www.saltycrane.com/blog/2008/01/how-to-use-args-and-kwargs-in-python/#calling-a-function
     # to build keyword arguments to pass to the function above
     # (see https://stackoverflow.com/a/28986876/8508004 and
@@ -442,8 +442,8 @@ if __name__ == "__main__" and '__file__' in globals():
     # provide arguments when prototyping a full script in the notebook.
     ###-----------------for parsing command line arguments-------------------###
     import argparse
-    parser = argparse.ArgumentParser(prog='pdsum_prot_interactions_list_to_df.py',
-        description="pdsum_prot_interactions_list_to_df.py \
+    parser = argparse.ArgumentParser(prog='pdbsum_prot_interactions_list_to_df.py',
+        description="pdbsum_prot_interactions_list_to_df.py \
         Takes a list of protein-protein interactions from PDBsum and brings it \
         into Python as a dataframe and \
         saves a file of that dataframe for use elsewhere. Optionally, it can \
