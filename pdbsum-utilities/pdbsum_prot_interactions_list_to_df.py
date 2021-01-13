@@ -21,7 +21,7 @@ __version__ = "0.1.0"
 #
 # This script is meant to be a utility script for working with PDBsum and 
 # Python, see a demonstration of use in
-# https://git.io/XXXX
+# https://github.com/fomightez/pdbsum-binder
 # It will be part of a larger set of tools meant to facilitate highlighting
 # differences & similarities in protein-protein interactions of the same protein
 # pairs in different, related complexes.
@@ -30,7 +30,7 @@ __version__ = "0.1.0"
 #
 # Written to run from command line or imported into/pasted/loaded inside a 
 # Jupyter notebook cell. When doing in Jupyter (or IPython, I believe) you can 
-# skip the file save intermediate, see https://git.io/XXXX for these advanced 
+# skip the file save intermediate, see https://git.io/Jtfon for these advanced 
 # examples.
 #
 #
@@ -57,7 +57,6 @@ __version__ = "0.1.0"
 # used f-strings, & those need to be replaced with string formatting using 
 # `.format()` because Python 2.7 never had f-strings, unless I add the use of 
 # future_fstrings package, see https://stackoverflow.com/a/46182112/8508004
-# - in the internal documentation and in the readme update the https://git.io/XXXX link to point at repo with demo
 #
 #
 #
@@ -71,20 +70,20 @@ __version__ = "0.1.0"
 # Issue `pdbsum_prot_interactions_list_to_df.py -h` for details.
 # 
 # More examples from running from the command line are at the links below: 
-# https://git.io/XXXX
+# https://git.io/Jtfon
 #
 #
 #
 # To use this after importing/pasting or loading into a cell in a Jupyter 
 # notebook, specify at least the data file (or data as a string) in the 
 # call to the main function similar to below:
-# df = pdbsum_prot_interactions_list_to_df.("test.out")
+# df = pdbsum_prot_interactions_list_to_df.("test_data.txt")
 # df
 #
 #
 # A more in-depth series of examples of using this script within a notebook 
 # without need to save file intermediates is found at:
-# https://git.io/XXXX
+# https://git.io/Jtfon
 #
 # 
 #
@@ -191,11 +190,13 @@ def type_2_key_and_text_to_value(text,title_underline):
 #*******************************************************************************
 ###------------------------'main' function of script---------------------------##
 
-def pdbsum_prot_interactions_list_to_df(data_file, return_df = True, pickle_df=True):
+def pdbsum_prot_interactions_list_to_df(data_file, return_df = True, 
+    pickle_df=True, return_pdb_code=False):
     '''
     Main function of script. 
     PDBsum list of interactions to Pandas dataframe.
     Optionally also returns a dataframe of the data. 
+    Optionally can also return the PDB code found inside the parse data as well.
     Meant for use in a Jupyter notebook.
 
     Adapted from the main function in `blast_to_df.py`
@@ -390,9 +391,13 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True, pickle_df=T
         "RESULTING DATAFRAME is stored as ==> '{}'".format(df_save_as_name ))
 
     
-    # Return dataframe (optional)
+    # Return dataframe and pdb code(options)
     #---------------------------------------------------------------------------
-    if return_df:
+    if return_df and return_pdb_code:
+        sys.stderr.write("\n\nReturning the PDB code identifier and a "
+            "dataframe with the information as well.")
+        return pdb_code_id,df
+    elif return_df:
         sys.stderr.write("\n\nReturning a dataframe with the information "
                 "as well.")
         return df
