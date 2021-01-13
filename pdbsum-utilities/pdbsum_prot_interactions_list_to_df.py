@@ -394,7 +394,7 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
     # Return dataframe and pdb code(options)
     #---------------------------------------------------------------------------
     if return_df and return_pdb_code:
-        sys.stderr.write("\n\nReturning the PDB code identifier and a "
+        sys.stderr.write("\n\nReturning both the PDB code identifier and a "
             "dataframe with the information as well.")
         return pdb_code_id,df
     elif return_df:
