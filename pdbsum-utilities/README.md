@@ -40,10 +40,10 @@ df =pdsum_prot_interactions_list_to_df('data.txt')
 See [here](https://github.com/fomightez/pdbsum-binder) for notebooks demonstrating use within a Jupyter notebook; click `launch binder` to launch a session that will allow you to use the notebooks from there.
 
 * similarities_in_proteinprotein_interactions.py
-> PDBsum data for protein-protein interactions of two structures --> report on similarities for a pair of proteins interacting in both structures
+> PDBsum data for protein-protein interactions of two structures --> report on similarities at residue-level for a pair of proteins interacting in both structures
 
 This script is a utility script to generate a report on 
-Go to my [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) in your browser and click on the `launch binder`. When the session starts up, and the avalable notebooks are shown, double-click to open the one entitled `Using PDBsum data to highlight changes in protein-protein interactions.ipynb` and work through that to see an example that you can then adapt to look at protein-protein interactions in pairs of structures that interest you. (You may want to start with the first notebook in that series so you understand better the context.)
+Go to my [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) in your browser and click on the `launch binder`. When the session starts up & the avalable notebooks are shown, click to open the one entitled `Using PDBsum data to highlight changes in protein-protein interactions.ipynb`, and work through that to see an example that you can then adapt to look at protein-protein interactions in pairs of structures that interest you. (You may want to start with the previous notebook listed in that series to better understand the context and follow along the steps involved.)
 
 The notebook detailing how to use that script, `similarities_in_proteinprotein_interactions.py`, can be viewed statically [here](https://nbviewer.jupyter.org/github/fomightez/pdbsum-binder/blob/main/notebooks/Using%20PDBsum%20data%20to%20highlight%20changes%20in%20protein-protein%20interactions.ipynb).
 
