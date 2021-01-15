@@ -20,18 +20,24 @@ __version__ = "0.1.0"
 # residue-to-residue is different; however, using the dataframe that can be 
 # made using `pdsum_prot_interactions_list_to_df.py` from the data files this 
 # can be determined. (This could be added later, see 'to do'.)
-# Needs to work in conjunction with the notebook `Using PDBsum data to highlight changes in protein-protein interactions.ipynb` that is presently
-# in https://github.com/fomightez/pdbsum-binder . In fact, the easiest way to
-# use this is to launch sessions by clicking on the `launch binder` badge at
-# that repo. In the session that comes up, everything will already be installed
-# and presented to the user for working through the notebook 
+# Needs to work in conjunction with the notebook 
+# `Using PDBsum data to highlight changes in protein-protein interactions.ipynb` 
+# that is presently in https://github.com/fomightez/pdbsum-binder . In fact, the 
+# easiest way to use this is to launch sessions by clicking on the 
+# `launch binder` badge at that repo. In the session that comes up, everything 
+# will already be installed and available for working through the notebook 
 # `Using PDBsum data to highlight changes in protein-protein interactions.ipynb` 
 # that does this comparison for a demonstration set of chains in two related
-# structures. Users can change the PDB codes and chain designation to analyze 
-# their own structures and protein chain interactions of interest.
+# structures. Users can then change the PDB codes and chain designations to 
+# analyze their own structures and protein chain interactions of interest.
 # 
 #
+# You should probably also check out the output from the related scripts
+# `differences_in_proteinprotein_interactions.py` (and coming soon: `subtle_atomiclevel_diffs_in_proteinprotein_interactions_for_shared_pairs.py`)
 # 
+#
+#
+#
 # to do: 
 # - Since this script DOES NOT at this time discern if the specific type of 
 # residue-to-residue is different; however, using the dataframe that is used to 
@@ -40,8 +46,29 @@ __version__ = "0.1.0"
 # dataframes (one each from the related structures) that included these and 
 # making a list from the type column and then seeing if the lists from each 
 # structure match. If add this remove note from 'PURPOSE' and accompanying
-# material describg this script, such as a README or companion notebook 
+# material describg this script, such as a README or companion notebook. <-- oh
+# wait this 'type' difference could probably be added as part of the
+#`subtle_atomiclevel_diffs_in_proteinprotein_interactions_for_shared_pairs.py`
+# that I propose below!!!
 # `Using PDBsum data to highlight changes in protein-protein interactions.ipynb`
+# - perhaps make another, related script that goes through the collection of
+# residue and partner interactions that are maintained by the same residues in
+# both structures and see if the specifics have subtlely changed. The collection
+# to use for that is the `the_shared_interactions` from the 
+# `similarities_in_proteinprotein_interactions.py` script and then go back to 
+# the dataframe for each structure and collect rows matching both the chain# 1
+# and chain# residues in the tuples of the individual pairs in the 
+# `the_shared_interactions`, mine for each structure the atoms involved in each 
+# row for that pair and then see if they differ between the two structures. <--
+# could call script 
+# `subtle_atomiclevel_diffs_in_proteinprotein_interactions_for_shared_pairs.py`
+# (also should note 'type' differences even if the involved atoms are different,
+# see above! - I think both would be good to keep together since input set the
+# same on both and in fact I think I spelled out much of how to do it better
+# in describing 
+# `subtle_atomiclevel_diffs_in_proteinprotein_interactions_for_shared_pairs.py`;
+# the emphais on what is collected would just have to be expanded do do both on
+# same iteration.)
 
 import os
 import sys
@@ -270,16 +297,16 @@ chain2_shifted_res = []
 # Exclude the intersection members by focusing on difference for each. NEVERMIND
 diff_tuples_structure1 = unique_tuples_sets[0].difference(unique_tuples_sets[1]) #should be 
 # the tuples list for structure 1 without those in the_shared_interactions; 
-# DECIDED TO BE MORE THOROUGH AND NOT USE THIS
+# DECIDED TO BE MORE THOROUGH AND NOT USE THIS IN THE LOOP.
 diff_tuples_structure2 = unique_tuples_sets[1].difference(unique_tuples_sets[0]) #should be 
 # the tuples list for structure 2 without those in the_shared_interactions; 
-# DECIDED TO BE MORE THOROUGH AND NOT USE THIS DETEMINING THOSE THAT POSESS SOME
-# NEW PARTNERS
+# DECIDED TO BE MORE THOROUGH AND NOT USE THIS DETEMRINING THOSE THAT POSESS 
+# SOME NEW PARTNERS.
 
 # I don't think I need it; however...
 # REmmber "to find the values that exist in only one set, we use 
 # .symmetric_difference(). Think of this as the union minus the intersection." , 
-# or all thos that don't occur in both structures, the example here
+# or all those that don't occur in both structures, the example here
 # see 
 # https://medium.com/better-programming/a-visual-guide-to-set-comparisons-in-python-6ab7edb9ec41
 
@@ -302,23 +329,32 @@ diff_tuples_structure2 = unique_tuples_sets[1].difference(unique_tuples_sets[0])
 # dictionaries `partners_dicts` will be - Structure#1, chain#1; 
 # Structure#2, chain#1; Structure#1, chain#2; Structure#2, chain#2
 partners_dicts =[]
+structure1_partners_dict={}
+structure2_partners_dict={}
 for t in unique_tuples_sets[0].union(unique_tuples_sets[1]):
-    residue = t[0].split(":")[0] # will get chain 1 residue & so combined with
-    # above for loop, will iterate on all residues in chain 1 involved in 
+    residue = int(t[0].split(":")[0] )# will get chain 1 residue & so combined
+    #  with above for loop, will iterate on all residues in chain 1 involved in 
     # interactions in both structure 1 and 2
-    residue_partner = t[1].split(":")[0]
+    residue_partner = int(t[1].split(":")[0])
     structure1_partners_for_residue = []
-    structure1_partners_dict={}
     for i in unique_tuples_sets[0]:
-        if i[0].split(":")[0] == residue:
-            structure1_partners_for_residue.append(i[1].split(":")[0])
-    structure1_partners_dict[residue] = set(structure1_partners_for_residue)
+        left_side_of_tuple = int(i[0].split(":")[0])
+        right_side_of_tuple = int(i[1].split(":")[0])
+        if left_side_of_tuple == residue:
+            structure1_partners_for_residue.append(right_side_of_tuple)
+    # add the list of partners, as a set, for the residue in structure#1 if not 
+    # empty set; it may be an empty set because iterating on all residies in 
+    # chain#1 that interact and some may not interact in structure#1
+    if set(structure1_partners_for_residue): 
+        structure1_partners_dict[residue] = set(structure1_partners_for_residue)
     structure2_partners_for_residue = []
-    structure2_partners_dict={}
     for i in unique_tuples_sets[1]:
-        if i[0].split(":")[0] == residue:
-            structure2_partners_for_residue.append(i[1].split(":")[0])
-    structure2_partners_dict[residue] = set(structure2_partners_for_residue)
+        left_side_of_tuple = int(i[0].split(":")[0])
+        right_side_of_tuple = int(i[1].split(":")[0])
+        if left_side_of_tuple == residue:
+            structure2_partners_for_residue.append(right_side_of_tuple)
+    if set(structure2_partners_for_residue):
+        structure2_partners_dict[residue] = set(structure2_partners_for_residue)
     if set(structure1_partners_for_residue) != set(structure2_partners_for_residue):
         if residue not in chain1_shifted_res:
             chain1_shifted_res.append(residue)
@@ -326,28 +362,53 @@ partners_dicts.append(structure1_partners_dict)
 partners_dicts.append(structure2_partners_dict)
 # now loop on all tuples & check the residues for other chain which are always 
 # on right half of the tuple
+structure1_partners_dict={}
+structure2_partners_dict={}
 for t in unique_tuples_sets[0].union(unique_tuples_sets[1]):
-    residue = t[1].split(":")[0] # will get chain 2 residue & so combined with
-    # above for loop, will iterate on all residues in chain 2 involved in 
+    residue = int(t[1].split(":")[0]) # will get chain 2 residue & so combined 
+    # with above for loop, will iterate on all residues in chain 2 involved in 
     # interactions in both structure 1 and 2
-    residue_partner = t[0].split(":")[0]
+    residue_partner = int(t[0].split(":")[0])
     structure1_partners_for_residue = []
-    structure1_partners_dict={}
     for i in unique_tuples_sets[0]:
-        if i[1].split(":")[0] == residue:
-            structure1_partners_for_residue.append(i[0].split(":")[0])
-    structure1_partners_dict[residue] = set(structure1_partners_for_residue)
+        right_side_of_tuple = int(i[1].split(":")[0])
+        left_side_of_tuple = int(i[0].split(":")[0])
+        if right_side_of_tuple == residue:
+            structure1_partners_for_residue.append(left_side_of_tuple)
+    if set(structure1_partners_for_residue):
+        structure1_partners_dict[residue] = set(structure1_partners_for_residue)
     structure2_partners_for_residue = []
-    structure2_partners_dict={}
     for i in unique_tuples_sets[1]:
-        if i[1].split(":")[0] == residue:
-            structure2_partners_for_residue.append(i[0].split(":")[0])
-    structure2_partners_dict[residue] = set(structure2_partners_for_residue)
+        right_side_of_tuple = int(i[1].split(":")[0])
+        left_side_of_tuple = int(i[0].split(":")[0])
+        if right_side_of_tuple == residue:
+            structure2_partners_for_residue.append(left_side_of_tuple)
+    if set(structure2_partners_for_residue):
+        structure2_partners_dict[residue] = set(structure2_partners_for_residue)
     if set(structure1_partners_for_residue) != set(structure2_partners_for_residue):
         if residue not in chain2_shifted_res:
             chain2_shifted_res.append(residue)
 partners_dicts.append(structure1_partners_dict)
 partners_dicts.append(structure2_partners_dict)
+
+
+# Notes for 'differences' script:
+# following gives the residues of chain#1 that contribute to one structure not the other
+set(partners_dicts[0].keys()).symmetric_difference(set(partners_dicts[1].keys()))
+# following gives the residues of chain#2 that contribute to one structure not the other
+set(partners_dicts[2].keys()).symmetric_difference(set(partners_dicts[3].keys()))
+# following gives the residues of chai#1 that contribute to structure#1 but not structure #2
+chain1_res_only_contributing_to_structure1 = (
+    set(partners_dicts[0].keys()).difference(set(partners_dicts[1].keys())))
+# following gives the residues of chai#1 that contribute to structure#2 but not structure #1
+chain1_res_only_contributing_to_structure2 = (
+    set(partners_dicts[1].keys()).difference(set(partners_dicts[0].keys())))
+# following gives the residues of chain#2 that contribute to structure#1 but not structure #2
+chain2_res_only_contributing_to_structure1 = (
+    set(partners_dicts[2].keys()).difference(set(partners_dicts[3].keys())))
+# following gives the residues of chain#2 that contribute to structure#2 but not structure #1
+chain2_res_only_contributing_to_structure2 = (
+    set(partners_dicts[3].keys()).difference(set(partners_dicts[2].keys())))
 
 #Report
 #------------------------------------------------------------------------------#
