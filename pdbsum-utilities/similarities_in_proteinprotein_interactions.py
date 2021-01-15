@@ -356,7 +356,13 @@ for t in unique_tuples_sets[0].union(unique_tuples_sets[1]):
     if set(structure2_partners_for_residue):
         structure2_partners_dict[residue] = set(structure2_partners_for_residue)
     if set(structure1_partners_for_residue) != set(structure2_partners_for_residue):
-        if residue not in chain1_shifted_res:
+        # don't bother adding if already there, & ALSO DON'T ADD IF EITHER SET
+        # IS EMPTY AS THAT MEANS IT ONLY CONTRIBUTES TO INTERACTION WITH THE 
+        # OTHER CHAIN IN ONE STRUCTURE, isn't shifted. By the way, those will
+        # get identified in the 'differences' script.
+        if residue not in chain1_shifted_res and (
+            set(structure1_partners_for_residue) and set(
+            structure2_partners_for_residue)):
             chain1_shifted_res.append(residue)
 partners_dicts.append(structure1_partners_dict)
 partners_dicts.append(structure2_partners_dict)
@@ -386,7 +392,9 @@ for t in unique_tuples_sets[0].union(unique_tuples_sets[1]):
     if set(structure2_partners_for_residue):
         structure2_partners_dict[residue] = set(structure2_partners_for_residue)
     if set(structure1_partners_for_residue) != set(structure2_partners_for_residue):
-        if residue not in chain2_shifted_res:
+        if residue not in chain2_shifted_res and (
+            set(structure1_partners_for_residue) and set(
+            structure2_partners_for_residue)):
             chain2_shifted_res.append(residue)
 partners_dicts.append(structure1_partners_dict)
 partners_dicts.append(structure2_partners_dict)
