@@ -18,15 +18,16 @@ __version__ = "0.1.0"
 # are lost while the same residues still interact in some way, those SUBTLE 
 # CHANGES WILL NOT BE HIGHLIGHTED here. (To add this I think it would probably
 # be best to do in another related script,see 'to do' for possibility later.)
-# Needs to work in conjunction with the notebook `Using PDBsum data to highlight changes in protein-protein interactions.ipynb` that is presently
-# in https://github.com/fomightez/pdbsum-binder . In fact, the easiest way to
-# use this is to launch sessions by clicking on the `launch binder` badge at
-# that repo. In the session that comes up, everything will already be installed
-# and presented to the user for working through the notebook 
+# Needs to work in conjunction with the notebook 
+# `Using PDBsum data to highlight changes in protein-protein interactions.ipynb` 
+# that is presently in https://github.com/fomightez/pdbsum-binder . In fact, the 
+# easiest way to use this is to launch sessions by clicking on the 
+# `launch binder` badge at that repo. In the session that comes up, everything 
+# will already be installed and available for working through the notebook 
 # `Using PDBsum data to highlight changes in protein-protein interactions.ipynb` 
 # that does this comparison for a demonstration set of chains in two related
-# structures. Users can change the PDB codes and chain designations to analyze 
-# their own structures and protein chain interactions of interest.
+# structures. Users can then change the PDB codes and chain designations to 
+# analyze their own structures and protein chain interactions of interest.
 # 
 #
 # You should probably also check out the output from the related script 
@@ -173,21 +174,21 @@ sys.stderr.write("\nCollecting differences for chain vs chain interactions "
 # lists total. Make integers so can easily use elsewhere if I want.
 #left side residues (chain#1) from structure1
 chain1_res_in_structure1 = dfs[0]['Atom1 Res no.'].tolist()
-chain1_res_in_structure1 = [inf(x) for x in chain1_res_in_structure1]
+chain1_res_in_structure1 = [int(x) for x in chain1_res_in_structure1]
 #right side residues (chain#2) from structure1
 chain2_res_in_structure1 = dfs[0]['Atom2 Res no.'].tolist()
-chain2_res_in_structure1 = [inf(x) for x in chain2_res_in_structure1]
+chain2_res_in_structure1 = [int(x) for x in chain2_res_in_structure1]
 #left side residues (chain#1) from structure2
 chain1_res_in_structure2 = dfs[1]['Atom1 Res no.'].tolist()
-chain1_res_in_structure2 = [inf(x) for x in chain1_res_in_structure2]
+chain1_res_in_structure2 = [int(x) for x in chain1_res_in_structure2]
 #right side residues (chain#2) from structure2
 chain2_res_in_structure2 = dfs[1]['Atom2 Res no.'].tolist()
-chain2_res_in_structure2 = [inf(x) for x in chain2_res_in_structure2]
+chain2_res_in_structure2 = [int(x) for x in chain2_res_in_structure2]
 interaction_pairs_with_both_residues_entirely_unique_to_structure1 = []
 # `unique_tuples_sets[0]` is the set from structure #1
 for t in unique_tuples_sets[0]:
-    left_side_of_tuple = int(i[0].split(":")[0])
-    right_side_of_tuple = int(i[1].split(":")[0])
+    left_side_of_tuple = int(t[0].split(":")[0])
+    right_side_of_tuple = int(t[1].split(":")[0])
     left_side_residue_in_structure2 = (
         left_side_of_tuple in chain1_res_in_structure2)
     right_side_residue_in_structure2 = (
@@ -199,8 +200,8 @@ for t in unique_tuples_sets[0]:
 interaction_pairs_with_both_residues_entirely_unique_to_structure2 = []
 # `unique_tuples_sets[1]` is the set from structure #2
 for t in unique_tuples_sets[1]:
-    left_side_of_tuple = int(i[0].split(":")[0])
-    right_side_of_tuple = int(i[1].split(":")[0])
+    left_side_of_tuple = int(t[0].split(":")[0])
+    right_side_of_tuple = int(t[1].split(":")[0])
     left_side_residue_in_structure1 = (
         left_side_of_tuple in chain1_res_in_structure1)
     right_side_residue_in_structure1 = (
@@ -260,45 +261,48 @@ for i in interaction_pairs_with_both_residues_entirely_unique_to_structure2:
 
 
 sys.stderr.write("\n\nThe following residues of chain "+chain1_designation+
-    " contribute only to interactions in " +structure1_pdb_code+:")
+    " contribute only to interactions\nwith chain "+chain2_designation+" in "
+    +structure1_pdb_code+":")
 for i in chain1_res_only_contributing_to_structure1:
     sys.stderr.write("\n"+str(i))
 
 sys.stderr.write("\nThe following residues of chain "+chain1_designation+
-    " contribute only to interactions in " +structure2_pdb_code+:")
+    " contribute only to interactions\nwith chain "+chain2_designation+" in "
+    +structure2_pdb_code+":")
 for i in chain1_res_only_contributing_to_structure2:
     sys.stderr.write("\n"+str(i))
 
 sys.stderr.write("\nThe following residues of chain "+chain2_designation+
-    " contribute only to interactions in " +structure1_pdb_code+:")
+    " contribute only to interactions\nwith chain "+chain1_designation+" in "
+    +structure1_pdb_code+":")
 for i in chain2_res_only_contributing_to_structure1:
     sys.stderr.write("\n"+str(i))
 
 sys.stderr.write("\nThe following residues of chain "+chain2_designation+
-    " contribute only to interactions in " +structure2_pdb_code+:")
+    " contribute only to interaction\nwith chain "+chain1_designation+" in "
+    +structure2_pdb_code+":")
 for i in chain2_res_only_contributing_to_structure2:
     sys.stderr.write("\n"+str(i))
 
 
 
 
-sys.stderr.write("\n\n If you've previously run the script "
-    "`similarities_in_proteinprotein_interactions.py` you received\na report "
+sys.stderr.write("\n\nIf you've previously run the script "
+    "`similarities_in_proteinprotein_interactions.py`\nyou received a report "
     "listing residues for each chain that still interact with\nthe other chain "
     "in both structures yet have different sets of residue\npartners in both "
-    "structures.\nThe details of those shifts in partners can help highlight "
-    "differences.")
+    "structures.\nDetails of the shifts in partners follow.")
 sys.stderr.write("\nThe following lists the differing sets of partners for "
-    "each residue of chain "+chain1_designation+", with the "
+    "residues of chain "+chain1_designation+",\nwith the "
     "chain "+chain2_designation+" partners in " +
-    structure1_pdb_code+" followed by those in"+structure2_pdb_code+":")
-for k,v in chain1_shifts_dict:
+    structure1_pdb_code+" followed by those in "+structure2_pdb_code+":")
+for k,v in chain1_shifts_dict.items():
     sys.stderr.write("\n"+str(k)+": "+str(v[0])+", "+str(v[1]))
 sys.stderr.write("\nThe following lists the differing sets of partners for "
-    "each residue of chain "+chain2_designation+", with the "
+    "residues of chain "+chain2_designation+",\nwith the "
     "chain "+chain1_designation+" partners in " +
-    structure1_pdb_code+" followed by those in"+structure2_pdb_code+":")
-for k,v in chain2_shifts_dict:
+    structure1_pdb_code+" followed by those in "+structure2_pdb_code+":")
+for k,v in chain2_shifts_dict.items():
     sys.stderr.write("\n"+str(k)+": "+str(v[0])+", "+str(v[1]))
 
 
