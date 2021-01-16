@@ -6,7 +6,6 @@ Associated demonstrations launchable in active form right in your browser availa
 
 Among this set of tools are several meant to facilitate highlighting differences & similarities in protein-protein interactions of the same protein pairs in different, related complexes. For example, several of these scripts aid in highlighting differences & similarities in protein-protein interactions when comparing macromolecular structures solved with different ligands or substrates or when comparing structures that share subsets of the same protein components. 
 
-Note to self: **MENTION AS COMMENT at https://www.biostars.org/p/11880/#12024 WHEN ADD SOME CONTENT HERE**
 
 # The scripts
 
