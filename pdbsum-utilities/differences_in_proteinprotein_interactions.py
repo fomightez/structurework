@@ -145,7 +145,7 @@ if not os.path.isfile(file_needed):
 #------------------------------------------------------------------------------#
 #`similarities_in_proteinprotein_interactions.py` does much of what is needed 
 # (and more) so silently run that script and then continue on effort to compile
-# information needed for report from this script
+# information needed for sumamry report from this script
 # see https://gist.github.com/fomightez/ed79e33e97601d839dd550fd224d583c for 
 # information on approaching it this way. (An overarching reason is I didn't 
 # want to refactor `similarities_in_proteinprotein_interactions.py` since it 
@@ -243,7 +243,7 @@ for i in chain2_shifted_res:
     chain2_shifts_dict[i] = (partners_dicts[2][i],partners_dicts[3][i])
 
 
-#Report
+# SUMMARY REPORT
 #------------------------------------------------------------------------------#
 sys.stderr.write("\nDetermination of DIFFERENCES Completed.\n\n"
     "************************RESULTS************************")
