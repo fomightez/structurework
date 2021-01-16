@@ -418,7 +418,7 @@ chain2_res_only_contributing_to_structure1 = (
 chain2_res_only_contributing_to_structure2 = (
     set(partners_dicts[3].keys()).difference(set(partners_dicts[2].keys())))
 
-#Report
+# SUMMARY REPORT
 #------------------------------------------------------------------------------#
 sys.stderr.write("\nDetermination of SIMILARITIES Completed.\n\n"
     "************************RESULTS************************")
