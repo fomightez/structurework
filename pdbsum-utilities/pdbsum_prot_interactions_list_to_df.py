@@ -142,6 +142,7 @@ df_save_as_name = 'prot_int_pickled_df.pkl' #name for pickled dataframe file
 import sys
 import os
 import pandas as pd
+import numpy as np
 # I need StringIO so string handled as file document. Also need to deal 
 # with whether Python 3 or 2 because StringIO source differs for Python 2.
 try:
@@ -184,6 +185,39 @@ def type_2_key_and_text_to_value(text,title_underline):
     parts = text.split(title_underline,1)
     return {parts[0].strip():parts[1].strip().replace('<-->','')}
 
+def handle_pickling_the_dataframe(df, pickle_df,df_save_as_name):
+    '''
+    Was at end but moved to a function because will be used when 'empty' data
+    provided where no interaction occurs.
+    '''
+    if pickle_df == False:
+        sys.stderr.write("\n\nA dataframe of the data "
+        "was not stored for use\nelsewhere "
+        "because `no_pickling` was specified.")
+    else:
+        df.to_pickle(df_save_as_name )
+        # Let user know
+        sys.stderr.write("\n\nA dataframe of the data "
+        "has been saved as a file\nin a manner where other "
+        "Python programs can access it (pickled form).\n"
+        "RESULTING DATAFRAME is stored as ==> '{}'".format(df_save_as_name ))
+
+def handle_returning_the_dataframe_and_info(
+    df,pdb_code_id,return_df,return_pdb_code):
+    '''
+    Was at end but moved to a function because will be used when 'empty' data
+    provided where no interaction occurs.
+    '''
+    if return_df and return_pdb_code:
+        sys.stderr.write("\n\nReturning both the PDB code identifier and a "
+            "dataframe with the information as well.")
+        return pdb_code_id,df
+    elif return_df:
+        sys.stderr.write("\n\nReturning a dataframe with the information "
+                "as well.")
+        return df
+
+
 ###--------------------------END OF HELPER FUNCTIONS---------------------------###
 ###--------------------------END OF HELPER FUNCTIONS---------------------------###
 
@@ -201,19 +235,54 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
 
     Adapted from the main function in `blast_to_df.py`
     '''
+    # These few varibales needs to be available early for 'empty' data files 
+    # where there was no interaction between those chains
+    column_names = (['Atom1 no.', 'Atom1 name', 'Atom1 Res name', 
+        'Atom1 Res no.', 'Atom1 Chain', 'Atom2 no.', 'Atom2 name', 
+        'Atom2 Res name', 'Atom2 Res no.', 'Atom2 Chain', 'Distance'])
+    pdb_code_delimiter = "PDB code:"
+
+
     # Bring in the necessary data and prepare it in a manner for next step:
     #---------------------------------------------------------------------------
     # Bring in the file so it can be parsed
     with open(data_file, 'r') as int_file:
         raw_data_txt=int_file.read()
 
+    pdb_code_id = raw_data_txt.split(pdb_code_delimiter,1)[1].split()[0]
+
+    # Because of the way I set up parsing below I found if this is supplied with 
+    # data from an 'empty' protein-protein interaction (e.g., 7c7a E B 
+    # [http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetIface.pl?pdb=7c7a&chain1=E&chain2=B]
+    # is empty while 7c7a E G 
+    # [http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetIface.pl?pdb=7c7a&chain1=E&chain2=G] 
+    # has only one interactions and isn't empty <=== those two good for 
+    # testing handling then), it fails with an error (`IndexError: list index 
+    # out of range` at the line of first parsting to assign `most_raw_data`).
+    # This section will hopefully now catch those situations and make a
+    # dataframe with the normal column names and one row of Nan while also 
+    # giving feedback.
+    if len(raw_data_txt.split("\n")) <= 8:
+        # feedback
+        sys.stderr.write("An 'empty' dataframe has been made as there "
+            "**APPEARS TO BE NO INERACTIONS FOR THESE PAIRS OF CHAINS**.")
+        df = pd.DataFrame(np.nan, index=[0], columns=column_names) # based on 
+        # https://stackoverflow.com/a/30053507/8508004
+        df['type'] = np.nan
+        handle_pickling_the_dataframe(df, pickle_df,df_save_as_name)
+        handle_returning_the_dataframe_and_info(
+            df,pdb_code_id,return_df,return_pdb_code)
+        sys.exit(0)
+
     # Split each type of section for parsing:
     #---------------------------------------------------------------------------
     split_on_string = "------------"
-    pdb_code_delimiter = "PDB code:"
+    # pdb_code_delimiter has been moved to top of function because needed for
+    # 'empty' data where no interaction between the chains was observed
     typical_line_after_pdb = "------------------------------"
-    # first collect the PDB code id
-    pdb_code_id = raw_data_txt.split(pdb_code_delimiter,1)[1].split()[0]
+    # first collect the PDB code id <=== MOVED UP HIGHER LATER BECAUSE NEED FOR 
+    # DATA WHERE NO INTERACTION SEEN, TOO
+    #`pdb_code_id` now assigned above. (See above comment.)
     #print (pdb_code_id)
     # now remove everything before first first type of interactions section
     most_raw_data= raw_data_txt.split(
@@ -325,9 +394,10 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
     # not perfect because chain doesn't have a modifier and so was throwing the
     # map off. So can I fix or hand edit? Looking at result of `print(list(df.columns))` without `df.columns = df.columns.map(' '.join)` made it clear the shift is there from the start and easier to just define. Had to add in `atom1` and `2` because duplicate names not allowed.
     '''
-    column_names = (['Atom1 no.', 'Atom1 name', 'Atom1 Res name', 
-        'Atom1 Res no.', 'Atom1 Chain', 'Atom2 no.', 'Atom2 name', 
-        'Atom2 Res name', 'Atom2 Res no.', 'Atom2 Chain', 'Distance'])
+    #column_names assignment  WAS MOVED TO TOP BECAUSE NEEDED IT AVAILABLE FOR 
+    # WHEN AN 'EMPTY' DATA FILE IS PRROVIDED WHERE NO CHAIN-CHAIN INTERACTIONS 
+    # IN THE DATA.
+ 
     ''' # More from DEVELOPING
     df1 = pd.read_csv(StringIO(list(sections[0].values())[0]),
         delim_whitespace = True, skiprows = 2, names=column_names)
@@ -378,29 +448,14 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
     #sys.stderr.write(df.to_string())
 
     # Handle pickling the dataframe
-    if pickle_df == False:
-        sys.stderr.write("\n\nA dataframe of the data "
-        "was not stored for use\nelsewhere "
-        "because `no_pickling` was specified.")
-    else:
-        df.to_pickle(df_save_as_name )
-        # Let user know
-        sys.stderr.write("\n\nA dataframe of the data "
-        "has been saved as a file\nin a manner where other "
-        "Python programs can access it (pickled form).\n"
-        "RESULTING DATAFRAME is stored as ==> '{}'".format(df_save_as_name ))
+    handle_pickling_the_dataframe(df, pickle_df,df_save_as_name)
 
     
     # Return dataframe and pdb code(options)
     #---------------------------------------------------------------------------
-    if return_df and return_pdb_code:
-        sys.stderr.write("\n\nReturning both the PDB code identifier and a "
-            "dataframe with the information as well.")
-        return pdb_code_id,df
-    elif return_df:
-        sys.stderr.write("\n\nReturning a dataframe with the information "
-                "as well.")
-        return df
+    handle_returning_the_dataframe_and_info(
+    df,pdb_code_id,return_df,return_pdb_code)
+    
 
 ###--------------------------END OF MAIN FUNCTION----------------------------###
 ###--------------------------END OF MAIN FUNCTION----------------------------###
