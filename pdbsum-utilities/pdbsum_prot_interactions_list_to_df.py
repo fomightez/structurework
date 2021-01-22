@@ -453,8 +453,10 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
     
     # Return dataframe and pdb code(options)
     #---------------------------------------------------------------------------
-    handle_returning_the_dataframe_and_info(
-    df,pdb_code_id,return_df,return_pdb_code)
+    if return_df:
+        returned = handle_returning_the_dataframe_and_info(
+            df,pdb_code_id,return_df,return_pdb_code)
+        return returned
     
 
 ###--------------------------END OF MAIN FUNCTION----------------------------###
