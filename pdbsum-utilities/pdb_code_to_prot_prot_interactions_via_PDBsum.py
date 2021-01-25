@@ -136,10 +136,18 @@ output_file_name_prefix = "page_source" #at present this gets deleted & so I use
 import sys
 import os
 from sh import curl
+import uuid 
+'''
 import datetime
 now = datetime.datetime.now()
 output_file_name = "{}{}.htm".format(
-    output_file_name_prefix,now.strftime('%b%d%Y%H%M'))
+    output_file_name_prefix,now.strftime('%b%d%Y%H%M')) 
+'''
+output_file_name = "{}{}.htm".format(
+    output_file_name_prefix,now.strftime(uuid.uuid1().time)) # based 
+# https://www.geeksforgeeks.org/generating-random-ids-using-uuid-python/ ; using
+# because I don't need this to be human readable and I tested and one made mere
+# milliseconds later unique and I dob't have to worry how to handle it myself
 
 
 ###---------------------------HELPER FUNCTIONS---------------------------------###
@@ -204,8 +212,9 @@ def pdb_code_to_prot_prot_interactions_via_PDBsum(pdb_code):
         second_designation= first_and_after.split(
             str_in_front_of_chainDesignation,1)[1]
         pair_tuples.append((first_designation,second_designation))
+    os.remove(page_source_fn)
     return pair_tuples
-    os.remove("page_source_fn")
+    
 
     
 
