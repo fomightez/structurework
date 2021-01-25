@@ -144,7 +144,7 @@ output_file_name = "{}{}.htm".format(
     output_file_name_prefix,now.strftime('%b%d%Y%H%M')) 
 '''
 output_file_name = "{}{}.htm".format(
-    output_file_name_prefix,now.strftime(uuid.uuid1().time)) # based 
+    output_file_name_prefix,uuid.uuid1().time) # based 
 # https://www.geeksforgeeks.org/generating-random-ids-using-uuid-python/ ; using
 # because I don't need this to be human readable and I tested and one made mere
 # milliseconds later unique and I dob't have to worry how to handle it myself
