@@ -77,7 +77,7 @@ __version__ = "0.1.0"
 # To use this after importing/pasting or loading into a cell in a Jupyter 
 # notebook, specify at least the data file (or data as a string) in the 
 # call to the main function similar to below:
-# df = pdbsum_prot_interactions_list_to_df.("test_data.txt")
+# df = pdbsum_prot_interactions_list_to_df("test_data.txt")
 # df
 #
 #
@@ -90,7 +90,7 @@ __version__ = "0.1.0"
 '''
 CURRENT ACTUAL CODE FOR RUNNING/TESTING IN A NOTEBOOK WHEN IMPORTED/LOADED OR 
 PASTED IN ANOTHER CELL:
-df = pdbsum_prot_interactions_list_to_df.("data.txt")
+df = pdbsum_prot_interactions_list_to_df("data.txt")
 df
 '''
 #
