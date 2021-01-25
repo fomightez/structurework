@@ -38,6 +38,16 @@ df =pdsum_prot_interactions_list_to_df('data.txt')
 ```
 See [here](https://github.com/fomightez/pdbsum-binder) for notebooks demonstrating use within a Jupyter notebook; click `launch binder` to launch a session that will allow you to use the notebooks from there.
 
+
+* pdb_code_to_prot_prot_interactions_via_PDBsum.py
+> PDB code --> list of pairs of interacting protein chain designations in the structure fetched vis PDBsum
+
+This script is a utility script to generate a list of the all the pairs of interactions of protein chains in a structure at the PDB. If it is run on the command line it will generate a list with the chain desgnations in pairs. If it is run via the main function, it will return a list of tuples where the tuples returned are each pair of chain designations for all the interacting pairs in the structure.   
+Go to my [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) in your browser and click on the `launch binder`. When the session starts up & the avalable notebooks are shown, click to open the one entitled `XXXXXX`, and work through that to see an example that you can then adapt to generate a list of the pairs for a structure that interests you. (You may want to start with the previous notebook listed in that series to better understand the context and follow along the steps involved.)
+
+The notebook detailing how to use that script, `pdb_code_to_prot_prot_interactions_via_PDBsum.py`, can be viewed statically [here](https://nbviewer.jupyter.org/github/fomightez/pdbsum-binder/blob/main/notebooks/Using%20PDBsum%20data%20to%20highlight%20changes%20in%20protein-protein%20interactions.ipynb).
+
+
 * similarities_in_proteinprotein_interactions.py
 > PDBsum data for protein-protein interactions of two related structures --> report on similarities at residue-level for a pair of proteins interacting in both structures
 
