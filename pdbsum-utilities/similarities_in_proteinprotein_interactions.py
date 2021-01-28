@@ -317,8 +317,8 @@ diff_tuples_structure2 = unique_tuples_sets[1].difference(unique_tuples_sets[0])
 # OVER ALL THE RESIDUES 
 # INVOLED FOR THE PARTICULAR CHAIN, REGARDLESS OF WHAT STRUCTURE IT OCCURS IN
 # BECAUSE WANT TO CHECK FOR SHIFTS IN CHAIN INTERACTIONS FOR ALL RESIDUES OF THAT
-# PARTICULAR CHAIN SEEN TO INTERACT WITH THE OTHERCHAIN, THAT'S FOR THE 
-# INITIAL `for t in` THESE TWO LOOPS START OUT WITH. For the loops on each 
+# PARTICULAR CHAIN SEEN TO INTERACT WITH THE OTHER CHAIN, THAT'S FOR THE 
+# INITIAL `for t in` THESE TWO LOOPS START OUT WITH. For interating on each 
 # structure (inner, sub looping), I could get away with not including those in
 # the_shared_interactions, i.e., diff_tuples_structure1  & 
 # diff_tuples_structure2 I define above; however, it won't save that much effort
@@ -398,6 +398,10 @@ for t in unique_tuples_sets[0].union(unique_tuples_sets[1]):
             chain2_shifted_res.append(residue)
 partners_dicts.append(structure1_partners_dict)
 partners_dicts.append(structure2_partners_dict)
+# Note that for `chain1_shifted_res` and `chain2_shifted_res`, don't need to be
+# concerned with whether anything in 'Missing residues' category because by
+# definition they cannot possible classified interacting with both structures if 
+# not resolved in both.
 
 
 # Notes for 'differences' script:
@@ -427,17 +431,28 @@ sys.stderr.write("\nThe following interacting pairs of residues occur in "
 for i in the_shared_interactions:
     sys.stderr.write("\n("+str(i[0])+", "+str(i[1])+")")
 
-chain1_designation = list(unique_tuples_sets[0])[0][0].split(":")[1]
-chain2_designation = list(unique_tuples_sets[0])[0][1].split(":")[1]
-sys.stderr.write("\n\nThe following residues of chain "+chain1_designation+
-    " contribute to interactions with\nchain "+chain2_designation+
+chain1_designation_rep = list(unique_tuples_sets[0])[0][0].split(":")[1]
+chain2_designation_rep = list(unique_tuples_sets[0])[0][1].split(":")[1]
+# The 'first' chain in structure #1 and structure #2 can have different 
+# designations and still be the same proteins & so in those cases I'm going to
+# have the 'first' chain represented by structure1 designation separated by a 
+# forward slash from structure2 sdesignation, like `R/C`. Same for 'second' 
+#chain.
+if chain1_designation_rep != list(unique_tuples_sets[1])[0][0].split(":")[1]:
+    chain1_designation_rep += "/{}".format(
+        list(unique_tuples_sets[1])[0][0].split(":")[1])
+if chain2_designation_rep != list(unique_tuples_sets[1])[0][1].split(":")[1]:
+    chain2_designation_rep += "/{}".format(
+        list(unique_tuples_sets[1])[0][1].split(":")[1])
+sys.stderr.write("\n\nThe following residues of chain "+chain1_designation_rep+
+    " contribute to interactions with\nchain "+chain2_designation_rep+
     " in both structures " +structure1_pdb_code+" & "+structure2_pdb_code+","
     " yet have differing sets of partners:")
 for i in chain1_shifted_res:
     sys.stderr.write("\n"+str(i))
 
-sys.stderr.write("\n\nThe following residues of chain "+chain2_designation+
-    " contribute to interactions with\nchain "+chain1_designation+
+sys.stderr.write("\n\nThe following residues of chain "+chain2_designation_rep+
+    " contribute to interactions with\nchain "+chain1_designation_rep+
     " in both structures " +structure1_pdb_code+" & "+structure2_pdb_code+","
     " yet have differing sets of partners:")
 for i in chain2_shifted_res:
