@@ -76,6 +76,7 @@ import glob
 from shutil import copyfile
 import subprocess
 import pandas as pd
+import numpy as np
 #from halo import HaloNotebook as Halo
 from IPython.utils import io
 
