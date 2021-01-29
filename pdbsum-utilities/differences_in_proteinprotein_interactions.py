@@ -84,6 +84,7 @@ import glob
 from shutil import copyfile
 import subprocess
 import pandas as pd
+import numpy as np
 #from halo import HaloNotebook as Halo
 from IPython.utils import io
 from Bio.PDB import *
@@ -338,15 +339,20 @@ sys.stderr.write("\nCollecting differences for chain vs chain interactions "
 # lists total. Make integers so can easily use elsewhere if I want.
 #left side residues (chain#1) from structure1
 chain1_res_in_structure1 = dfs[0]['Atom1 Res no.'].tolist()
+chain1_res_in_structure1 = [0 for x in chain1_res_in_structure1 if np.isnan(x)]# 
+# add so when 'empty' data gets used, it fails gracefully
 chain1_res_in_structure1 = [int(x) for x in chain1_res_in_structure1]
 #right side residues (chain#2) from structure1
 chain2_res_in_structure1 = dfs[0]['Atom2 Res no.'].tolist()
+chain2_res_in_structure1 = [0 for x in chain2_res_in_structure1 if np.isnan(x)]
 chain2_res_in_structure1 = [int(x) for x in chain2_res_in_structure1]
 #left side residues (chain#1) from structure2
 chain1_res_in_structure2 = dfs[1]['Atom1 Res no.'].tolist()
+chain1_res_in_structure2 = [0 for x in chain1_res_in_structure2 if np.isnan(x)]
 chain1_res_in_structure2 = [int(x) for x in chain1_res_in_structure2]
 #right side residues (chain#2) from structure2
 chain2_res_in_structure2 = dfs[1]['Atom2 Res no.'].tolist()
+chain2_res_in_structure2 = [0 for x in chain2_res_in_structure2 if np.isnan(x)]
 chain2_res_in_structure2 = [int(x) for x in chain2_res_in_structure2]
 interaction_pairs_with_both_residues_entirely_unique_to_structure1 = []
 # `unique_tuples_sets[0]` is the set from structure #1
