@@ -105,6 +105,12 @@ def res_tuple_simple(items):
     and returns a tuple of residue number 1 position number first followed by 
     residue number 2 position number.
     '''
+    # check for 'empty' dataframe using `np.isnan(items[0])`, based on https://stackoverflow.com/a/29528160/8508004 ; allows rest of script to run
+    # gracefully if there were no interactions between the two chains examined
+    # for one of the sturctures and thus 'empty' dataframe produced from PDBsum
+    # data
+    if np.isnan(items[0]):
+        return ("0","0")
     return ("{}".format(items[0]),"{}".format(items[2]))
 def res_tuple(items):
     '''
@@ -114,6 +120,12 @@ def res_tuple(items):
     residue#2 information.
     Uses Jmol/Jsmol convention where `161:B` means residue #161 of chain B.
     '''
+    # check for 'empty' dataframe using `np.isnan(items[0])`, based on https://stackoverflow.com/a/29528160/8508004 ; allows rest of script to run
+    # gracefully if there were no interactions between the two chains examined
+    # for one of the sturctures and thus 'empty' dataframe produced from PDBsum
+    # data
+    if np.isnan(items[0]):
+        return ("0:NA","0:NA")
     return ("{}:{}".format(items[0],items[1]),"{}:{}".format(items[2],items[3]))
 
 def write_string_to_file(s, fn):
