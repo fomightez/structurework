@@ -343,7 +343,7 @@ for t in unique_tuples_sets[0].union(unique_tuples_sets[1]):
         if left_side_of_tuple == residue:
             structure1_partners_for_residue.append(right_side_of_tuple)
     # add the list of partners, as a set, for the residue in structure#1 if not 
-    # empty set; it may be an empty set because iterating on all residies in 
+    # empty set; it may be an empty set because iterating on all residues in 
     # chain#1 that interact and some may not interact in structure#1
     if set(structure1_partners_for_residue): 
         structure1_partners_dict[residue] = set(structure1_partners_for_residue)
@@ -358,8 +358,9 @@ for t in unique_tuples_sets[0].union(unique_tuples_sets[1]):
     if set(structure1_partners_for_residue) != set(structure2_partners_for_residue):
         # don't bother adding if already there, & ALSO DON'T ADD IF EITHER SET
         # IS EMPTY AS THAT MEANS IT ONLY CONTRIBUTES TO INTERACTION WITH THE 
-        # OTHER CHAIN IN ONE STRUCTURE, isn't shifted. By the way, those will
-        # get identified in the 'differences' script.
+        # OTHER CHAIN IN ONE STRUCTURE, isn't shifted. By the way, those that
+        # only contribure to interaction with the other chain in one structure 
+        # will get identified in the 'differences' script.
         if residue not in chain1_shifted_res and (
             set(structure1_partners_for_residue) and set(
             structure2_partners_for_residue)):
@@ -409,10 +410,10 @@ partners_dicts.append(structure2_partners_dict)
 set(partners_dicts[0].keys()).symmetric_difference(set(partners_dicts[1].keys()))
 # following gives the residues of chain#2 that contribute to one structure not the other
 set(partners_dicts[2].keys()).symmetric_difference(set(partners_dicts[3].keys()))
-# following gives the residues of chai#1 that contribute to structure#1 but not structure #2
+# following gives the residues of chain#1 that contribute to structure#1 but not structure #2
 chain1_res_only_contributing_to_structure1 = (
     set(partners_dicts[0].keys()).difference(set(partners_dicts[1].keys())))
-# following gives the residues of chai#1 that contribute to structure#2 but not structure #1
+# following gives the residues of chain#1 that contribute to structure#2 but not structure #1
 chain1_res_only_contributing_to_structure2 = (
     set(partners_dicts[1].keys()).difference(set(partners_dicts[0].keys())))
 # following gives the residues of chain#2 that contribute to structure#1 but not structure #2
