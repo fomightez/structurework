@@ -14,10 +14,17 @@ __version__ = "0.1.0"
 # differ for a pair of proteins. Among the results are the details of shifts of
 # partners paired that occur for a residue in the two structures. 
 # Note that this script is only concerned with differences that result in 
-# differences at the level of the residue. If specific atom to atom chage or 
-# are lost while the same residues still interact in some way, those SUBTLE 
-# CHANGES WILL NOT BE HIGHLIGHTED here. (To add this I think it would probably
-# be best to do in another related script,see 'to do' for possibility later.)
+# differences at the level of the residue. If the specific atom-to-atom 
+# interactions change or are lost while the same residues still interact in some
+# way, those SUBTLE CHANGES WILL NOT BE HIGHLIGHTED here. (To add this I think 
+# it would probably be best to do in another related script,see 'to do' for 
+# possibility later.)
+# Changes involving interactions with residues that are only observed in one of
+# the structures are not reported as different in the report either. This is 
+# because if this residue is not observed because it is among the 
+# 'Missing Residues' in one structure then it is moot in regards to differences 
+# in interactions between the two structures because cannot accurately say if 
+# altered or not.
 # Needs to work in conjunction with the notebook 
 # `Using PDBsum data to highlight changes in protein-protein interactions.ipynb` 
 # that is presently in https://github.com/fomightez/pdbsum-binder . In fact, the 
@@ -38,6 +45,8 @@ __version__ = "0.1.0"
 #
 #
 # to do: 
+# - for showing all the missing residues, add it making an interval for showing
+# in the report so it is much shorter of a list; code is in `has sequence interval ranges intervals overlap related code.md`
 # - Since this script DOES NOT at this time discern if the specific type of 
 # residue-to-residue is different; however, using the dataframe that is used to 
 # collect the interaction partners this could be determined by going through 
@@ -77,7 +86,9 @@ import subprocess
 import pandas as pd
 #from halo import HaloNotebook as Halo
 from IPython.utils import io
-
+from Bio.PDB import *
+from collections import defaultdict
+import uuid 
 
 
 
@@ -97,7 +108,24 @@ def suppress_stdout_stderr():
         with redirect_stderr(fnull) as err, redirect_stdout(fnull) as out:
             yield (err, out)
 
-
+def range_extract(lst):
+    'Yield 2-tuple ranges or 1-tuple single elements from list of increasing'
+    'ints; interval making code modified from' 
+    'https://www.rosettacode.org/wiki/Range_extraction#Python'
+    lenlst = len(lst)
+    i = 0
+    while i< lenlst:
+        low = lst[i]
+        while i <lenlst-1 and lst[i]+1 == lst[i+1]: i +=1
+        hi = lst[i]
+        if hi - low >= 1:    #<---MAIN DIFFERENCE
+            yield (low, hi)
+        else:
+            yield (low,)
+        i += 1
+def ranges_to_text(ranges):
+   return ', '.join( (('%i-%i' % r) if len(r) == 2 else '%i' % r)
+        for r in ranges ) 
 
 
 #######------------------END OF HELPER FUNCTIONS--------------------------######
@@ -141,6 +169,50 @@ if not os.path.isfile(file_needed):
             ".\n**EXITING !!**.\n".format(github_link))
         sys.exit(1)
 
+# GET THE STRUCTURE FILES
+#------------------------------------------------------------------------------#
+# Get the structure files in preparation for checking missing residues.
+pdb_ids = [structure1_pdb_code, structure2_pdb_code]
+files_needed = [pdb_code + ".pdb" for pdb_code in pdb_ids]
+for file_needed in files_needed:
+    if not os.path.isfile(file_needed):
+        from sh import curl
+        curl("-OL","https://files.rcsb.org/download/"+file_needed+".gz")
+        os.system(f"gunzip {file_needed}.gz")
+
+# MINE THE PDB FILES A LIST OF THE RESIDUES MISSING FOR EACH CHAIN OF INTEREST
+#----------------------------------------------------------------------#
+# Collect the missing residues per chain per PDB code id (latter based on 
+# approach worked out for 
+# https://github.com/fomightez/cl_demo-binder/blob/master/notebooks/Using%20Biopython%20PDB%20Header%20Parser%20to%20get%20missing%20residues.ipynb 
+# from my repo https://github.com/fomightez/cl_demo-binder and also used 
+# in code that will be in what will be the script
+# `make_table_of_missing_residues_for_related_PDB_structures.py` [or whatever 
+# actual final name is])
+missing_per_chain_per_id = {} # PDB code will be a key for two dictionaries. For
+# the two dictionaries, chain designations will be keys and for each key the 
+# value associated will be a list of missing residues for the corresponding 
+# chain with that designation.
+for pdb_code in pdb_ids:
+    # get the header
+    h =parse_pdb_header(pdb_code + ".pdb")
+    # for missing residues collecting, first extract information on chains in 
+    # current structure. Note that the addition of `QUIET=True` is based on 
+    # https://biopython.org/docs/1.75/api/Bio.PDB.PDBParser.html to suppress the 
+    # warnings several PDB files were causing.
+    structure = PDBParser(QUIET=True).get_structure(pdb_code, pdb_code + ".pdb")
+    chains = [each.id for each in structure.get_chains()]
+    # Make a dictionary for each chain of interest with value of a list. The 
+    # list will be the list of residue positions collected while iterating in 
+    # missing. Key will be the chain designation.
+    missing_per_chain = defaultdict(list)
+    # go through missing residues and populate each chain's list
+    for residue in h['missing_residues']:
+        if (residue["chain"] in chains):
+            missing_per_chain[residue["chain"]].append(residue["ssseq"])
+    missing_per_chain_per_id[pdb_code] = missing_per_chain
+
+
 # MAKE DATAFRAMES FOR BOTH STRUCTURES AND GENERATE THE PYTHON OBJECTS NEEDED:
 #------------------------------------------------------------------------------#
 #`similarities_in_proteinprotein_interactions.py` does much of what is needed 
@@ -150,10 +222,102 @@ if not os.path.isfile(file_needed):
 # information on approaching it this way. (An overarching reason is I didn't 
 # want to refactor `similarities_in_proteinprotein_interactions.py` since it 
 # works now and will only be getting called by that notebook. So this allows
-# easier continuing develpment.)
+# easier continuing development.)
 sys.stderr.write("\nParsing data files from PDBsum ...\n")
 with suppress_stdout_stderr():
     exec(open("similarities_in_proteinprotein_interactions.py").read())
+
+
+# ACKNOWLEDGE IF RESIDUES MISSING IN INVOLVED CHAINS IN INVOLVED STRUCTURES
+#------------------------------------------------------------------------------#
+# The idea is the user should be reminded of the limits here if parts of 
+# involved chains are missing in either involved chain. FOR NOW THIS ASSUMES
+# THAT A PROTEIN IN THE TWO STRUCTURES HAVE THE SAME DESIGNATION AND THIS WON'T
+# BE TRUE AND NEED FIXING.
+# First determine if any of the four chains, two from each structure are missing
+# residues, becuase if not this section is moot.
+anything_missing = False
+structure1_chain1 = list(unique_tuples_sets[0])[0][0].split(":")[1]
+structure1_chain2 = list(unique_tuples_sets[0])[0][1].split(":")[1]
+structure2_chain1 = list(unique_tuples_sets[1])[0][0].split(":")[1]
+structure2_chain2 = list(unique_tuples_sets[1])[0][1].split(":")[1]
+
+missing_in_structure1_chain1 = set(
+    missing_per_chain_per_id[structure1_pdb_code][structure1_chain1]) # see 
+# `chain1_designation_rep` in the similarity script
+missing_in_structure1_chain2 = set(
+    missing_per_chain_per_id[structure1_pdb_code][structure1_chain2]) # see 
+# `chain2_designation_rep` in the similarity script
+missing_in_structure2_chain1 = set(
+    missing_per_chain_per_id[structure2_pdb_code][structure2_chain1])
+missing_in_structure2_chain2 = set(
+    missing_per_chain_per_id[structure1_pdb_code][structure2_chain2])
+# Since 'chain1' should be the same structure, I don't want to call any 
+# 'differences' that involved any of those residues so I should combine them to 
+# make a set for filtering those out of the  putative difference lists.
+# Similarly, for 'chain2'
+missing_in_chain1 = (list(missing_in_structure1_chain1 )+
+    list(missing_in_structure2_chain1))
+missing_in_chain2 = (list(missing_in_structure1_chain2) +
+    list(missing_in_structure2_chain2))
+missing_in_chain1 = list(set(missing_in_chain1))
+missing_in_chain2 = list(set(missing_in_chain2))
+# since lists are boolean, make a list of all for testing if any missing
+missing = missing_in_chain1 + missing_in_chain2
+if missing:
+    anything_missing = True
+
+# Report if either chain in either structure has missing residues. Skip this 
+# section entirely if neither chain in neither structure has anything missing.
+if anything_missing:
+    string_for_missing_preamble = ""
+    # If both chains contain the same list of missing residues, report that list
+    # here stating nothing will be said in regards to these residues.
+
+    # Use sets to see if missing for protein chain1 designation in structure1 is 
+    # same as missing for chain1 designation in structure2. Then same for 
+    # missing for protein chain2 designation in structure1 is 
+    # same as missing for chain2 designation in structure2. Because if all same
+    # is missing say residues are missing in appropriate chains but that same 
+    # ones are not observed so no effect on apparent differences.
+    if (missing_in_structure1_chain1 == missing_in_structure2_chain1) and (
+        missing_in_chain1):
+        string_for_missing_preamble += ("\nChain {} in both structures is missing"
+            " the same residues:".format(chain1_designation_rep))
+        string_for_missing_preamble += "\n"+ranges_to_text(range_extract(
+            sorted(list(missing_in_structure1_chain1))))
+    elif missing_in_chain1:
+        if list(missing_in_structure1_chain1):
+            string_for_missing_preamble += ("\nChain {} in {} is missing"
+                " the residues:".format(structure1_chain1,structure1_pdb_code))
+            string_for_missing_preamble += "\n"+ranges_to_text(range_extract(
+            sorted(list(missing_in_structure1_chain1))))
+        if list(missing_in_structure2_chain1):
+            string_for_missing_preamble += ("\nChain {} in {} is missing"
+                " the residues:".format(structure2_chain1,structure2_pdb_code))
+            string_for_missing_preamble += "\n"+ranges_to_text(range_extract(
+            sorted(list(missing_in_structure2_chain1))))
+    if (missing_in_structure1_chain2 == missing_in_structure2_chain2) and (
+        missing_in_chain2):
+        string_for_missing_preamble += ("\nChain {} in both structures is missing"
+            " the same residues:".format(chain2_designation_rep))
+        string_for_missing_preamble += "\n"+ranges_to_text(range_extract(
+            sorted(list(missing_in_structure1_chain2))))
+    elif missing_in_chain2:
+        if list(missing_in_structure1_chain2):
+            string_for_missing_preamble += ("\nChain {} in {} is missing"
+                " the residues:".format(structure1_chain2,structure1_pdb_code))
+            string_for_missing_preamble += "\n"+ranges_to_text(range_extract(
+                sorted(list(missing_in_structure1_chain2))))
+        if list(missing_in_structure2_chain2):
+            string_for_missing_preamble += ("\nChain {} in {} is missing"
+                " the residues:".format(structure2_chain2,structure2_pdb_code))
+            string_for_missing_preamble += "\n"+ranges_to_text(range_extract(
+                sorted(list(missing_in_structure2_chain2))))
+    string_for_missing_preamble += ("\nNothing more will be said in regards to "
+        "these 'Missing residues' in this report\nbecause determining whether "
+        "they are involved in different interactions\nis moot.\n")
+
 
 
 # GET INTERACTION PAIRS WITH BOTH RESIDUES ENTIRELY UNIQUE TO EACH STRUCTURE
@@ -166,7 +330,7 @@ with suppress_stdout_stderr():
 # entirely unique to each structure' is key, with the emphasis on 'ENTIRELY'.
 # Maybe describe in report as 
 # `residue pairings where both members exclusively interact only in structure #1` 
-# for structure1 with list of tupes following & similar working before list of 
+# for structure1 with list of tuples following & similar working before list of 
 # tuples for structure 2.
 sys.stderr.write("\nCollecting differences for chain vs chain interactions "
     "in the two structures ...\n")
@@ -189,6 +353,13 @@ interaction_pairs_with_both_residues_entirely_unique_to_structure1 = []
 for t in unique_tuples_sets[0]:
     left_side_of_tuple = int(t[0].split(":")[0])
     right_side_of_tuple = int(t[1].split(":")[0])
+    # if either is among the 'missing residues', skip the rest because don't 
+    # want this pair because may only be unique in one structure because both
+    # not seen in  the other structure
+    if left_side_of_tuple in missing_in_chain1:
+        continue
+    if right_side_of_tuple in missing_in_chain2:
+        continue
     left_side_residue_in_structure2 = (
         left_side_of_tuple in chain1_res_in_structure2)
     right_side_residue_in_structure2 = (
@@ -202,6 +373,13 @@ interaction_pairs_with_both_residues_entirely_unique_to_structure2 = []
 for t in unique_tuples_sets[1]:
     left_side_of_tuple = int(t[0].split(":")[0])
     right_side_of_tuple = int(t[1].split(":")[0])
+    # if either is among the 'missing residues', skip the rest because don't 
+    # want this pair because may only be unique in one structure because both
+    # not seen in the other structure
+    if left_side_of_tuple in missing_in_chain1:
+        continue
+    if right_side_of_tuple in missing_in_chain2:
+        continue
     left_side_residue_in_structure1 = (
         left_side_of_tuple in chain1_res_in_structure1)
     right_side_residue_in_structure1 = (
@@ -216,13 +394,29 @@ for t in unique_tuples_sets[1]:
 #------------------------------------------------------------------------------#
 # In the script `similarities_in_proteinprotein_interactions.py`, I noted 
 # several sets that spell out residues of chains that contribute to one 
-# structure and not the other. So have already been collected when that was run
-# silently here. Pertinent variables yielded:
+# structure and not the other. So have already been collected UNFILTERED when 
+# that was run silently here. Pertinent variables yielded:
 # chain1_res_only_contributing_to_structure1
 # chain1_res_only_contributing_to_structure2
 # chain2_res_only_contributing_to_structure1
 # chain2_res_only_contributing_to_structure2
-
+# I ADDED 'UNFILTERED' IN NOTE ABOVE BECAUSE NEED TO FILTER OUT ANY WHERE ONLY 
+# APPEARS TO BE CONTRIBUTING IN ONE STRUCTURE AND NOT THE OTHER BECAUSE NOT 
+# RESOLVED IN THE OTHE STRUCTURE. Remove the 'missing residues', if any, from
+# consideration in those.
+if anything_missing:
+    chain1_res_only_contributing_to_structure1 = (
+        chain1_res_only_contributing_to_structure1.difference(
+        set(missing_in_chain1)))
+    chain1_res_only_contributing_to_structure2 = (
+        chain1_res_only_contributing_to_structure2.difference(
+        set(missing_in_chain1)))
+    chain2_res_only_contributing_to_structure1 = (
+        chain2_res_only_contributing_to_structure1.difference(
+        set(missing_in_chain2)))
+    chain2_res_only_contributing_to_structure2 = (
+        chain2_res_only_contributing_to_structure2.difference(
+        set(missing_in_chain2)))
 
 # ASSEMBLE DETAILS ON SHIFTS IN RESIDUE PARTNERS FOR SAME RESIDUE BETWEEN THE 
 # DIFFERENT STRUCTURES
@@ -247,6 +441,14 @@ for i in chain2_shifted_res:
 #------------------------------------------------------------------------------#
 sys.stderr.write("\nDetermination of DIFFERENCES Completed.\n\n"
     "************************RESULTS************************")
+if anything_missing:
+    sys.stderr.write("\n"+string_for_missing_preamble)
+    '''
+    sys.stderr.write("\nBecause assessment of differences is moot if a residue "
+        "is not resolved in one structure, no calls of differences are made "
+        "here for any residue position occuring among the 'Missing Residues' "
+        "category for a protein chain.\n")
+    '''
 sys.stderr.write("\nThe following are residue pairings where both members "
     "exclusively\n"
     "interact only in " +structure1_pdb_code+" :")
@@ -260,26 +462,26 @@ for i in interaction_pairs_with_both_residues_entirely_unique_to_structure2:
 
 
 
-sys.stderr.write("\n\nThe following residues of chain "+chain1_designation+
-    " contribute only to interactions\nwith chain "+chain2_designation+" in "
+sys.stderr.write("\n\nThe following residues of chain "+chain1_designation_rep+
+    " contribute only to interactions\nwith chain "+chain2_designation_rep+" in "
     +structure1_pdb_code+":")
 for i in chain1_res_only_contributing_to_structure1:
     sys.stderr.write("\n"+str(i))
 
-sys.stderr.write("\nThe following residues of chain "+chain1_designation+
-    " contribute only to interactions\nwith chain "+chain2_designation+" in "
+sys.stderr.write("\nThe following residues of chain "+chain1_designation_rep+
+    " contribute only to interactions\nwith chain "+chain2_designation_rep+" in "
     +structure2_pdb_code+":")
 for i in chain1_res_only_contributing_to_structure2:
     sys.stderr.write("\n"+str(i))
 
-sys.stderr.write("\nThe following residues of chain "+chain2_designation+
-    " contribute only to interactions\nwith chain "+chain1_designation+" in "
+sys.stderr.write("\nThe following residues of chain "+chain2_designation_rep+
+    " contribute only to interactions\nwith chain "+chain1_designation_rep+" in "
     +structure1_pdb_code+":")
 for i in chain2_res_only_contributing_to_structure1:
     sys.stderr.write("\n"+str(i))
 
-sys.stderr.write("\nThe following residues of chain "+chain2_designation+
-    " contribute only to interaction\nwith chain "+chain1_designation+" in "
+sys.stderr.write("\nThe following residues of chain "+chain2_designation_rep+
+    " contribute only to interaction\nwith chain "+chain1_designation_rep+" in "
     +structure2_pdb_code+":")
 for i in chain2_res_only_contributing_to_structure2:
     sys.stderr.write("\n"+str(i))
@@ -293,17 +495,19 @@ sys.stderr.write("\n\nIf you've previously run the script "
     "in both structures yet have different sets of residue\npartners in both "
     "structures.\nDetails of the shifts in partners follow.")
 sys.stderr.write("\nThe following lists the differing sets of partners for "
-    "residues of chain "+chain1_designation+",\nwith the "
-    "chain "+chain2_designation+" partners in " +
+    "residues of chain "+chain1_designation_rep+",\nwith the "
+    "chain "+chain2_designation_rep+" partners in " +
     structure1_pdb_code+" followed by those in "+structure2_pdb_code+":")
 for k,v in chain1_shifts_dict.items():
     sys.stderr.write("\n"+str(k)+": "+str(v[0])+", "+str(v[1]))
 sys.stderr.write("\nThe following lists the differing sets of partners for "
-    "residues of chain "+chain2_designation+",\nwith the "
-    "chain "+chain1_designation+" partners in " +
+    "residues of chain "+chain2_designation_rep+",\nwith the "
+    "chain "+chain1_designation_rep+" partners in " +
     structure1_pdb_code+" followed by those in "+structure2_pdb_code+":")
 for k,v in chain2_shifts_dict.items():
     sys.stderr.write("\n"+str(k)+": "+str(v[0])+", "+str(v[1]))
+
+#delete the retrieved PDB file that was used to check missing residues.
 
 
 #######------------------END OF MAIN SECTION------------------------------######
