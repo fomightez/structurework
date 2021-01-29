@@ -202,7 +202,7 @@ def handle_pickling_the_dataframe(df, pickle_df,df_save_as_name):
         "Python programs can access it (pickled form).\n"
         "RESULTING DATAFRAME is stored as ==> '{}'".format(df_save_as_name ))
 
-def handle_returning_the_dataframe_and_info(
+def arrange_returning_the_dataframe_and_info(
     df,pdb_code_id,return_df,return_pdb_code):
     '''
     Was at end but moved to a function because will be used when 'empty' data
@@ -270,8 +270,10 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
         # https://stackoverflow.com/a/30053507/8508004
         df['type'] = np.nan
         handle_pickling_the_dataframe(df, pickle_df,df_save_as_name)
-        handle_returning_the_dataframe_and_info(
-            df,pdb_code_id,return_df,return_pdb_code)
+        if return_df:
+            returned = arrange_returning_the_dataframe_and_info(
+                df,pdb_code_id,return_df,return_pdb_code)
+            return returned
         sys.exit(0)
 
     # Split each type of section for parsing:
@@ -454,7 +456,7 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
     # Return dataframe and pdb code(options)
     #---------------------------------------------------------------------------
     if return_df:
-        returned = handle_returning_the_dataframe_and_info(
+        returned = arrange_returning_the_dataframe_and_info(
             df,pdb_code_id,return_df,return_pdb_code)
         return returned
     
