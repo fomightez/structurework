@@ -259,8 +259,8 @@ dfs = [structure1_df, structure2_df]
 # as well using Jmol convention since is familiar to me. So residue 161 of 
 # chain B interacting with residue 3371 of chain K would be the following tuple:
 # (161:B,3371:K)
-sys.stderr.write("\nCollecting similarities for chain vs chain interactions "
-    "in the two structures ...\n")
+sys.stderr.write("\nCollecting similarities for interactions between the two "
+    "chains\nin the two structures ...\n")
 dfs_with_extra_column = []
 for df in dfs:
     df['partner_residues'] = df[['Atom1 Res no.','Atom1 Chain',
