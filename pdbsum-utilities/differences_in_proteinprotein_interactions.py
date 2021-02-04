@@ -373,7 +373,7 @@ for t in unique_tuples_sets[0]:
     if (not left_side_residue_in_structure2) and (
         not right_side_residue_in_structure2):
         if (
-            t not in interaction_pairs_with_both_residues_entirely_unique_to_structure1) and (str(t) != "(0:NA, 0:NA)":
+            t not in interaction_pairs_with_both_residues_entirely_unique_to_structure1) and (str(t) != "('0:NA', '0:NA')"):
             interaction_pairs_with_both_residues_entirely_unique_to_structure1.append(t)
 interaction_pairs_with_both_residues_entirely_unique_to_structure2 = []
 # `unique_tuples_sets[1]` is the set from structure #2
@@ -393,7 +393,7 @@ for t in unique_tuples_sets[1]:
         right_side_of_tuple in chain2_res_in_structure1)
     if (not left_side_residue_in_structure1) and (
         not right_side_residue_in_structure1):
-        if (t not in interaction_pairs_with_both_residues_entirely_unique_to_structure2) and (str(t) != "(0:NA, 0:NA)" :
+        if (t not in interaction_pairs_with_both_residues_entirely_unique_to_structure2) and (str(t) != "('0:NA', '0:NA')"):
             interaction_pairs_with_both_residues_entirely_unique_to_structure2.append(t)
 
 
@@ -428,12 +428,12 @@ if anything_missing:
 # it would flag issues where for some reason a residue actually numbered zero
 # by restricting to cases where length of the dataframe of interactions is only
 # one row and has np.nan.
-if len(dfs[0]) == 1 and dfs[0]["Atom1 no."][0] = np.nan:
+if len(dfs[0]) == 1 and np.isnan(dfs[0]["Atom1 no."][0]):
     chain1_res_only_contributing_to_structure1 = (
         [x for x in chain1_res_only_contributing_to_structure1 if x != 0])
     chain2_res_only_contributing_to_structure1 = (
         [x for x in chain2_res_only_contributing_to_structure1 if x != 0])
-if len(dfs[1]) == 1 and dfs[1]["Atom1 no."][0] = np.nan:
+if len(dfs[1]) == 1 and np.isnan(dfs[1]["Atom1 no."][0]):
     chain1_res_only_contributing_to_structure2 = (
         [x for x in chain1_res_only_contributing_to_structure2 if x != 0])
     chain2_res_only_contributing_to_structure2 = (
