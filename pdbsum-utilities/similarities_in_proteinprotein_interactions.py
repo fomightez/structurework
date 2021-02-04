@@ -447,17 +447,34 @@ for i in the_shared_interactions:
 
 chain1_designation_rep = list(unique_tuples_sets[0])[0][0].split(":")[1]
 chain2_designation_rep = list(unique_tuples_sets[0])[0][1].split(":")[1]
+# However, in cases with 'empty' data, those lines above will produce 'NA' &
+# the real chain designation can be retrieved from the dataframe
+if chain1_designation_rep == "NA":
+    chain1_designation_rep = dfs[0]["Atom1 Chain"][0] #0index at end gets string
+if chain2_designation_rep == "NA":
+    chain2_designation_rep = dfs[0]["Atom2 Chain"][0]#0index at end gets string
 # The 'first' chain in structure #1 and structure #2 can have different 
 # designations and still be the same proteins & so in those cases I'm going to
 # have the 'first' chain represented by structure1 designation separated by a 
 # forward slash from structure2 sdesignation, like `R/C`. Same for 'second' 
 #chain.
+# Additionally, similarly to just above, the cases with 'empty' data, the 
+# default steps below produce '/NA' for the last half of the representation & 
+# the real chain designation can be retrieved from the dataframe.
 if chain1_designation_rep != list(unique_tuples_sets[1])[0][0].split(":")[1]:
-    chain1_designation_rep += "/{}".format(
-        list(unique_tuples_sets[1])[0][0].split(":")[1])
+    if list(unique_tuples_sets[1])[0][0].split(":")[1] == "NA":
+        if chain1_designation_rep != dfs[1]["Atom1 Chain"][0]:
+            chain1_designation_rep += "/{}".format(dfs[1]["Atom1 Chain"][0])
+    else:
+        chain1_designation_rep += "/{}".format(
+            list(unique_tuples_sets[1])[0][0].split(":")[1])
 if chain2_designation_rep != list(unique_tuples_sets[1])[0][1].split(":")[1]:
-    chain2_designation_rep += "/{}".format(
-        list(unique_tuples_sets[1])[0][1].split(":")[1])
+    if list(unique_tuples_sets[1])[0][1].split(":")[1] == "NA":
+        if chain2_designation_rep != dfs[1]["Atom2 Chain"][0]:
+            chain2_designation_rep += "/{}".format(dfs[1]["Atom2 Chain"][0])
+    else:
+        chain2_designation_rep += "/{}".format(
+            list(unique_tuples_sets[1])[0][1].split(":")[1])
 sys.stderr.write("\n\nThe following residues of chain "+chain1_designation_rep+
     " contribute to interactions with\nchain "+chain2_designation_rep+
     " in both structures " +structure1_pdb_code+" & "+structure2_pdb_code+","
