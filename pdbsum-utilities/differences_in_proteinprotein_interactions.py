@@ -333,8 +333,8 @@ if anything_missing:
 # `residue pairings where both members exclusively interact only in structure #1` 
 # for structure1 with list of tuples following & similar working before list of 
 # tuples for structure 2.
-sys.stderr.write("\nCollecting differences for chain vs chain interactions "
-    "in the two structures ...\n")
+sys.stderr.write("\nCollecting differences for interactions between the two "
+    "chains\nin the two structures ...\n")
 # Need a list of residues from each structure, from each chain; so four 
 # lists total. Make integers so can easily use elsewhere if I want.
 #left side residues (chain#1) from structure1
