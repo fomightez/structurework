@@ -173,7 +173,7 @@ if not os.path.isfile(file_needed):
 # GET THE STRUCTURE FILES
 #------------------------------------------------------------------------------#
 # Get the structure files in preparation for checking missing residues.
-pdb_ids = [structure1_pdb_code, structure2_pdb_code]
+pdb_ids = [structure1, structure2]
 files_needed = [pdb_code + ".pdb" for pdb_code in pdb_ids]
 for file_needed in files_needed:
     if not os.path.isfile(file_needed):
