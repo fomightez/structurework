@@ -260,8 +260,18 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
     # testing handling then), it fails with an error (`IndexError: list index 
     # out of range` at the line of first parsting to assign `most_raw_data`).
     # This section will hopefully now catch those situations and make a
-    # dataframe with the normal column names and one row of Nan while also 
-    # giving feedback.
+    # dataframe with the normal column names and one row of mostly Nan while 
+    # also giving feedback.
+    # Why 'mostly' Nan, in the row? I'm going to add the chain designations 
+    # from the data file as they are in there next to the PDB code at the top
+    # of even an 'empty' one. Normally, in parsing a non-empty one the chains
+    # come out of what is listed in the lines, and so there is no need to 
+    # separately parse the chain designations. Having the chain designations in
+    # the produced dataframe will allow downstream handling to deal with data
+    # from 'empty' interactions data files much more elegantly. Without the
+    # chain designations getting added to the dataframe made for 'empty' data,
+    # I'm seeing representations like `chain NA/C` in the downstream 
+    # 'similarities' reports.
     if len(raw_data_txt.split("\n")) <= 8:
         # feedback
         sys.stderr.write("An 'empty' dataframe has been made as there "
@@ -269,6 +279,9 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
         df = pd.DataFrame(np.nan, index=[0], columns=column_names) # based on 
         # https://stackoverflow.com/a/30053507/8508004
         df['type'] = np.nan
+        chain_info_txt =raw_data_txt.split(pdb_code_delimiter,1)[1]
+        df['Atom1 Chain'] = chain_info_txt.split("Chains ",1)[1].split()[0]
+        df['Atom2 Chain'] = chain_info_txt.split("}{ ",1)[1].split()[0]
         handle_pickling_the_dataframe(df, pickle_df,df_save_as_name)
         if return_df:
             returned = arrange_returning_the_dataframe_and_info(
