@@ -437,7 +437,7 @@ if len(dfs[1]) == 1 and np.isnan(dfs[1]["Atom1 no."][0]):
     chain1_res_only_contributing_to_structure2 = (
         [x for x in chain1_res_only_contributing_to_structure2 if x != 0])
     chain2_res_only_contributing_to_structure2 = (
-        [x for x in chain2_res_only_contributing_to_structure22 if x != 0])
+        [x for x in chain2_res_only_contributing_to_structure2 if x != 0])
 # ASSEMBLE DETAILS ON SHIFTS IN RESIDUE PARTNERS FOR SAME RESIDUE BETWEEN THE 
 # DIFFERENT STRUCTURES
 #------------------------------------------------------------------------------#
