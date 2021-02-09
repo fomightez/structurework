@@ -64,6 +64,16 @@ Go to my [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) in your bro
 
 The notebook detailing how to use that script, `differences_in_proteinprotein_interactions.py`, can be viewed statically [here](https://nbviewer.jupyter.org/github/fomightez/pdbsum-binder/blob/main/notebooks/Using%20PDBsum%20data%20to%20highlight%20changes%20in%20protein-protein%20interactions.ipynb).
 
+* pdbsum_prot_interface_statistics_to_df.py
+> PDBsum interface statistics table for structure ---> Pandas dataframe of the information in PDBsum interface statistics table
+
+* pdbsum_prot_interface_statistics_comparing_two_structures.py
+> PDBsum interface statistics tables for two structures ---> Pandas dataframe of the information for both structures
+
+The dataframe produced is designed for easier viewing the similarities and changes.
+
+Caveat: It only accounts for the experimental data in each structure. If missing residues are involved in the regions that are different between the two structures than some of the differences will be due to that but this listing doesn't take any of that into account. See 'Missing Residues' for the interesting chains to be sure what is being compared are equivalents.
+
 
 Related
 -------
