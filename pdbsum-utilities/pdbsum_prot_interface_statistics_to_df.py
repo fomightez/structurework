@@ -245,6 +245,20 @@ def get_protein_inter_stats_table(pdb_code):
     # for getting the data  
     HTML_data = soup.find_all("table")[0].find_all("tr")[2:] 
     signals_chain = "/thornton-srv/databases/pdbsum/templates/gif/chain"
+
+    # For some structures there is a note about 'Indented interfaces' that adds
+    # lines below that shouldn't be part of the  table and so this will detect
+    # such cases and truncate the html up to that point and add the proper html
+    # closing so the detection of the lines still works.---------------------##
+    indented_note = '''<b>Note</b>. Indented interfaces in the table are equivalent to the
+      last prior non-indented interface. Equivalent chains are listed below.
+      <br/>'''
+    if indented_note in str(HTML_data):
+        h_data = str(
+            HTML_data)[:str(HTML_data).index(indented_note)] + indented_note
+        h_data = h_data.replace(indented_note,"</td></tr>")
+        HTML_data = BeautifulSoup(h_data,'html.parser') 
+    # End dealing with note about 'Indented interfaces'-----------------------##
       
     for element in HTML_data: 
         sub_data = [] 
