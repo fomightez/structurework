@@ -269,7 +269,7 @@ def pdbsum_prot_interface_statistics_comparing_two_structures(pdb_code1,
     order_at_pdbsum = (['No. of interface residues', 'Interface area (Å2)', 
         'No. of salt bridges', 'No. of disulphide bonds',
         'No. of hydrogen bonds', 'No. of non-bonded contacts'])
-    df.reindex(order_at_pdbsum, axis=1, level=0) #based on
+    df = df.reindex(order_at_pdbsum, axis=1, level=0) #based on
     # https://stackoverflow.com/a/52046294/8508004
     # feedback
     sys.stderr.write("Interface statistics for provided structures read and "
