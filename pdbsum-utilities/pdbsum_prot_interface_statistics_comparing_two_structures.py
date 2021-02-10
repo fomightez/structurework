@@ -222,7 +222,7 @@ def pdbsum_prot_interface_statistics_comparing_two_structures(pdb_code1,
     if not os.path.isfile(file_needed):
         sys.stderr.write("\nObtaining script containing a function to use to "
             "parse the interaction statistics from PDBsum "
-            "...\n")
+            "...")
       # based on http://amoffat.github.io/sh/
         from sh import curl
         curl("-OL",
