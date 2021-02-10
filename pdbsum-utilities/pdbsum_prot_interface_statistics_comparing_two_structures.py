@@ -240,7 +240,7 @@ def pdbsum_prot_interface_statistics_comparing_two_structures(pdb_code1,
 
     # MAKE DATAFRAMES FOR BOTH STRUCTURES:
     #--------------------------------------------------------------------------#
-    sys.stderr.write("\nParsing interaction statistics from PDBsum ...\n")
+    sys.stderr.write("Parsing interaction statistics from PDBsum ...\n")
     with suppress_stdout_stderr():
         structure1_df = pdbsum_prot_interface_statistics_to_df(pdb_code1, 
             pickle_df=False)
