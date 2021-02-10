@@ -275,10 +275,10 @@ def pdbsum_prot_interface_statistics_comparing_two_structures(pdb_code1,
     sys.stderr.write("Interface statistics for provided structures read and "
         "converted to a single dataframe...")
 
-    sys.stderr.write("\nKeep in mind this only compares portions in the "
+    sys.stderr.write("\n\nKeep in mind this only compares portions in the "
         "structure "
         "for which there was experimental data.\nYou'll want to explore the "
-        "'Missing Residues' of any chains of interest.")
+        "'Missing Residues' of any chains of interest.\n")
 
 
     # Reporting and Saving
@@ -301,7 +301,7 @@ def pdbsum_prot_interface_statistics_comparing_two_structures(pdb_code1,
     # Return dataframe and pdb code(options)
     #---------------------------------------------------------------------------
     if return_df:
-        sys.stderr.write("\n\nReturning a dataframe with the information "
+        sys.stderr.write("\nReturning a dataframe with the information "
             "as well.")
         return df
     
