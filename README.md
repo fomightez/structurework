@@ -34,4 +34,6 @@ Related non-Python tips
 Related resources by others
 ---------------------------
 
-[rna-tools (previously rna-pdb-tools): a toolbox to analyze sequences, structures and simulations of RNA](https://github.com/mmagnus/rna-tools/blob/master/index-of-tools.md)
+- [rna-tools (previously rna-pdb-tools): a toolbox to analyze sequences, structures and simulations of RNA](https://github.com/mmagnus/rna-tools/blob/master/index-of-tools.md)
+
+- [PDBrenum: A webserver and program providing PDB renumbered according to their UniProt sequences](http://dunbrack3.fccc.edu/PDBrenum/). The [associated scientific article](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0253411). The [Announcement](https://twitter.com/RolandDunbrack/status/1412675616156098562).
