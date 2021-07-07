@@ -6,6 +6,8 @@ A set of Jupyter notebooks that include demonstrations of all these scripts is l
 
 Among this set of tools are several meant to facilitate highlighting differences & similarities in protein-protein interactions of the same protein pairs in different, related complexes. For example, several of these scripts aid in highlighting differences & similarities in protein-protein interactions when comparing macromolecular structures solved with different ligands or substrates or when comparing structures that share subsets of the same protein components. 
 
+Be sure to see the 'Related' seciton below, as some of these utility scripts (or the ideas behind them) are also used to layer on structure information to equivalent residues and conservation.
+
 
 # The scripts
 
@@ -78,4 +80,4 @@ Caveat: It only accounts for the experimental data in each structure. If missing
 Related
 -------
 
-- ?
+- The path to getting the interaction details between two chains from PDBsum data shown in the related series of demo notebooks available at [pdbsum-binder)](https://github.com/fomightez/pdbsum-binder) gets used in the pipeline for the notebook [Report if residues interacting with a specific chain have equivalent residues in an hhsuite-generated alignment](https://nbviewer.jupyter.org/github/fomightez/hhsuite3-binder/blob/main/notebooks/Report%20if%20residues%20interacting%20with%20a%20specific%20chain%20have%20equivalent%20residues%20in%20an%20hhsuite-generated%20alignment.ipynb) that can be run in launches from the [hhsuite3-binder](https://github.com/fomightez/hhsuite3-binder). There is a version built on that which uses snakemake to process several combinations of structures and chains all once and make a report for each desired pair that also relies on this path.
