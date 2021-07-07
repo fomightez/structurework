@@ -17,6 +17,10 @@ Collection of links to launchable Jupyter environment where various structure/fu
 
 - [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) - launchable, working Jupyter-based environment that has a collection of demonstrations of my useful resources for analyzing data from [PDBsum](http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=index.html). The [pdbsum-utilities sub-folder in this repo](https://github.com/fomightez/structurework/tree/master/pdbsum_utilities) is related as it host many of the scripts and code backing the data analyses.
 
+- [pymol-binder](https://github.com/fomightez/pymol-binder)
+
+- [Python_basics_on_PDB_file](https://github.com/fomightez/Python_basics_on_PDB_file)
+
 
 Related 'Docker-ized' Utilities
 -------
