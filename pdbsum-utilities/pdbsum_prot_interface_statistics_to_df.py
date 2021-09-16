@@ -228,7 +228,7 @@ def get_protein_inter_stats_table(pdb_code):
         except: 
             continue
     # Do a few steps to actually clean up the column names in the header 
-    # for some reaons the salt briges column name comes out from beautifulsoup
+    # for some reason the salt briges column name comes out from beautifulsoup
     # without space between`salt` and `of`. This fixes:
     list_header = [x.replace("ofsalt","of salt") for x in list_header]
     list_header = [x.replace("\xa0"," ") for x in list_header] #remove line
