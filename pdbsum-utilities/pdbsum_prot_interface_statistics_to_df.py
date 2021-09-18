@@ -29,9 +29,7 @@ __version__ = "0.1.0"
 #
 #
 # Written to run from command line or imported into/pasted/loaded inside a 
-# Jupyter notebook cell. When doing in Jupyter (or IPython, I believe) you can 
-# skip the file save intermediate, see https://git.io/Jtfon for these advanced 
-# examples.
+# Jupyter notebook cell. 
 #
 #
 #
