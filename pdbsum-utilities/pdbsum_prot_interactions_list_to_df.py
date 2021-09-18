@@ -29,9 +29,8 @@ __version__ = "0.1.0"
 #
 #
 # Written to run from command line or imported into/pasted/loaded inside a 
-# Jupyter notebook cell. When doing in Jupyter (or IPython, I believe) you can 
-# skip the file save intermediate, see https://git.io/Jtfon for these advanced 
-# examples.
+# Jupyter notebook cell.
+#
 #
 #
 #
@@ -235,7 +234,7 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
 
     Adapted from the main function in `blast_to_df.py`
     '''
-    # These few varibales needs to be available early for 'empty' data files 
+    # These few variables needs to be available early for 'empty' data files 
     # where there was no interaction between those chains
     column_names = (['Atom1 no.', 'Atom1 name', 'Atom1 Res name', 
         'Atom1 Res no.', 'Atom1 Chain', 'Atom2 no.', 'Atom2 name', 
@@ -446,7 +445,8 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
         
 
     # feedback
-    sys.stderr.write("Provided interactions data read and converted to a dataframe...")
+    sys.stderr.write(
+        "Provided interactions data read and converted to a dataframe...")
 
 
     # Reporting and Saving
