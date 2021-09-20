@@ -392,7 +392,7 @@ def pdbsum_prot_interactions_list_to_df(data_file, return_df = True,
         list(sections[0].values())[0]),header=[0,1], delim_whitespace = True) # 
     # So the issue is that `Atom` and `Res` abbreviations are on top line of 
     # table with specific properties related on second line so far using 
-    # https://stackoverflow.com/q/41005577/8508004 to make multinidex and then 
+    # https://stackoverflow.com/q/41005577/8508004 to make multiindex and then 
     # using the join based on https://stackoverflow.com/a/46357204/8508004; note 
     # that this was not working with `pd.read_table()` because it was just 
     # reading the two rows as two strings; fortunately, I read 
