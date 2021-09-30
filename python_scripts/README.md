@@ -152,10 +152,10 @@ Also see
 Related
 --------
 
-A number of processing of data dealing with PDB files is [available in notebooks launchable from here](https://github.com/fomightez/cl_demo-binder).  
+* A number of processing of data dealing with PDB files is [available in notebooks launchable from here](https://github.com/fomightez/cl_demo-binder).  
 For example, there is a demo of code to split out the chains of a multi-chain PDB file in a notebook that is [available in active form from here](https://github.com/fomightez/cl_demo-binder). Go there and then when the session launches, press 'launch binder' and select the notebook [Split PDB files into chain](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/notebooks/Split%20pdb%20files%20into%20chains.ipynb).
 
-see [Dockerfiles for Structural Analysis (Structural Bioinformatics) Docker images](https://github.com/fomightez/Dockerfiles#dockerfiles-for-structural-analysis-structural-bioinformatics-docker-images).
+* see [Dockerfiles for Structural Analysis (Structural Bioinformatics) Docker images](https://github.com/fomightez/Dockerfiles#dockerfiles-for-structural-analysis-structural-bioinformatics-docker-images).
 
 Related resources by others
 --------
