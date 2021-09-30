@@ -6,7 +6,7 @@ A set of Jupyter notebooks that include demonstrations of all these scripts is l
 
 Among this set of tools are several meant to facilitate highlighting differences & similarities in protein-protein interactions of the same protein pairs in different, related complexes. For example, several of these scripts aid in highlighting differences & similarities in protein-protein interactions when comparing macromolecular structures solved with different ligands or substrates or when comparing structures that share subsets of the same protein components. 
 
-Be sure to see the 'Related' seciton below, as some of these utility scripts (or the ideas behind them) are also used to layer on structure information to equivalent residues and conservation.
+Be sure to see the 'Related' section below, as some of these utility scripts (or the ideas behind them) are also used to layer on structure information to equivalent residues and conservation.
 
 
 # The scripts
