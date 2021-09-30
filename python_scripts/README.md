@@ -2,6 +2,8 @@
 
 **Python scripts by Wayne Decatur for working with biological structure data.**
 
+Be sure to **also see the 'Related' section below, as some of processing of PDB files and related data haven't been made into stand-alone scripts but are useful** for working with PDB files and related structure information.
+
 - multiple_model_PDB_file_splitter.py
 
 >Takes a formatted pdb file with multiple models and splits each model into individual files. You specify the file with multiple models in the call to the program.
@@ -149,6 +151,9 @@ Also see
 
 Related
 --------
+
+A number of processing of data dealing with PDB files is [available in notebooks launchable from here](https://github.com/fomightez/cl_demo-binder).  
+For example, there is a demo of code to split out the chains of a multi-chain PDB file in a notebook that is [available in active form from here](https://github.com/fomightez/cl_demo-binder). Go there and then when the session launches, press 'launch binder' and select the notebook [Split PDB files into chain](https://nbviewer.jupyter.org/github/fomightez/cl_demo-binder/blob/master/notebooks/Split%20pdb%20files%20into%20chains.ipynb).
 
 see [Dockerfiles for Structural Analysis (Structural Bioinformatics) Docker images](https://github.com/fomightez/Dockerfiles#dockerfiles-for-structural-analysis-structural-bioinformatics-docker-images).
 
