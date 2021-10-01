@@ -18,6 +18,8 @@ Takes PDBsum data for protein-protein interactions and makes a dataframe from it
 
 Verified compatible with both Python 2.7 and Python 3.8.
 
+PDBsum data for protein-protein interactions comes from under the 'Prot-prot' tab at PDBsum.
+
 Written to run from command line or pasted/loaded inside a Jupyter notebook cell.  
 The main ways to run the script are demonstrated in the notebook `Working with PDBsum in Jupyter Basics.ipynb` that can be found when sessions are launched from [here](https://github.com/fomightez/pdbsum-binder).
 
@@ -47,6 +49,8 @@ See [here](https://github.com/fomightez/pdbsum-binder) for notebooks demonstrati
 Takes PDBsum data for ligand-protein chain interactions and makes a dataframe from it for use with Python.
 
 Verified compatible with both Python 2.7 and Python 3.8.
+
+PDBsum data involving ligands comes from under the 'Ligands' tab at PDBsum.
 
 Written to run from command line or pasted/loaded inside a Jupyter notebook cell.  
 The main ways to run the script are demonstrated in the notebook `Working with PDBsum in Jupyter Basics.ipynb` that can be found when sessions are launched from [here](https://github.com/fomightez/pdbsum-binder).
