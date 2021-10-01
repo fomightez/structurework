@@ -95,7 +95,8 @@ df
 #
 # For testing, use these PDBsum data in addition to ones I was using at the time 
 # because these cover more of a range of complexity:
-#from 6KIZ Cryo-EM structure of human MLL1-NCP complex, binding mode2
+#from 6KIZ Cryo-EM structure of human MLL1-NCP complex, binding mode2, 
+# prot-prot tab in PDBsum
 #http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetIface.pl?pdb=6kiz&chain1=C&chain2=G
 #http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetIface.pl?pdb=6kiz&chain1=B&chain2=N
 #http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetIface.pl?pdb=6kiz&chain1=C&chain2=E
@@ -521,8 +522,8 @@ if __name__ == "__main__" and '__file__' in globals():
     import argparse
     parser = argparse.ArgumentParser(prog='pdbsum_prot_interactions_list_to_df.py',
         description="pdbsum_prot_interactions_list_to_df.py \
-        Takes a list of protein-protein interactions from PDBsum and brings it \
-        into Python as a dataframe and \
+        Takes the text of a list of protein-protein interactions from PDBsum & \
+        brings it into Python as a dataframe and \
         saves a file of that dataframe for use elsewhere. Optionally, it can \
         also return that dataframe for use inside a Jupyter notebook. \
         Meant to be a utility script for working \
