@@ -41,6 +41,36 @@ df =pdsum_prot_interactions_list_to_df('data.txt')
 See [here](https://github.com/fomightez/pdbsum-binder) for notebooks demonstrating use within a Jupyter notebook; click `launch binder` to launch a session that will allow you to use the notebooks from there.
 
 
+* pdbsum_ligand_interactions_list_to_df.py
+> PDBsum data for ligand-protein chain interactions --> dataframe of data for use in Python
+
+Takes PDBsum data for ligand-protein chain interactions and makes a dataframe from it for use with Python.
+
+Verified compatible with both Python 2.7 and Python 3.8.
+
+Written to run from command line or pasted/loaded inside a Jupyter notebook cell.  
+The main ways to run the script are demonstrated in the notebook `Working with PDBsum in Jupyter Basics.ipynb` that can be found when sessions are launched from [here](https://github.com/fomightez/pdbsum-binder).
+
+
+Example calls to run the `pdbsum_ligand_interactions_list_to_df.py` script from command line:
+```
+python pdbsum_ligand_interactions_list_to_df.py data.txt
+```
+
+(Alternatively, upload the script to a Jupyter environment and use `%run pdbsum_ligand_interactions_list_to_df.py data.txt` in a Python-backed notebook to run the example.)
+
+
+
+#### For running in a Jupyter notebook:
+
+To use this script after pasting or loading into a cell in a Jupyter notebook, in the next cell define the URL and then call the main function similar to below:
+```
+import pdbsum_ligand_interactions_list_to_df from pdbsum_ligand_interactions_list_to_df
+df =pdbsum_ligand_interactions_list_to_df('data.txt')
+```
+See [here](https://github.com/fomightez/pdbsum-binder) for notebooks demonstrating use within a Jupyter notebook; click `launch binder` to launch a session that will allow you to use the notebooks from there.
+
+
 * pdb_code_to_prot_prot_interactions_via_PDBsum.py
 > PDB code --> list of pairs of interacting protein chain designations in the structure fetched vis PDBsum
 
