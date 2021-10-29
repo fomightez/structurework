@@ -41,3 +41,10 @@ Related resources by others
 - [rna-tools (previously rna-pdb-tools): a toolbox to analyze sequences, structures and simulations of RNA](https://github.com/mmagnus/rna-tools/blob/master/index-of-tools.md)
 
 - [PDBrenum: A webserver and program providing PDB renumbered according to their UniProt sequences](http://dunbrack3.fccc.edu/PDBrenum/). The [associated scientific article](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0253411) shows how to run it as a Python script in detail. The [Announcement](https://twitter.com/RolandDunbrack/status/1412675616156098562).
+
+- [Converters provided by GEMMI tools in web browser via web assembly](https://project-gemmi.github.io/wasm/) - site can do (More about [Gemmi here](https://github.com/project-gemmi/gemmi)):
+    - PDB ➜ mmCIF
+    - mmCIF ➜ PDB
+    - mmCIF ➜ MTZ
+    - MTZ ➜ mmCIF
+    - 2 × data files ➜ mmCIF (deposition-ready)
