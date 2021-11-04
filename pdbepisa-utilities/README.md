@@ -4,9 +4,7 @@ Utility scripts for working with data from [PDBePISA](https://www.ebi.ac.uk/pdbe
 
 A set of Jupyter notebooks that include demonstrations of all these scripts is launchable in active form right in your browser is at my [pdbepisa-binder repo](https://github.com/fomightez/pdbepisa-binder). Just go [there](https://github.com/fomightez/pdbepisa-binder) and click the `launch binder` badge to get started.
 
-Among this set of tools are several meant to facilitate highlighting differences & similarities in protein-protein interactions of the same protein pairs in different, related complexes. For example, several of these scripts aid in highlighting differences & similarities in protein-protein interactions when comparing macromolecular structures solved with different ligands or substrates or when comparing structures that share subsets of the same protein components. 
-
-Be sure to see the 'Related' section below, as some of these utility scripts (or the ideas behind them) are also used to layer on structure information to equivalent residues and conservation.
+Be sure to see the 'Related' section below as well.
 
 
 # The scripts
