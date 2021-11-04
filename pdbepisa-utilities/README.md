@@ -29,7 +29,7 @@ python pisa_interface_list_to_df.py 1trn
 
 (Alternatively, upload the script to a Jupyter environment and use `%run python pisa_interface_list_to_df.py 4fgf` in a Python-backed notebook to run the example.)
 
-**Impoertantly, if a file already exists that is the PDB code followed by `_interface_list.txt`, such as `4fgf_interface_list.txt`, it will use the corresponding file to extract the information instead of obtaining the data from PDBePISA.** This can be used to supply files, perhaps specially edited ones or for structures not yet publised, locally.
+**Importantly, if a file already exists in the working directory that is the PDB code followed by `_interface_list.txt`, such as `4fgf_interface_list.txt`, it will use the corresponding file to extract the information instead of obtaining the data from PDBePISA.** This can be used to supply files locally, perhaps specially edited ones or for structures not yet published.
 
 
 #### For running in a Jupyter notebook:
