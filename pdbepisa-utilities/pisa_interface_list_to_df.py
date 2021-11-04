@@ -2,30 +2,37 @@
 # pisa_interface_list_to_df.py
 __author__ = "Wayne Decatur" #fomightez on GitHub
 __license__ = "MIT"
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 
 # pisa_interface_list_to_df.py by Wayne Decatur
-# ver 0.1
+# ver 0.1.2
 #
 #*******************************************************************************
 # Verified compatible with both Python 2.7 and Python 3.8; written initially in 
 # Python 3. 
 #
 #
-# PURPOSE: Takes a list of inter chain interactions as text from PDBePISA 
-# Interfaces page & brings it into Python as a dataframe and saves a file of 
-# that dataframe for use elsewhere. 
+# PURPOSE: Takes an alphanumeric accession id code for a PDB entry and gets the
+# list of inter-chain interactions as text from PDBePISA Interfaces page, unless
+# that text is provided as a file, & brings it into Python as a dataframe and 
+# saves a file of that dataframe for use elsewhere. 
 # Optionally, it can also return that dataframe for use inside a Jupyter 
 # notebook.
-# First 'word' in the input filename should be the PDB code of the associated data 
-# this is what the script will assume. The 'word' needs to be separated with 
-# space and not other delimiters, such as an underscore.
 # 
-# PDBePISA Interfaces page to collect and save as a text file to use as input 
-# here is the text table on the PDBePISA Interfaces page for a PDB entry. Select 
-# with your mouse the text that begins with `##` through to before the buttons 
-# below it and save that as a text file with a text editor.
+# A user can also provide in the working directory the copied text of a PDBePISA 
+# Interfaces page if it is named with the corresponding accession code id 
+# followed immediately by the suffix listed as 
+# `suffix_for_input_data_file` below. To get the text from the interface page, 
+# select with your mouse the text that begins with `##` through to before the
+# buttons below it & save that as a text file with a text editor with the name 
+# that description would generate. The idea is this gives a way to supply table 
+# content that was previously obtainted or has been edited. This should help
+# if there's any edge cases that don't get processed to a dataframe without 
+# hiccups or if this needs to be used offline. If no such file is provided, the
+# data is obtained from PDBePISA, corresponding to the accession code provided,
+# saved as an intermediate with a name corresponding to that described above &
+# that gets used to generate the corresponding dataframe.
 #
 # This script is meant to be a utility script for working with PDBePISA server
 # and Python, see a demonstration of use in
@@ -39,9 +46,7 @@ __version__ = "0.1.0"
 #
 #
 # Written to run from command line or imported into/pasted/loaded inside a 
-# Jupyter notebook cell. When doing in Jupyter (or IPython, I believe) you can 
-# skip the file save intermediate, see https://git.io/Jtfon for these advanced 
-# examples.
+# Jupyter notebook cell.
 #
 #
 #
@@ -55,24 +60,19 @@ __version__ = "0.1.0"
 #
 #
 # Dependencies beyond the mostly standard libraries/modules:
+# - html2text
+# - rich
 #
 #
 #
 # VERSION HISTORY:
-# v.0.1. basic working version
+# v.0.1.0 basic working version
+# v.0.1.2 now gets data from PDBePISA if not provided & handles crystal 
+#         structure interface lists/reports with symmetry op info
 
 #
 # To do:
-# - update text after "and Python, see a demonstration of use in" to have correct link
-# - reference this script in header documentation of:
-#        - pdbsum_prot_interactions_list_to_df.py
-#        - pdbsum_prot_interface_statistics_comparing_two_structures.py
-#        - pdbsum_prot_interface_statistics_to_df.py
-# - make sure works with Python 2.7 <- sometimes I was lazy during development 
-# used f-strings, & those need to be replaced with string formatting using 
-# `.format()` because Python 2.7 never had f-strings, unless I add the use of 
-# future_fstrings package, see https://stackoverflow.com/a/46182112/8508004
-#
+# - 
 #
 #
 #
@@ -80,12 +80,13 @@ __version__ = "0.1.0"
 # Examples,
 # Enter on the command line of your terminal, the line
 #-----------------------------------
-# python pisa_interface_list_to_df.py <pdb_code> REST_OF_DATA_FILE_NAME
+# python pisa_interface_list_to_df.py <pdb_code>
 #-----------------------------------
 # Issue `pisa_interface_list_to_df.py -h` for details.
 # 
 # More examples from running from the command line are at the links below: 
-# https://XXXXXXX
+# https://github.com/fomightez/structurework/tree/master/pisa-utilities
+# https://github.com/fomightez/pdbepisa-binder
 #
 #
 #
@@ -124,9 +125,13 @@ df
 ##################################
 #
 
+suffix_for_input_data_file = "_interface_list.txt" # the rest of the file name, 
+# after the PDB id code, that the retrieved interface table text will be saved 
+# as an intermediate to be read in tp create the dataframe.
 ## Settings and options for output dataframe-as-file 
 df_save_as_name = 'PISAinterface_summary_pickled_df.pkl' #name for pickled 
 # dataframe file
+
 
 #
 #*******************************************************************************
@@ -150,6 +155,7 @@ df_save_as_name = 'PISAinterface_summary_pickled_df.pkl' #name for pickled
 
 import sys
 import os
+import fnmatch
 import pandas as pd
 import numpy as np
 # I need StringIO so string handled as file document. Also need to deal 
@@ -159,8 +165,11 @@ try:
 except ImportError:
     from io import StringIO
 
+# Try rich for replacing std.err feedback I generally use?
+from rich.console import Console
+console = Console(width=60)
 
-###---------------------------HELPER FUNCTIONS---------------------------------###
+###---------------------------HELPER FUNCTIONS--------------------------------###
 
 def _(row):
     '''
@@ -194,23 +203,157 @@ def type_2_key_and_text_to_value(text,title_underline):
     parts = text.split(title_underline,1)
     return {parts[0].strip():parts[1].strip().replace('<-->','')}
 
+def print_separator_lines_to_console(num_lines=1,skip=0):
+    '''
+    Takes an optional integer as input to be the number of Rich 'rules' or 
+    horizonal lines to print to the console.
+
+    Defaults to 1 line.
+
+    Optionally, you can provide a number of initial colors to skip if you don't
+    like the ones you are seeing come up first.
+    '''
+    import itertools
+    color_list = (['bright_yellow','bright_green','bright_blue','bright_cyan', 
+        'bright_magenta', 'bright_red','yellow','green','blue','cyan' 'magenta', 
+        'red'])
+    color_generator_emitter = itertools.cycle(color_list)
+    if skip:
+        for s in range(skip):
+            next(color_generator_emitter)
+    for x in range(num_lines):
+        console.rule(style=next(color_generator_emitter))
+
+replacement_header = ''' ##      Structure 1     ×   Structure 2     interface 
+ area, Å2    ΔiG 
+ kcal/mol    ΔiG 
+ P-value     NHB     NSB     NDS     CSS 
+ NN      «»      Range   iNat    iNres   Surface Å2      Range   iNat    iNres   Surface Å2 '''
+repl_header_with_sym = ''' ##   Structure 1     ×   Structure 2     interface 
+ area, Å2    ΔiG 
+ kcal/mol    ΔiG 
+ P-value     NHB     NSB     NDS     CSS 
+ NN      «»      Range   iNat    iNres   Surface Å2      Range   Symmetry op-n   Sym.ID      iNat    iNres   Surface Å2 ''' #Even though 
+# this won't get used for makign the dataframe, but baking in the extra 
+# 'Symmetry' columns makes it easy to signal downstream such extra columns are 
+# there & keeps things consistent because it makes what you'd get if you copied 
+# it from the page using your mouse.
+
+def make_data_input_file_name(data_input_file_name):
+    '''
+    Takes the name of the `data_input_file_name` which will begin with the code 
+    id of the corresponding PDB entry and gets from PDBePISA the interface list
+    data for that entry. Then saves that as a file with the provided 
+    `data_input_file_name` string as it's name.
+
+    Doesn't return anything. Just makes the file with the contents of the 
+    interface file in a form that would be the same if the text was copied 
+    directly from the interface list page.
+    '''
+    pdb_code =  data_input_file_name.split("_",1)[0].strip() # it will already
+    # be lowercase when this function is triggered & so that step isn't needed 
+    # here
+    # Use request to get the interface data page as html
+    import urllib.request
+    site_for_retrieving_from = ("http://www.ebi.ac.uk/pdbe/pisa/cgi-bin/"
+        "piserver?qi={}".format(pdb_code))
+    retrieval_string = ("[bold bright_magenta]Retrieving interface list page"
+    " from PDBePISA...")
+    retrieval_string = ("Retrieving interface list page"
+    " from PDBePISA...")
+    with console.status(retrieval_string, 
+        spinner = 'dots12', spinner_style='bold red on white') as status:
+        stream_handle = urllib.request.urlopen(site_for_retrieving_from)
+    extr_string = ("[bold bright_green]Extracting interface list from"
+    " the page..")
+    extr_string = ("Extracting interface list from"
+    " the page..")
+    console.print(extr_string,style="bold red on white")
+    pg_html = stream_handle.read().decode("utf-8") # so it isn't bytes; from 
+    # `find_mito_fungal_lsu_rRNA_and_check_for_omega_intron.py`.
+    # Convert the table contents to text
+    import html2text
+    h = html2text.HTML2Text()
+    h.ignore_links = True
+    page_contents_as_text = h.handle(pg_html)
+    # Parse the raw html to just get the table contents
+    start_delimiter = 'XML    View\nDetails    Download Search'
+    end_delimiter = 'View    Details    Download Search'
+    intrf_tbl_text = page_contents_as_text.split(
+        start_delimiter,1)[1].split(end_delimiter,1)[0]
+    intrf_tbl_text = intrf_tbl_text.replace("`","")
+    # remove the header because formatting that is a nightmare and will be just
+    # easier to swap in one later
+    end_of_header_text = "**  iNres ** | **  Surface Å2 **  \n"
+    main_table_text = intrf_tbl_text.split(end_of_header_text,1)[1]
+    # Adjust the table contents to match closer what would be obtained if copied 
+    # from page by someone using a mouse to highlight the text. This way the 
+    # input for the dataframe will be the same whether retrieved or provided as 
+    # file made from the interface list page by a user.
+    #---------------------------------------------------------------------------
+    # Going from the html to text resuls in the table having the true rows 
+    # broken up with two internal end of line signals and then one at the the 
+    # true end. So this next step split on every end of line signal and stitch 
+    # back together only using each third one so that it just leaves what would 
+    # have been every third end of line before this step, 
+    # based on https://stackoverflow.com/a/25978384/8508004
+    spl = main_table_text.split("\n")
+    raw_tbl_content = "\n".join(
+        ["".join(spl[i:i+3]) for i in range(0,len(spl),3)])
+    # Delimit it with tabs, not '|', like it was when I copied text directly 
+    # from web page.
+    tab_sep_main_table_part = raw_tbl_content.replace("|","\t")
+    # Put the header back. There seems to be two variety of headers. There is
+    # the header like the interface list report page for 6agb has, which I 
+    # suspect is tpyical for cyro-EMs. Then there is also an expanded header 
+    # that has two additional columns 'Symmetry op-n' & 'Sym.ID' in the middle 
+    # section of reports for PDB entries like 4gfg, which I suspect is typical 
+    # for crystal structures.
+    correct_header = replacement_header 
+    if 'Symmetry op-n' in intrf_tbl_text:
+        correct_header = repl_header_with_sym
+    rebuilt_int_tbl_text = correct_header + "\n"+ tab_sep_main_table_part
+    # Save the produced text as a file 
+    with open(data_input_file_name, 'w') as output_file:
+        output_file.write(rebuilt_int_tbl_text)
+    sv_string = ("[bold bright_cyan]Extracted interface list data saved as "
+        "the file '{}'".format(data_input_file_name))
+    sv_string = ("Extracted interface list data saved as the file "
+        "'{}'".format(data_input_file_name))
+    console.print(sv_string,style="bold red on white")
+    #print_separator_lines_to_console(1,skip=2) # moved line adding
+
 def handle_pickling_the_dataframe(df, pickle_df, pdb_code, df_save_as_name):
     '''
     Was at end but moved to a function because will be used when 'empty' data
     provided where no interaction occurs.
     '''
     if pickle_df == False:
+        '''
         sys.stderr.write("\n\nA dataframe of the data "
         "was not stored for use\nelsewhere "
         "because `no_pickling` was specified.")
+        '''
+        nsdf_string = ("A dataframe of the data "
+        "was not stored for use elsewhere "
+        "because `no_pickling` was specified.")
+        console.print(nsdf_string,style="bold red on white")
     else:
         df_save_as_name = pdb_code + "_"+ df_save_as_name
         df.to_pickle(df_save_as_name )
         # Let user know
+        '''
         sys.stderr.write("\n\nA dataframe of the data "
         "has been saved as a file\nin a manner where other "
         "Python programs can access it (pickled form).\n"
         "RESULTING DATAFRAME is stored as ==> '{}'".format(df_save_as_name ))
+        '''
+        hpdf_string = ("A dataframe of the data "
+        "has been saved as a file in a manner where other "
+        "Python programs can access it (pickled form).\n"
+        "RESULTING DATAFRAME is stored as ==> '{}'".format(df_save_as_name ))
+        console.print(hpdf_string,style="bold red on white")
+
 
 def arrange_returning_the_dataframe_and_info(
     df,pdb_code_id,return_df,return_pdb_code):
@@ -219,13 +362,40 @@ def arrange_returning_the_dataframe_and_info(
     provided where no interaction occurs.
     '''
     if return_df and return_pdb_code:
+        '''
         sys.stderr.write("\n\nReturning both the PDB code identifier and a "
             "dataframe with the information as well.")
+        '''
+        rcndf_string = ("Returning both the PDB code identifier and a "
+            "dataframe with the information as well.")
+        console.print(rcndf_string,style="bold red on white")
         return pdb_code_id,df
     elif return_df:
+        '''
         sys.stderr.write("\n\nReturning a dataframe with the information "
                 "as well.")
+        '''
+        rdfo_string = ("Returning a dataframe with the information "
+                "as well.")
+        console.print(rdfo_string,style="bold red on white")
         return df
+def endwrapup():
+    '''
+    Doesn't take anything or return anything.
+    Just prints to console, but because need to call twice, trying to lessen
+    repeating.
+    '''
+    console.rule(
+        "[bold red]End of Storing & Wrapping-Up",
+        style = "bold red on white")
+
+def insert_position(position, list1, list2):
+    '''
+    takes two lists and places the second list into the first list at the 
+    specified position.
+    from https://stackoverflow.com/a/39542557/8508004
+    '''
+    return list1[:position] + list2 + list1[position:]
 
 
 ###--------------------------END OF HELPER FUNCTIONS---------------------------###
@@ -234,41 +404,121 @@ def arrange_returning_the_dataframe_and_info(
 #*******************************************************************************
 ###------------------------'main' function of script---------------------------##
 
-def pisa_interface_list_to_df(data_file, return_df = True, 
-    pickle_df=True, return_pdb_code=False):
+def pisa_interface_list_to_df(pdb_code, return_df = True, 
+    pickle_df=True, return_pdb_code=False, adv_debugging=False):
     '''
     Main function of script. 
     PDBsum list of interactions to Pandas dataframe.
     Optionally also returns a dataframe of the data. 
-    Optionally can also return the PDB code found inside the parse data as well.
+    Optionally can also return the PDB identification code as well.
     Meant for use in a Jupyter notebook.
 
     Adapted from the main function in `pdbsum_prot_interactions_list_to_df.py`
     '''
+
+    # Set rich to handle tracebacks
+    #---------------------------------------------------------------------------
+    # Set up traceback to be nice by using Will McGugan's rich & allow a debug 
+    # setting that make error tracebacks more informative with display of 
+    # local variables
+    from rich.traceback import install
+    if adv_debugging:
+        install(show_locals=True) # so much better for debugging because in the 
+        # traceback ir reports local variables; however,imagine it may be 
+        # overwheming to typical users. Maybe put this here as an option & ask 
+        # users to toggle on if they report a particularly vexxing bug.
+    else:
+        install()
+
+    # Determine if input data already saved as a file and retrieve, if not:
+    #---------------------------------------------------------------------------
+    # If retrieving, it will need to be formatted and saved as if it would be
+    # provided.
+    console.rule("[bold red]Input Preparation",style = "bold red on white")
+    # check if pdb_code provided actually looks like an id for a pdb entry.
+    # I'm going to think ahead and build in the future version they'll use, see
+    # 'Future Plans for Expanded PDB Codes' at 
+    # https://proteopedia.org/wiki/index.php/PDB_code
+    # and https://www.wwpdb.org/news/news?year=2017#5910c8d8d3b1d333029d4ea8 ,
+    # so 'pdb_00001abc' or the older 4 character alphanumeric
+    good_pdb_code = False
+    if len(pdb_code) == 4 and pdb_code.isalnum():
+        good_pdb_code = True
+    elif pdb_code.startswith("pdb_") and (len(pdb_code) == 12):
+        if pdb_code[4:9].isnumeric() and pdb_code[9:12].isalnum():
+            good_pdb_code = True
+            npc_string = ("Oh! Expanded PDB Code! Hopeully this works at PDBe.")
+            console.print(npc_string,style="bold red on white")
+    if not good_pdb_code:
+        bc_string = ("It doesn't look like you provided a valid PDB code?")
+        console.print(bc_string,style="bold white on blue")
+        console.rule(
+        "[bold red]**EXITING ON INVALID PDB CODE ERROR**",
+        style = "bold red on white")
+        sys.exit(66)
+    data_local = False # set-up a variable in case want to report
+    data_input_file_name = pdb_code.lower() + suffix_for_input_data_file # if 
+    # this isn't located in the working drive it will get made. If the case 
+    # doesn't match that is okay, but then `data_input_file_name` will then get
+    # reassigned to match the one provided.
+
+    # Scan current working directory for the input data. Allow it to be 
+    # case-insensitive by using lowercase name of file, & then 
+    # if it matches, adjust `data_input_file_name` to match the provided file 
+    # name so that the case gets matched no matter what it is.
+    for file in os.listdir("."):
+        if fnmatch.fnmatch(file.lower(), data_input_file_name):
+            data_input_file_name = file # switching to the name provided in case 
+            # thename isn't all lower case as I made it bey default. This makes 
+            # it so this is NOT case sensitive when a file is provided as long 
+            # as the pattern matches.
+            data_local = True # adjust variable that is used to monitor status
+            use_string = ("File '{}' provided as source of interface "
+                "data.".format(data_input_file_name))
+            console.print(use_string,style="bold red on white")
+            break # if encountered, forloop breaks without running the 'else'
+    else:
+        make_data_input_file_name(data_input_file_name)
+    console.rule(
+        "[bold red]End of Input Preparation",style = "bold red on white")
+
+
+    
     # Prepare for getting necessary data by setting up column names:
     #---------------------------------------------------------------------------
+    console.rule("[bold red]Dataframe Generation",style = "bold red on white")
     column_names = (['row #','dropHERE', 'Chain 1', 'Number_InterfacingAtoms1', 
         'Number_InterfacingResidues1', 'Surface area1', 'dropHEREb',
         'Chain 2', 'Number_InterfacingAtoms2',
-        'Number_InterfacingResidues2','Surface area2', 'Interface area', 'Solvation free energy gain', 
-        'Solvation gain P-value', 'Interface Hydrogen bonds', 'Interface Salt Bridges',
+        'Number_InterfacingResidues2','Surface area2', 'Interface area', 
+        'Solvation free energy gain', 'Solvation gain P-value', 
+        'Interface Hydrogen bonds', 'Interface Salt Bridges',
         'Interface Disuflides','CSS'])
     # column naming for multiindex handling borrows from things worked out in `make_table_of_missing_residues_for_related_PDB_structures.py`
-    cols_4_each_pdb = (["Residues not observed (+, -)",
-        "% Not observed",
-        "Deficient terminus?",
-        "Missing ranges"])
+    # Get first five lines of the input file & see if need to add the symmetry 
+    # columns.
+    N = 6
+    with open(data_input_file_name) as quickchk:
+        top_few_lines_input = "".join([next(quickchk) for x in range(N)])# based 
+        # on https://stackoverflow.com/a/1767589/8508004
+    if 'Symmetry op-n' in top_few_lines_input:
+        # add as columns     Symmetry op-n   & Sym.ID
+        column_names = insert_position(
+            8, column_names, ['Symmetry op-n','Sym.ID'])
     column_names_list = column_names
 
 
-    # Bring in the necessary data and prepare it in a manner for next step:
+    # Bring in the input data and make the dataframe:
     #---------------------------------------------------------------------------
+    ir_string = ("Interactions data being read from "
+        "{}...".format(data_input_file_name))
+    console.print(ir_string,style="bold red on white")
     df = pd.read_csv(
-    data_file, sep='\t',index_col=False , 
+    data_input_file_name, sep='\t',index_col=False , 
     skiprows =5, names = column_names_list) # brings in the text of the table 
     # that startswith `## and ends before the buttons below that table on the 
     # PISA server Interfaces page.
-    # drop the columns that got tagged with special names during bring in.
+    # Drop the columns that got tagged with special names during bring in.
     df = df.drop(['dropHERE','dropHEREb'],axis=1)
     # Improve on column headers by making multiindex:
     upper_level_list = [' ','Chain 1','Chain 1','Chain 1'
@@ -287,23 +537,34 @@ def pisa_interface_list_to_df(data_file, return_df = True,
             'Solvation gain P-value', 'Hydrogen bonds', 'Salt Bridges',
             'Disuflides','CSS'])
     # superscript in column names based on https://stackoverflow.com/q/45291459/8508004
+    # Add the extr 'symmetry columns', if needed.
+    if 'Symmetry op-n' in top_few_lines_input:
+        upper_level_list = insert_position(
+            8, upper_level_list, ['Chain 2','Chain 2'])
+        column_names_simplified = insert_position(
+            8, column_names_simplified, ['SymOp','SymID'])
     cols = pd.MultiIndex.from_arrays([upper_level_list, column_names_simplified])
     df = df.set_axis(cols, axis=1, inplace=False)
 
-    pdb_code_id = data_file.split()[0] # PDB code for the associated assumed as 
-    # first 'word' in file name of input
+    
+    pdb_code_id = pdb_code.lower() #make it lower case for returning, if return 
+    # of pdb code id opted for.
 
-
-
-        
+    
 
     # feedback
-    sys.stderr.write(
-        "Provided interactions data read and converted to a dataframe...")
+    #sys.stderr.write("Interactions data read and converted to a dataframe...")
+    cr_string = ("Interactions data read and converted to a dataframe.")
+    console.print(cr_string,style="bold red on white")
+    console.rule(
+        "[bold red]End of Dataframe Generation",style = "bold red on white")
 
 
-    # Reporting and Saving
+    # Saving/Storing and Returning
     #---------------------------------------------------------------------------
+    console.rule(
+        "[bold red]Storing For Later Use & Wrapping-Up",
+        style = "bold red on white")
     #print(df)#originally for debugging during development,added..
     # Document the full set of data collected in the terminal or 
     # Jupyter notebook display in some manner. 
@@ -316,15 +577,18 @@ def pisa_interface_list_to_df(data_file, return_df = True,
     #sys.stderr.write(df.to_string())
 
     # Handle pickling the dataframe
-    handle_pickling_the_dataframe(df, pickle_df,pdb_code_id, df_save_as_name)
+    handle_pickling_the_dataframe(df, pickle_df,pdb_code, df_save_as_name)
 
     
     # Return dataframe and pdb code(options)
     #---------------------------------------------------------------------------
     if return_df:
         returned = arrange_returning_the_dataframe_and_info(
-            df,pdb_code_id,return_df,return_pdb_code)
+            df,pdb_code,return_df,return_pdb_code)
+        endwrapup()
         return returned
+
+    endwrapup()
     
 
 ###--------------------------END OF MAIN FUNCTION----------------------------###
@@ -351,7 +615,12 @@ def main():
         kwargs['pickle_df'] = False
     kwargs['return_df'] = False #probably don't want dataframe returned if 
     # calling script from command line
-    pisa_interface_list_to_df(data_file,**kwargs)
+    kwargs['adv_debugging'] = False #intended only for advanced 
+    # debugging/development
+    if adv_debugging:
+        kwargs['adv_debugging'] = True #intended only for advanced 
+    # debugging/development
+    pisa_interface_list_to_df(pdb_code,**kwargs)
     # using https://www.saltycrane.com/blog/2008/01/how-to-use-args-and-kwargs-in-python/#calling-a-function
     # to build keyword arguments to pass to the function above
     # (see https://stackoverflow.com/a/28986876/8508004 and
@@ -374,22 +643,33 @@ if __name__ == "__main__" and '__file__' in globals():
     import argparse
     parser = argparse.ArgumentParser(prog='pisa_interface_list_to_df.py',
         description="pisa_interface_list_to_df.py \
-        Takes a list of chain interactions from PDBePISA and brings it \
-        into Python as a dataframe and \
+        Takes an alphanumeric accession id code for a PDB entry and gets the\
+        list of chain interactions from PDBePISA, unless provided locally, & \
+        brings the data into Python as a dataframe and \
         saves a file of that dataframe for use elsewhere. Optionally, it can \
         also return that dataframe for use inside a Jupyter notebook. \
         Meant to be a utility script for working \
         with PDBePISA and Python.\
         **** Script by Wayne Decatur   \
         (fomightez @ github) ***")
-    parser.add_argument("interactions_file", help="Name of file of interactions \
-        file to parse with associated pdb code as first 'word' in file name.\
-        ", metavar="DATA_FILE")
+    parser.add_argument("pdb_code", help="The alphanumeric accession id code \
+        for a PDB entry for which to format the corresponding PDBePISA \
+        interactions list into a dataframe. The corresponding interface list \
+        will be automatically retrieved from PDBePISA, unless you you already \
+        have the copied text of the interface list. You can signal to the \
+        script to use the provided copied text by naming it the accession \
+        code followed by '{}', for example '4fgf{}', and placing \
+        it in your working directory & then the local data in that file \
+        will be used.".format(suffix_for_input_data_file, 
+            suffix_for_input_data_file), metavar="PDB_CODE")
     parser.add_argument('-dfo', '--df_output', action='store', type=str, 
     default= df_save_as_name, help="OPTIONAL: Set file name for saving pickled \
     dataframe. If none provided, '{}' will be used. To force no dataframe to \
     be saved, enter `-dfo no_pickling` without quotes as output file \
     (ATYPICAL).".format(df_save_as_name))
+    parser.add_argument("-ad", "--adv_debugging",help=
+        "Optional flag intended only for advanced debugging/development.",
+        action="store_true")
 
 
 
@@ -399,8 +679,9 @@ if __name__ == "__main__" and '__file__' in globals():
         parser.print_help()
         sys.exit(1)
     args = parser.parse_args()
-    data_file = args.interactions_file
+    pdb_code = args.pdb_code
     df_save_as_name = args.df_output
+    adv_debugging = args.adv_debugging
 
 
     main()
