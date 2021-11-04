@@ -76,6 +76,7 @@ __version__ = "0.1.2"
 #
 #
 #
+#
 # TO RUN:
 # Examples,
 # Enter on the command line of your terminal, the line
@@ -540,9 +541,9 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     # Add the extr 'symmetry columns', if needed.
     if 'Symmetry op-n' in top_few_lines_input:
         upper_level_list = insert_position(
-            8, upper_level_list, ['Chain 2','Chain 2'])
+            6, upper_level_list, ['Chain 2','Chain 2'])
         column_names_simplified = insert_position(
-            8, column_names_simplified, ['SymOp','SymID'])
+            6, column_names_simplified, ['SymOp','SymID'])
     cols = pd.MultiIndex.from_arrays([upper_level_list, column_names_simplified])
     df = df.set_axis(cols, axis=1, inplace=False)
 
