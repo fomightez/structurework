@@ -12,7 +12,7 @@ Be sure to see the 'Related' section below, as some of these utility scripts (or
 # The scripts
 
 * pisa_interface_list_to_df.py
-> Interface list from PDBePISA for chains interacting in a PDB entry --> dataframe of data for use in Python
+> PDB entry accession id ---> Python-based dataframe of Interfaces from PDBePISA for chains interacting
 
 Takes a PDB accession code or a file name of text copied from a PDBePISA Interface list page and produces a dataframe of the interchain reactions detailing the intraction area for each chain as well as the number & types of interactons.  
 **Importantly, it handles protein and nucleic acid interactions whereas PDBsum just summarizes interfaces between proteins in its summary tables of interactions.**
@@ -20,17 +20,18 @@ Takes a PDB accession code or a file name of text copied from a PDBePISA Interfa
 Verified compatible with both Python 2.7 and Python 3.8.
 
 Written to run from command line or pasted/loaded inside a Jupyter notebook cell.  
-The main ways to run the script are demonstrated in the notebook ??????????????.ipynb` that can be found when sessions are launched from [here](https://github.com/fomightez/pdbepisa-binder).
+The main ways to run the script are demonstrated in the notebook [Working with PDBePISA interface lists/reports in Jupyter Basics and filtering to nucleic acid chains](notebooks/Working%20with%20PDBePISA%20interfacelists%20in%20Jupyter%20Basics.ipynb) that can be found when sessions are launched from [here](https://github.com/fomightez/pdbepisa-binder).
 
 
 Example calls to run the `pisa_interface_list_to_df.py` script from command line:
 ```
 python pisa_interface_list_to_df.py 4fgf
-python pisa_interface_list_to_df.py data.txt
+python pisa_interface_list_to_df.py 1trn
 ```
 
 (Alternatively, upload the script to a Jupyter environment and use `%run python pisa_interface_list_to_df.py 4fgf` in a Python-backed notebook to run the example.)
 
+**Impoertantly, if a file already exists that is the PDB code followed by `_interface_list.txt`, such as `4fgf_interface_list.txt`, it will use the corresponding file to extract the information instead of obtaining the data from PDBePISA.** This can be used to supply files, perhaps specially edited ones or for structures not yet publised, locally.
 
 
 #### For running in a Jupyter notebook:
