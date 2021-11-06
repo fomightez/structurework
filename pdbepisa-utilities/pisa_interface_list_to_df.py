@@ -102,22 +102,22 @@ __version__ = "0.1.3"
 #
 #
 # To use this after importing/pasting or loading into a cell in a Jupyter 
-# notebook, specify at least the data file (or data as a string) in the 
+# notebook, specify the PDB identifier code as a string in the 
 # call to the main function similar to below:
-# df = pisa_interface_list_to_df("6agb interface_data.txt")
+# df = pisa_interface_list_to_df("6agb")
 # df
 #
 #
 # A more in-depth series of examples of using this script within a notebook 
-# without need to save file intermediates is found at:
-# https://git.io/Jtfon
+# is found at:
+# notebooks/Working%20with%20PDBePISA%20interfacelists%20in%20Jupyter%20Basics.ipynb
 #
 # 
 #
 '''
 CURRENT ACTUAL CODE FOR RUNNING/TESTING IN A NOTEBOOK WHEN IMPORTED/LOADED OR 
 PASTED IN ANOTHER CELL:
-df = pisa_interface_list_to_df("6agb interface_data.txt")
+df = pisa_interface_list_to_df("6agb")
 df
 '''
 #
