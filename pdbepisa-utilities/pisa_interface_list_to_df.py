@@ -36,12 +36,11 @@ __version__ = "0.1.3"
 #
 # This script is meant to be a utility script for working with PDBePISA server
 # and Python, see a demonstration of use in
-# https://github.com/fomightez/XXXXXXX-binder
-# It will be part of a larger set of tools meant to facilitate highlighting
-# differences & similarities in protein-protein and protein-nucleic 
-# interactions of the same protein pairs in different, related complexes, using 
-# data from PDBsum, as well. The PDBsum-utilizing code is demonstrated in 
-# https://github.com/fomightez/pdbsum-binder
+# https://github.com/fomightez/pdbepisa-binder
+# It will be part of a larger set of tools meant to facilitate analysis of
+# interactions in complexes, using 
+# data from PDBePISA, as well. The PDBePISA-utilizing code is demonstrated in 
+# https://github.com/fomightez/pdbepisa-binder
 # 
 #
 #
@@ -96,7 +95,7 @@ __version__ = "0.1.3"
 # Issue `pisa_interface_list_to_df.py -h` for details.
 # 
 # More examples from running from the command line are at the links below: 
-# https://github.com/fomightez/structurework/tree/master/pisa-utilities
+# https://github.com/fomightez/structurework/tree/master/pdbepisa-utilities
 # https://github.com/fomightez/pdbepisa-binder
 #
 #
@@ -110,7 +109,7 @@ __version__ = "0.1.3"
 #
 # A more in-depth series of examples of using this script within a notebook 
 # is found at:
-# notebooks/Working%20with%20PDBePISA%20interfacelists%20in%20Jupyter%20Basics.ipynb
+# https://github.com/fomightez/pdbepisa-binder/notebooks/Working%20with%20PDBePISA%20interfacelists%20in%20Jupyter%20Basics.ipynb
 #
 # 
 #
