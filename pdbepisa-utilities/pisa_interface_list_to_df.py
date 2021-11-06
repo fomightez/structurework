@@ -2,11 +2,11 @@
 # pisa_interface_list_to_df.py
 __author__ = "Wayne Decatur" #fomightez on GitHub
 __license__ = "MIT"
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 # pisa_interface_list_to_df.py by Wayne Decatur
-# ver 0.1.2
+# ver 0.1.3
 #
 #*******************************************************************************
 # Verified compatible with both Python 2.7 and Python 3.8; written initially in 
@@ -69,10 +69,20 @@ __version__ = "0.1.2"
 # v.0.1.0 basic working version
 # v.0.1.2 now gets data from PDBePISA if not provided & handles crystal 
 #         structure interface lists/reports with symmetry op info
+# v.0.1.3 now handles crystal structure lists/reports with  'Average' rows
+#
 
 #
 # To do:
-# - 
+# - update text after "and Python, see a demonstration of use in" to have correct link
+# - reference this script in header documentation of:
+#        - pdbsum_prot_interactions_list_to_df.py
+#        - pdbsum_prot_interface_statistics_comparing_two_structures.py
+#        - pdbsum_prot_interface_statistics_to_df.py
+# - make sure works with Python 2.7 <- sometimes I was lazy during development 
+# used f-strings, & those need to be replaced with string formatting using 
+# `.format()` because Python 2.7 never had f-strings, unless I add the use of 
+# future_fstrings package, see https://stackoverflow.com/a/46182112/8508004
 #
 #
 #
@@ -282,6 +292,45 @@ def make_data_input_file_name(data_input_file_name):
     end_delimiter = 'View    Details    Download Search'
     intrf_tbl_text = page_contents_as_text.split(
         start_delimiter,1)[1].split(end_delimiter,1)[0]
+    # The tables with the 'Average' rows and 'Id' columns (see below) don't have
+    # anything representing the 'Id' column on the lines without entries in that
+    # column and so the '##' number (row #) gets placed there incorrectly. 
+    # Luckily the rows like this in tables with the 'Id' columns, begin with 
+    # ticks & matches tick-space-integer-space-tick, but don't match '` 0.' and 
+    # the lines are longer than 40 characters
+    # and don't look like start with `` 3_656`, i.e. with underscore 3 after 
+    # tick, and doesn't lool like `` |`.
+    # Actually matching start of line with 'tick-space-integer-space-tick' will
+    # cover most of those cases. Since potentially number could get double 
+    # digits, don't limit to single. So use 
+    # https://stackoverflow.com/a/8586432/8508004
+    if '**_Average:_**' in intrf_tbl_text:
+        import re
+        int_flanked_by_ticks_pattern = re.compile("` [0-9]+ `")
+        intrf_tbl_text_edited_to_account_for_id = ""
+        for line in intrf_tbl_text.split("\n"):
+            if line.count("`") >= 2 and line[:7].count("`") >= 2:
+                at_start_between_ticks = line[:7].split("`",2)[1]
+                at_start_bound_by_ticks = "`"+at_start_between_ticks+"`" #put 
+                # back delimiter, ticks in this case to restore string to what 
+                # it really is at start of the line.
+                # Check match using https://stackoverflow.com/a/12595082/8508004 .
+                if (line.strip().startswith("`")) and (
+                    int_flanked_by_ticks_pattern.match(at_start_bound_by_ticks)
+                    ) and (len(line)>40):
+                    to_add = "  |  " + at_start_bound_by_ticks
+                    to_add_in_plus_rest_o_line = to_add + line.split("`",2)[2]
+                    intrf_tbl_text_edited_to_account_for_id += (
+                        to_add_in_plus_rest_o_line + "\n")
+                else:
+                    intrf_tbl_text_edited_to_account_for_id += line + "\n"
+            else:
+                intrf_tbl_text_edited_to_account_for_id += line + "\n"
+        #now that done iterating on lines of 'intrf_tbl_text', replace 
+        # 'intrf_tbl_text' with new version
+        intrf_tbl_text = intrf_tbl_text_edited_to_account_for_id
+    # now safe to remove ticks if used for '**_Average:_**' and need removing
+    # in typical handling.
     intrf_tbl_text = intrf_tbl_text.replace("`","")
     # remove the header because formatting that is a nightmare and will be just
     # easier to swap in one later
@@ -304,15 +353,45 @@ def make_data_input_file_name(data_input_file_name):
     # Delimit it with tabs, not '|', like it was when I copied text directly 
     # from web page.
     tab_sep_main_table_part = raw_tbl_content.replace("|","\t")
-    # Put the header back. There seems to be two variety of headers. There is
+    # Put the header back. There seems to be a variety of headers. At least 
+    # three that I've found now. For the 'main' two: there is
     # the header like the interface list report page for 6agb has, which I 
     # suspect is tpyical for cyro-EMs. Then there is also an expanded header 
     # that has two additional columns 'Symmetry op-n' & 'Sym.ID' in the middle 
     # section of reports for PDB entries like 4gfg, which I suspect is typical 
     # for crystal structures.
+    # The third I recently found is a further expanded header that starts out 
+    # with 'Id' before 'Row #''  like the interface list report pages for 1trn 
+    # and 1rpn. The other tell-tale characteristic of these ones beyond the
+    # header is that they have rows with 'Average' that need special handling.
     correct_header = replacement_header 
     if 'Symmetry op-n' in intrf_tbl_text:
         correct_header = repl_header_with_sym
+    if '**_Average:_**' in intrf_tbl_text:
+        correct_header = ' Id   ' + correct_header[1:] # fix header to add 'Id'
+        # go back to making 'tab_sep_main_table_part' because the stitching back
+        # together with every three lines won't have worked because the 
+        # 'Average' rows only get spread out over 2 lines and so things don't 
+        # stitch back together right. I put this handling here so it may be 
+        # clearer what this was addressing and even though it results in 
+        # repeating stuff, I think it makes it more clear this is fixing this 
+        # 'Average' case by having it all done in a single block.
+        # Before spliting on new lines add a line break where '**_Average:_**' 
+        # occurs so those rows will be spread out over three lines like most
+        # other table rows. At the same time, I might as well add in front of 
+        # '**_Average:_**', the spacing I'll need to get the columns under the
+        # correct column headers later because in the table the 'Average' lines
+        # are shifted mostly right because only have content for last few 
+        # columns.
+        correct_Avg_text = ' |' *13 + '**_Average:_**\n'
+        main_table_text = main_table_text.replace(
+            '**_Average:_**', correct_Avg_text)
+        spl = main_table_text.split("\n")
+        raw_tbl_content = "\n".join(
+            ["".join(spl[i:i+3]) for i in range(0,len(spl),3)])
+        # Delimit it with tabs, not '|', like it was when I copied text directly 
+        # from web page.
+        tab_sep_main_table_part = raw_tbl_content.replace("|","\t")
     rebuilt_int_tbl_text = correct_header + "\n"+ tab_sep_main_table_part
     # Save the produced text as a file 
     with open(data_input_file_name, 'w') as output_file:
@@ -425,7 +504,7 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     from rich.traceback import install
     if adv_debugging:
         install(show_locals=True) # so much better for debugging because in the 
-        # traceback ir reports local variables; however,imagine it may be 
+        # traceback it reports local variables; however,imagine it may be 
         # overwheming to typical users. Maybe put this here as an option & ask 
         # users to toggle on if they report a particularly vexxing bug.
     else:
@@ -459,7 +538,7 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
         sys.exit(66)
     data_local = False # set-up a variable in case want to report
     data_input_file_name = pdb_code.lower() + suffix_for_input_data_file # if 
-    # this isn't located in the working drive it will get made. If the case 
+    # this isn't located in the working directory, it will get made. If the case 
     # doesn't match that is okay, but then `data_input_file_name` will then get
     # reassigned to match the one provided.
 
@@ -477,7 +556,7 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
             use_string = ("File '{}' provided as source of interface "
                 "data.".format(data_input_file_name))
             console.print(use_string,style="bold red on white")
-            break # if encountered, forloop breaks without running the 'else'
+            break # if encountered, for loop breaks without running the 'else'
     else:
         make_data_input_file_name(data_input_file_name)
     console.rule(
@@ -502,10 +581,18 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     with open(data_input_file_name) as quickchk:
         top_few_lines_input = "".join([next(quickchk) for x in range(N)])# based 
         # on https://stackoverflow.com/a/1767589/8508004
+    id_col_insert_pt = 0
+    symmetry_cols_insert_pt = 8
+    if 'Id   ##   Structure 1' in top_few_lines_input:
+        # add as columns     Id
+        column_names = insert_position(
+            id_col_insert_pt, column_names, ['Id'])
+        symmetry_cols_insert_pt += 1 # want to insert them moved over 1 to allow
+        # 'Id' column as first column now
     if 'Symmetry op-n' in top_few_lines_input:
         # add as columns     Symmetry op-n   & Sym.ID
         column_names = insert_position(
-            8, column_names, ['Symmetry op-n','Sym.ID'])
+            symmetry_cols_insert_pt, column_names, ['Symmetry op-n','Sym.ID'])
     column_names_list = column_names
 
 
@@ -521,6 +608,8 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     # PISA server Interfaces page.
     # Drop the columns that got tagged with special names during bring in.
     df = df.drop(['dropHERE','dropHEREb'],axis=1)
+    symmetry_cols_insert_pt -= 2 # lower by two since dropping columns marked
+    # with 'dropHERE' tag
     # Improve on column headers by making multiindex:
     upper_level_list = [' ','Chain 1','Chain 1','Chain 1'
                     ,'Chain 1', 'Chain 2', 'Chain 2'
@@ -538,12 +627,18 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
             'Solvation gain P-value', 'Hydrogen bonds', 'Salt Bridges',
             'Disuflides','CSS'])
     # superscript in column names based on https://stackoverflow.com/q/45291459/8508004
-    # Add the extr 'symmetry columns', if needed.
+    # Add the extra 'Id' column, if needed.
+    if 'Id   ##   Structure 1' in top_few_lines_input:
+        upper_level_list = insert_position(
+            id_col_insert_pt, upper_level_list, [' '])
+        column_names_simplified = insert_position(
+            id_col_insert_pt, column_names_simplified, ['Id'])
+    # Add the extra 'symmetry' columns, if needed.
     if 'Symmetry op-n' in top_few_lines_input:
         upper_level_list = insert_position(
-            6, upper_level_list, ['Chain 2','Chain 2'])
+            symmetry_cols_insert_pt, upper_level_list, ['Chain 2','Chain 2'])
         column_names_simplified = insert_position(
-            6, column_names_simplified, ['SymOp','SymID'])
+            symmetry_cols_insert_pt, column_names_simplified, ['SymOp','SymID'])
     cols = pd.MultiIndex.from_arrays([upper_level_list, column_names_simplified])
     df = df.set_axis(cols, axis=1, inplace=False)
 
