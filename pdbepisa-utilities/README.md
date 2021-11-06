@@ -36,8 +36,8 @@ python pisa_interface_list_to_df.py 1trn
 
 To use this script after pasting or loading into a cell in a Jupyter notebook, in the next cell define the URL and then call the main function similar to below:
 ```
-import pdsum_prot_interactions_list_to_df from pdsum_prot_interactions_list_to_df
-df =pdsum_prot_interactions_list_to_df('4fgf')
+import pisa_interface_list_to_df from pisa_interface_list_to_df
+df = pdsum_prot_interactions_list_to_df('4fgf')
 ```
 See [here](https://github.com/fomightez/pdbepisa-binder) for notebooks demonstrating use within a Jupyter notebook; click `launch binder` to launch a session that will allow you to use the notebooks from there.
 
