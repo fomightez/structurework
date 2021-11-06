@@ -68,7 +68,8 @@ __version__ = "0.1.3"
 # v.0.1.0 basic working version
 # v.0.1.2 now gets data from PDBePISA if not provided & handles crystal 
 #         structure interface lists/reports with symmetry op info
-# v.0.1.3 now handles crystal structure lists/reports with  'Average' rows
+# v.0.1.3 now handles crystal & cryo-EM structure lists/reports with 'Average' 
+#          rows
 #
 
 #
@@ -334,6 +335,11 @@ def make_data_input_file_name(data_input_file_name):
     # remove the header because formatting that is a nightmare and will be just
     # easier to swap in one later
     end_of_header_text = "**  iNres ** | **  Surface Å2 **  \n"
+    # In case of apparent edge case, 6nt8, the header ended with
+    # ` **  iNres ** | **  Surface\nÅ2 **  \n` instead.
+    if end_of_header_text not in intrf_tbl_text:
+        intrf_tbl_text = intrf_tbl_text.replace(
+            " **  iNres ** | **  Surface\nÅ2 **  \n",end_of_header_text)
     main_table_text = intrf_tbl_text.split(end_of_header_text,1)[1]
     # Adjust the table contents to match closer what would be obtained if copied 
     # from page by someone using a mouse to highlight the text. This way the 
@@ -363,6 +369,9 @@ def make_data_input_file_name(data_input_file_name):
     # with 'Id' before 'Row #''  like the interface list report pages for 1trn 
     # and 1rpn. The other tell-tale characteristic of these ones beyond the
     # header is that they have rows with 'Average' that need special handling.
+    # Seem Cryo-EM structures can gave these too, example 6nt8. Seems when you 
+    # have the same chains also in another conformation, for example in tetramer
+    # of 6nt8.
     correct_header = replacement_header 
     if 'Symmetry op-n' in intrf_tbl_text:
         correct_header = repl_header_with_sym
