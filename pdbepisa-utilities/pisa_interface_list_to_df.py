@@ -2,11 +2,11 @@
 # pisa_interface_list_to_df.py
 __author__ = "Wayne Decatur" #fomightez on GitHub
 __license__ = "MIT"
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 
 # pisa_interface_list_to_df.py by Wayne Decatur
-# ver 0.1.3
+# ver 0.1.4
 #
 #*******************************************************************************
 # Verified compatible with both Python 2.7 and Python 3.8; written initially in 
@@ -69,7 +69,9 @@ __version__ = "0.1.3"
 # v.0.1.2 now gets data from PDBePISA if not provided & handles crystal 
 #         structure interface lists/reports with symmetry op info
 # v.0.1.3 now handles crystal & cryo-EM structure lists/reports with 'Average' 
-#          rows
+#         rows
+# v.0.1.4 keeps the column that may have symbol indicating interface 
+#         properties
 #
 
 #
@@ -359,19 +361,22 @@ def make_data_input_file_name(data_input_file_name):
     # from web page.
     tab_sep_main_table_part = raw_tbl_content.replace("|","\t")
     # Put the header back. There seems to be a variety of headers. At least 
-    # three that I've found now. For the 'main' two: there is
+    # four that I've found now. For the 'main' two: there is
     # the header like the interface list report page for 6agb has, which I 
     # suspect is tpyical for cyro-EMs. Then there is also an expanded header 
     # that has two additional columns 'Symmetry op-n' & 'Sym.ID' in the middle 
     # section of reports for PDB entries like 4gfg, which I suspect is typical 
     # for crystal structures.
-    # The third I recently found is a further expanded header that starts out 
-    # with 'Id' before 'Row #''  like the interface list report pages for 1trn 
-    # and 1rpn. The other tell-tale characteristic of these ones beyond the
-    # header is that they have rows with 'Average' that need special handling.
+    # The third and fourth I recently found are one without expanded header and 
+    # also with so that it is further expanded. The one I found first has the 
+    # two additional columns 'Symmetry op-n' & 'Sym.ID' and ALSO starts out with 
+    # 'Id' before 'Row #'' like the interface list report pages for 1trn & 1rpn. 
     # Seem Cryo-EM structures can gave these too, example 6nt8. Seems when you 
     # have the same chains also in another conformation, for example in tetramer
-    # of 6nt8.
+    # of 6nt8. And those don't have the expanded header columns names that 
+    # include 'Symmetry op-n' & 'Sym.ID'.
+    # The other tell-tale characteristic of these ones beyond the header is that
+    # they have rows with 'Average' that need special handling.
     correct_header = replacement_header 
     if 'Symmetry op-n' in intrf_tbl_text:
         correct_header = repl_header_with_sym
@@ -391,7 +396,13 @@ def make_data_input_file_name(data_input_file_name):
         # correct column headers later because in the table the 'Average' lines
         # are shifted mostly right because only have content for last few 
         # columns.
-        correct_Avg_text = ' |' *13 + '**_Average:_**\n'
+        spacing_needed_b4_average = 13
+        # However, I found some like 6nt8 have 'Average' row but no symmetry 
+        # columns, and so need less spacing to right for them. Speccifically,
+        # subtract two because won't have two symmetry-related columns.
+        if 'Symmetry op-n' not in intrf_tbl_text:
+            spacing_needed_b4_average -= 2
+        correct_Avg_text = ' |' *spacing_needed_b4_average + '**_Average:_**\n'
         main_table_text = main_table_text.replace(
             '**_Average:_**', correct_Avg_text)
         spl = main_table_text.split("\n")
@@ -576,7 +587,7 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     #---------------------------------------------------------------------------
     console.rule("[bold red]Dataframe Generation",style = "bold red on white")
     column_names = (['row #','dropHERE', 'Chain 1', 'Number_InterfacingAtoms1', 
-        'Number_InterfacingResidues1', 'Surface area1', 'dropHEREb',
+        'Number_InterfacingResidues1', 'Surface area1', 'x',
         'Chain 2', 'Number_InterfacingAtoms2',
         'Number_InterfacingResidues2','Surface area2', 'Interface area', 
         'Solvation free energy gain', 'Solvation gain P-value', 
@@ -591,12 +602,19 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
         # on https://stackoverflow.com/a/1767589/8508004
     id_col_insert_pt = 0
     symmetry_cols_insert_pt = 8
-    if 'Id   ##   Structure 1' in top_few_lines_input:
+    # with most I saw 'Id   ##   Structure 1', but with 6nt8 I saw at start of
+    # top_few_lines_input 'Id   ##      Structure 1'. So instead of testing
+    # explicitly for those 2 strings & not knowing if there  may be more 
+    # variations decided to remove spaces from begining and test for that 
+    # sequence.
+    if 'Id' in top_few_lines_input[:14] and (
+        top_few_lines_input[:26].split() == ['Id', '##', 'Structure', '1']):
         # add as columns     Id
         column_names = insert_position(
             id_col_insert_pt, column_names, ['Id'])
         symmetry_cols_insert_pt += 1 # want to insert them moved over 1 to allow
-        # 'Id' column as first column now
+        # 'Id' column as first column now; this adjustment will be moot if don't 
+        # have symmetry columns, and so no need to test
     if 'Symmetry op-n' in top_few_lines_input:
         # add as columns     Symmetry op-n   & Sym.ID
         column_names = insert_position(
@@ -614,13 +632,17 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     skiprows =5, names = column_names_list) # brings in the text of the table 
     # that startswith `## and ends before the buttons below that table on the 
     # PISA server Interfaces page.
-    # Drop the columns that got tagged with special names during bring in.
-    df = df.drop(['dropHERE','dropHEREb'],axis=1)
-    symmetry_cols_insert_pt -= 2 # lower by two since dropping columns marked
-    # with 'dropHERE' tag
+    # Drop the column that got tagged with special names during bring in.
+    #df = df.drop(['dropHERE','dropHEREb'],axis=1) # ended up that some of the 
+    # second one I have dropping have info. Best kept.
+    df = df.drop(['dropHERE'],axis=1)
+    #symmetry_cols_insert_pt -= 2 # lower by two since dropping columns marked
+    # with 'dropHERE' tag # see above for when it was two!!
+    symmetry_cols_insert_pt -= 1 # lower by one since dropping column marked
+    # with 'dropHERE' tag 
     # Improve on column headers by making multiindex:
     upper_level_list = [' ','Chain 1','Chain 1','Chain 1'
-                    ,'Chain 1', 'Chain 2', 'Chain 2'
+                    ,'Chain 1', 'x' 'Chain 2', 'Chain 2'
                    , 'Chain 2', 'Chain 2','Interface'
                    ,'Interface','Interface','Interface','Interface'
                    ,'Interface', 'Interface'] # based on 
@@ -628,15 +650,18 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     #With multiindex, I can use duplicates of the bottom level column names
     # so I can now simplify column names
     column_names_simplified = (['row #','Chain label','Number_InterfacingAtoms', 
-            'Number_InterfacingResidues', 'Surface (Å$^2$)', 
+            'Number_InterfacingResidues', 'Surface (Å$^2$)', ' ' 
             'Chain label', 'Number_InterfacingAtoms',
             'Number_InterfacingResidues','Surface (Å$^2$)', 'Area (Å$^2$)', 
             'Solvation free energy gain', 
             'Solvation gain P-value', 'Hydrogen bonds', 'Salt Bridges',
             'Disuflides','CSS'])
     # superscript in column names based on https://stackoverflow.com/q/45291459/8508004
-    # Add the extra 'Id' column, if needed.
-    if 'Id   ##   Structure 1' in top_few_lines_input:
+    # Add the extra 'Id' column, if needed. (See above for why this conditional 
+    # test went from `if 'Id   ##   Structure 1' in top_few_lines_input` to more 
+    # complex b/c of 6nt8)
+    if 'Id' in top_few_lines_input[:14] and (
+        top_few_lines_input[:26].split() == ['Id', '##', 'Structure', '1']):
         upper_level_list = insert_position(
             id_col_insert_pt, upper_level_list, [' '])
         column_names_simplified = insert_position(
