@@ -247,7 +247,7 @@ repl_header_with_sym = ''' ##   Structure 1     ×   Structure 2     interface
  kcal/mol    ΔiG 
  P-value     NHB     NSB     NDS     CSS 
  NN      «»      Range   iNat    iNres   Surface Å2      Range   Symmetry op-n   Sym.ID      iNat    iNres   Surface Å2 ''' #Even though 
-# this won't get used for makign the dataframe, but baking in the extra 
+# this won't get used for making the dataframe, but baking in the extra 
 # 'Symmetry' columns makes it easy to signal downstream such extra columns are 
 # there & keeps things consistent because it makes what you'd get if you copied 
 # it from the page using your mouse.
@@ -628,8 +628,8 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
         "{}...".format(data_input_file_name))
     console.print(ir_string,style="bold red on white")
     df = pd.read_csv(
-    data_input_file_name, sep='\t',index_col=False , 
-    skiprows =5, names = column_names_list) # brings in the text of the table 
+        data_input_file_name, sep='\t',index_col=False , 
+        skiprows =5, names = column_names_list) # brings in text of the table 
     # that startswith `## and ends before the buttons below that table on the 
     # PISA server Interfaces page.
     # Drop the column that got tagged with special names during bring in.
@@ -642,7 +642,7 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     # with 'dropHERE' tag 
     # Improve on column headers by making multiindex:
     upper_level_list = [' ','Chain 1','Chain 1','Chain 1'
-                    ,'Chain 1', 'x' 'Chain 2', 'Chain 2'
+                    ,'Chain 1', 'x', 'Chain 2', 'Chain 2'
                    , 'Chain 2', 'Chain 2','Interface'
                    ,'Interface','Interface','Interface','Interface'
                    ,'Interface', 'Interface'] # based on 
@@ -650,7 +650,7 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
     #With multiindex, I can use duplicates of the bottom level column names
     # so I can now simplify column names
     column_names_simplified = (['row #','Chain label','Number_InterfacingAtoms', 
-            'Number_InterfacingResidues', 'Surface (Å$^2$)', ' ' 
+            'Number_InterfacingResidues', 'Surface (Å$^2$)', ' ', 
             'Chain label', 'Number_InterfacingAtoms',
             'Number_InterfacingResidues','Surface (Å$^2$)', 'Area (Å$^2$)', 
             'Solvation free energy gain', 
