@@ -398,7 +398,7 @@ def make_data_input_file_name(data_input_file_name):
         # columns.
         spacing_needed_b4_average = 13
         # However, I found some like 6nt8 have 'Average' row but no symmetry 
-        # columns, and so need less spacing to right for them. Speccifically,
+        # columns, and so need less spacing to right for them. Specifically,
         # subtract two because won't have two symmetry-related columns.
         if 'Symmetry op-n' not in intrf_tbl_text:
             spacing_needed_b4_average -= 2
