@@ -45,7 +45,13 @@ df = pdsum_prot_interactions_list_to_df('4fgf')
 See [here](https://github.com/fomightez/pdbepisa-binder) for notebooks demonstrating use within a Jupyter notebook; click `launch binder` to launch a session that will allow you to use the notebooks from there.
 
 
-Related
--------
+Related items by me
+-------------------
 
 - The PDBsum has good summaries of data involving all protein chains in structues. See the related series of demo notebooks available at my repo [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) for demonstration of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbsum-utilities)).
+
+## Related items by others
+
+There is also jsPISA, which is [supposedly](https://pubmed.ncbi.nlm.nih.gov/25908787/) an improved user interface; however, I don't see a way to use access as an API, several PDB entries I put in gave the error that they did not exist, and when I tried with [4fgf that shows a very informative interface table and PDBePISA](http://www.ebi.ac.uk/pdbe/pisa/cgi-bin/piserver?qi=4fgf), I was not able to see equivalent at jsPISA. jsPISA is maintained by CCP4 [here](http://www.ccp4.ac.uk/pisa).
+
+[Louis](https://www.biostars.org/u/9020/) has [a script](https://gist.github.com/lmmx/91515d38a1fc0644268f#file-getxml-py) that gets HTML (or is it XML?) for a lot of PDB indentifiers. It allows for interrupted/resumed download.
