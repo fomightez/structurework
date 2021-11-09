@@ -720,7 +720,8 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
             'Solvation free energy gain', 
             'Solvation gain P-value', 'Hydrogen bonds', 'Salt Bridges',
             'Disuflides','CSS'])
-    # superscript in column names based on https://stackoverflow.com/q/45291459/8508004
+    # Superscript in column names based on 
+    # https://stackoverflow.com/q/45291459/8508004
     # Add the extra 'Id' column, if needed. (See above for why this conditional 
     # test went from `if 'Id   ##   Structure 1' in top_few_lines_input` to more 
     # complex b/c of 6nt8)
@@ -738,7 +739,28 @@ def pisa_interface_list_to_df(pdb_code, return_df = True,
             symmetry_cols_insert_pt, column_names_simplified, ['SymOp','SymID'])
     cols = pd.MultiIndex.from_arrays([upper_level_list, column_names_simplified])
     df = df.set_axis(cols, axis=1, inplace=False)
-
+    #Although dataframe view in Jupyter hides much of it, I was noticing a lot 
+    # of space flanking some content of the tables (such as when viewing the 
+    # 'Id' series with `df[" ","Id"]` or using `.itertuples()` to iterate on the
+    # rows and content.), especially the Id column from those that have the 
+    # 'Average' rows because of the rather clunky way I handled the end of line 
+    # splitting for cases where multiple end of line symbols fall in what 
+    # splitting on `|` gives when marking real ends of rows with end of line 
+    # symbols in `make_data_input_file_name()`. Was looking into fixing that 
+    # column when I realized it was an issue for much of them and stumbled upon
+    # this great fix below to strip the whitespace when contemplating how to 
+    # handle it for the Id column. A comment had said you can also
+    # avoid issues with the fix if you cast to numeric first and since some of
+    # the columns have numberic data, this is an added benefit. Only the last
+    # seven columns consistently get converted to float and interger values; 
+    # however, that is seven more than I had. A lot of the others have empty 
+    # content or a mix of numbers and sometimes strings and so I'm going to add 
+    # information in the accompanying demonstration notebooks about dealing with
+    # these.
+    df.apply(pd.to_numeric, errors='ignore') # based on cdabel's comment in 
+    # https://stackoverflow.com/a/45355563/8508004
+    df = df.apply(lambda x: x.str.strip() if x.dtype == "object" else x) # based
+    # on https://stackoverflow.com/a/45355563/8508004
     
     pdb_code_id = pdb_code.lower() #make it lower case for returning, if return 
     # of pdb code id opted for.
