@@ -12,7 +12,7 @@ Be sure to see the 'Related' section below as well.
 * pisa_interface_list_to_df.py
 > PDB entry accession id ---> Python-based dataframe of Interfaces from PDBePISA for chains interacting
 
-I wrote up [a little introduction](https://stackoverflow.com/a/69904336/8508004) to this script and a sort-of 'quick start' meant more for biologists interested in using it as part of their work to look into structure(s). You can find it [here](https://stackoverflow.com/a/69904336/8508004).  
+I wrote up [a little introduction](https://stackoverflow.com/a/69904336/8508004) to this script and a sort-of 'quick start' meant more for biologists interested in using it as part of their work to look into structure(s). You can find it [here](https://stackoverflow.com/a/69904336/8508004). There's also some related posts on Biostars [here](https://www.biostars.org/p/402648/#9496986) and [here](https://www.biostars.org/p/105549/#9496987).  
 Whereas this blurb here is meant more for folks familiar with GitHub and Jupyter/Python than that one.
 
 Takes a PDB accession code or a file name of text copied from a PDBePISA Interface list page and produces a dataframe of the interchain reactions detailing the intraction area for each chain as well as the number & types of interactons.  
