@@ -2,11 +2,11 @@
 # pisa_interface_list_to_df.py
 __author__ = "Wayne Decatur" #fomightez on GitHub
 __license__ = "MIT"
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 
 # pisa_interface_list_to_df.py by Wayne Decatur
-# ver 0.1.4
+# ver 0.1.5
 #
 #*******************************************************************************
 # Verified compatible with both Python 2.7 and Python 3.8; written initially in 
@@ -72,6 +72,10 @@ __version__ = "0.1.4"
 #         rows
 # v.0.1.4 keeps the column that may have symbol indicating interface 
 #         properties
+# v.0.1.5 no longer assumes true rows that comes in from retrieving HTML of 
+#         report from PDBePISA (in `make_data_input_file_name`) are split over 
+#         three lines
+#         
 #
 
 #
@@ -349,16 +353,104 @@ def make_data_input_file_name(data_input_file_name):
     # file made from the interface list page by a user.
     #---------------------------------------------------------------------------
     # Going from the html to text resuls in the table having the true rows 
-    # broken up with two internal end of line signals and then one at the the 
-    # true end. So this next step split on every end of line signal and stitch 
+    # broken up with one or two internal end of line signals and then one at the 
+    # true end. 
+    ''' WHAT IS IN THIS SMALL BLOCK COMMEBNT BELOW IS WHAT I HAD BEEN DOING 
+    BEFORE REALIXING NOT ALWAYS EXACTLY TWO INTERNAL END OF LINE SIGNALS. 
+    EXAMPLE IN LAST FEW ROWS OF 6nt8 WHERE CONTENTS OF ROW SHORT ENOUGH 
+    APPARENTLY TO ONLY SPAN 2 LINES BECAUSE NUMBERS ON LEFT SIDE ALL VERY SHORT.
+    #So this next step split on every end of line signal and stitch 
     # back together only using each third one so that it just leaves what would 
     # have been every third end of line before this step, 
     # based on https://stackoverflow.com/a/25978384/8508004
     spl = main_table_text.split("\n")
     raw_tbl_content = "\n".join(
         ["".join(spl[i:i+3]) for i in range(0,len(spl),3)])
-    # Delimit it with tabs, not '|', like it was when I copied text directly 
-    # from web page.
+    '''
+    # Now going to count the columns in the raw state and remove line endings 
+    # that won't correspond to last column. I think I had hesitated doing this 
+    # earlier because I wasn't sure I had sampled a lot to know I had full 
+    # understanding of the number of columns and I thought true rows spanned 3 
+    # lines.
+    raw_column_num = 18
+    # Preparation for removing the 'internal' line endings:
+    # The '**_Average:_**' lines though are a problem for the approach where 
+    # remove line endings that don't correspond to last column and so going to 
+    # add in correct number of `|` and spaces to the left of '**_Average:_**' so 
+    # those have same number of columns.
+    spacing_needed_b4_average = 11
+    # account for symmetry columns in 'spacing_needed_b4_average' if have
+    if 'Symmetry op-n' in intrf_tbl_text:
+            spacing_needed_b4_average += 2
+    correct_Avg_text = ' |' *spacing_needed_b4_average + '**_Average:_**'
+    main_table_text = main_table_text.replace(
+        '**_Average:_**', correct_Avg_text)
+    # Adjust 'raw_column_num' to account for 'Average' rows that have 'Id' 
+    # column or for 'Symmetry' columns
+    if '**_Average:_**' in intrf_tbl_text:
+        raw_column_num += 1
+    if 'Symmetry op-n' in intrf_tbl_text:
+        raw_column_num += 2
+    # Now should be ready to remove the 'internal' line endings. Doing that by
+    # iterating on the elements from splitting at '|' and making a new list of
+    # those elements where line endings are removed unless they correspond to 
+    # being in the last column.
+    collected_split_parts_without_internal_line_endings = []
+    correction_value = 0 # this will be use to add in an additional column count 
+    # for each end of row encountered since the end of the actual row line doesn't
+    # have a `|` on the right side like all the other columns. So the end of each
+    # row, other than the last, should actually count as two columns. Otherwise, 
+    # `indx+1`, which is meant to mirror the column count in total, continually 
+    # gets more and more off with each row beyond the first actual row.
+    for indx,split_content in enumerate(main_table_text.split("|")):
+        if ((indx+1)+correction_value) % raw_column_num == 0:
+            # leave any line ending as this should be a 'last' column. Unless 
+            # there is the rare case where there are two line endings like I 
+            # encountered in a row for 1rpn of `'\n 0.000   \n 5  ' or for 6agb 
+            # of `' \n0.000   \n 2  '` or several for for 6agb like
+            # `'  0.000\n  \n 14  '` caused by an internal end of line falling 
+            # or in fact sometimes multiples end of lines falling in among the 
+            # ONE that is the actual ending. In such a case I need to delete all
+            # the line endings except the one after the first number.
+            if split_content.count("\n") > 1:
+                split_content_simplifying = split_content.replace("\n","")
+                # now that all end of line characters are removed, while keeping 
+                # all additional content, put an end of line character after the 
+                # first content that isn't a space and join everything back 
+                # together
+                # Identify first element that isn't a space
+                first_value = ""
+                for x in split_content_simplifying.split():
+                    if x:
+                        first_value = x
+                        break
+                # now break it it apart on that 'first_value' and put it back
+                # together putting an end of line character after that 
+                # first_value
+                spl = split_content_simplifying.split(first_value,1)
+                split_content_simplified = spl[0] + first_value+"\n"+spl[1]
+                collected_split_parts_without_internal_line_endings.append(
+                    split_content_simplified)
+            else:
+                collected_split_parts_without_internal_line_endings.append(
+                    split_content)
+            correction_value += 1 #Because each `split_content` that corresponds
+            # to the end of a row, except the very last of the entire table, 
+            # actually corresponds to two columns in total.
+        else:
+            # delete the line ending as it is 'internal'
+            collected_split_parts_without_internal_line_endings.append(
+                split_content.replace("\n",""))
+    # With 'internal' line endings removed put the list back together to have 
+    # the '|' that indicate column boundaries in the table from the interface 
+    # data page retrieved as html.
+    raw_tbl_content = "|".join(
+        collected_split_parts_without_internal_line_endings)
+    # Change delimiter to tabs, not '|', so that it will resemble closely what I
+    # saw  when I copied text directly from web page by highlighting with mouse
+    # and pasting elsewhere. This way can read data later with same processing 
+    # steps whether directly copied from webpage or if retrieved via 
+    # http://www.ebi.ac.uk/pdbe/pisa/cgi-bin/piserver
     tab_sep_main_table_part = raw_tbl_content.replace("|","\t")
     # Put the header back. There seems to be a variety of headers. At least 
     # four that I've found now. For the 'main' two: there is
@@ -367,50 +459,22 @@ def make_data_input_file_name(data_input_file_name):
     # that has two additional columns 'Symmetry op-n' & 'Sym.ID' in the middle 
     # section of reports for PDB entries like 4gfg, which I suspect is typical 
     # for crystal structures.
-    # The third and fourth I recently found are one without expanded header and 
-    # also with so that it is further expanded. The one I found first has the 
+    # The third and fourth I recently found are one with additional 'Id' column 
+    # as well as two additional columns 'Symmetry op-n' & 'Sym.ID' and then one
+    # with just an additonal 'Id' column. The one I found first has the 
     # two additional columns 'Symmetry op-n' & 'Sym.ID' and ALSO starts out with 
     # 'Id' before 'Row #'' like the interface list report pages for 1trn & 1rpn. 
-    # Seem Cryo-EM structures can gave these too, example 6nt8. Seems when you 
-    # have the same chains also in another conformation, for example in tetramer
-    # of 6nt8. And those don't have the expanded header columns names that 
-    # include 'Symmetry op-n' & 'Sym.ID'.
-    # The other tell-tale characteristic of these ones beyond the header is that
-    # they have rows with 'Average' that need special handling.
+    # Seem Cryo-EM structures can gave the 'Id' column too, example 6nt8. Seems 
+    # when you have the same chains also in another conformation, for example in 
+    # tetramer of 6nt8. 
+    # The other tell-tale characteristic of these ones with 'Id' in the columns 
+    # is that they have rows with 'Average' that need special handling, some of
+    # which has already been done above.
     correct_header = replacement_header 
     if 'Symmetry op-n' in intrf_tbl_text:
         correct_header = repl_header_with_sym
     if '**_Average:_**' in intrf_tbl_text:
         correct_header = ' Id   ' + correct_header[1:] # fix header to add 'Id'
-        # go back to making 'tab_sep_main_table_part' because the stitching back
-        # together with every three lines won't have worked because the 
-        # 'Average' rows only get spread out over 2 lines and so things don't 
-        # stitch back together right. I put this handling here so it may be 
-        # clearer what this was addressing and even though it results in 
-        # repeating stuff, I think it makes it more clear this is fixing this 
-        # 'Average' case by having it all done in a single block.
-        # Before spliting on new lines add a line break where '**_Average:_**' 
-        # occurs so those rows will be spread out over three lines like most
-        # other table rows. At the same time, I might as well add in front of 
-        # '**_Average:_**', the spacing I'll need to get the columns under the
-        # correct column headers later because in the table the 'Average' lines
-        # are shifted mostly right because only have content for last few 
-        # columns.
-        spacing_needed_b4_average = 13
-        # However, I found some like 6nt8 have 'Average' row but no symmetry 
-        # columns, and so need less spacing to right for them. Specifically,
-        # subtract two because won't have two symmetry-related columns.
-        if 'Symmetry op-n' not in intrf_tbl_text:
-            spacing_needed_b4_average -= 2
-        correct_Avg_text = ' |' *spacing_needed_b4_average + '**_Average:_**\n'
-        main_table_text = main_table_text.replace(
-            '**_Average:_**', correct_Avg_text)
-        spl = main_table_text.split("\n")
-        raw_tbl_content = "\n".join(
-            ["".join(spl[i:i+3]) for i in range(0,len(spl),3)])
-        # Delimit it with tabs, not '|', like it was when I copied text directly 
-        # from web page.
-        tab_sep_main_table_part = raw_tbl_content.replace("|","\t")
     rebuilt_int_tbl_text = correct_header + "\n"+ tab_sep_main_table_part
     # Save the produced text as a file 
     with open(data_input_file_name, 'w') as output_file:
