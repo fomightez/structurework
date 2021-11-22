@@ -229,6 +229,10 @@ def print_separator_lines_to_console(num_lines=1,skip=0):
 
     Optionally, you can provide a number of initial colors to skip if you don't
     like the ones you are seeing come up first.
+    (I remember to get the colors I used some of to make this list took some
+    digging and then I later say I was not the only one: 
+    https://twitter.com/Julio_PDX/status/1462839976203153412 , but Will McGugan 
+    replied you can do with `python -m rich.color)`.)
     '''
     import itertools
     color_list = (['bright_yellow','bright_green','bright_blue','bright_cyan', 
