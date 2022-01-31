@@ -565,11 +565,11 @@ def insert_position(position, list1, list2):
     return list1[:position] + list2 + list1[position:]
 
 
-###--------------------------END OF HELPER FUNCTIONS---------------------------###
-###--------------------------END OF HELPER FUNCTIONS---------------------------###
+###------------------------END OF HELPER FUNCTIONS---------------------------###
+###------------------------END OF HELPER FUNCTIONS---------------------------###
 
 #*******************************************************************************
-###------------------------'main' function of script---------------------------##
+###------------------------'main' function of script--------------------------##
 
 def pisa_interface_list_to_df(pdb_code, return_df = True, 
     pickle_df=True, return_pdb_code=False, adv_debugging=False):
