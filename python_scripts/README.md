@@ -166,6 +166,8 @@ Related resources by others
 
 -  [Bio3D](https://github.com/fomightez/bio3d-binder), an R package for the analysis of macromolecular structure, sequence and trajectory data. (***R- and not Python-based, but definitely related***).
 
+- [bioptools](https://github.com/ACRMGroup/bioptools) has [pdbsplitchains](https://github.com/ACRMGroup/bioptools#pdbsplitchains) that Split a PDB file into separate files for each chain. (See [here](https://www.biostars.org/p/9513505/#9513508).) The package has other scripts with structure-related abilities.
+
 - [Marcin Magnus's rna-pdb-tools: a toolbox to analyze structures and simulations of RNA](https://github.com/mmagnus/rna-pdb-tools)
 
 - [PDBrenum: A webserver and program providing PDB renumbered according to their UniProt sequences](http://dunbrack3.fccc.edu/PDBrenum/). The [associated scientific article](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0253411) shows how to run it as a Python script in detail. The [Announcement](https://twitter.com/RolandDunbrack/status/1412675616156098562).
