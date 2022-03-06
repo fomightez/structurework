@@ -48,3 +48,7 @@ Related resources by others
     - mmCIF ➜ MTZ
     - MTZ ➜ mmCIF
     - 2 × data files ➜ mmCIF (deposition-ready)
+
+- [bioptools](https://github.com/ACRMGroup/bioptools) has [pdbsplitchains](https://github.com/ACRMGroup/bioptools#pdbsplitchains) that Split a PDB file into separate files for each chain. (See [here](https://www.biostars.org/p/9513505/#9513508).) The package has other scripts with structure-related abilities.
+
+-  See more related tools [here](https://github.com/fomightez/structurework/tree/master/python_scripts#related-resources-by-others).
