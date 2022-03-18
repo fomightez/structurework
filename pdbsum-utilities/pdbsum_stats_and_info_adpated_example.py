@@ -211,6 +211,9 @@ def get_protein_statsningo_table(pdb_code):
     # HTML table to text adapted from https://www.geeksforgeeks.org/convert-html-table-into-csv-file-in-python/
     ligands_section = "</table>".join(ligands_section_exp[:2])
     ligands_end_of_hrefs = ligands_section.split("</a>")
+    # This rather complex list comprehension on the next line is just iterating 
+    # on the a href pieces from this section and getting the text before the 
+    # closing </a> tag
     ligands_list = ", ".join([x.split()[-1] for x in ligands_end_of_hrefs[:-1]])
     #print(ligands_list)
     data_dict = { 'PDB id' : [pdb_code],
