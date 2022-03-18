@@ -430,7 +430,7 @@ if __name__ == "__main__" and '__file__' in globals():
     import argparse
     parser = argparse.ArgumentParser(prog='pdbsum_prot_interface_statistics_to_df.py',
         description="pdbsum_prot_interface_statistics_to_df.py \
-        Takes a PDB code and gets the corresponding corresponding \
+        Takes a PDB code and gets the corresponding \
         protein-protein interface statistics from PDBsum and brings it into \
         Python as a dataframe and saves a file of \
         that dataframe for use elsewhere. Optionally, it can \
