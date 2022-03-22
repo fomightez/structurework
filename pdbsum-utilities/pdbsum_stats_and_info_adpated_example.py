@@ -11,7 +11,7 @@ __version__ = "0.1.0"
 #*******************************************************************************
 #
 #
-# PURPOSE: Takes a PDB code and gets the corresponding data of resolution, 
+# PURPOSE: Takes a PDB code and gets the corresponding data about resolution, 
 # R-value, and ligands bound along the lines of this biostars post:
 # https://www.biostars.org/p/9515231/#9515231
 #
@@ -132,14 +132,8 @@ import sys
 import os
 import pandas as pd
 import numpy as np
-# I need StringIO so string handled as file document. Also need to deal 
-# with whether Python 3 or 2 because StringIO source differs for Python 2.
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 import uuid 
-from bs4 import BeautifulSoup
+
 
 output_file_name = "{}{}.htm".format(
     output_file_name_prefix,uuid.uuid1().time) # based 
@@ -195,31 +189,46 @@ def get_n_save_Top_page_source(pdb_code):
         "{}".format(main_url))
     return output_file_name
 
-def get_protein_statsningo_table(pdb_code):
+def get_protein_statsninfo_table(pdb_code):
     #Takes a PDB entry accession identifier alphanumeic (PDB code) and gets
     # from PDBsum the HTML for the Top page
     # and converts it into a pandas dataframe.
     page_source_fn = get_n_save_Top_page_source(pdb_code)
     with open(page_source_fn, 'r') as input_file:
         raw_txt=input_file.read()
-    resolution = raw_txt.split('Resolution:',1)[1].split("&Aring;",1)[0].split("<td align=left>")[-1].strip()+" Å"
-    #print(resolution)
-    r_value = raw_txt.split('R-factor:',1)[1].split("&nbsp;&nbsp;&nbsp;&nbsp;",1)[0].split("<td class=ntxt valign=top>")[-1].strip()
-    #print(r_value)
-    ligands_section_exp = raw_txt.split(
-        '<b>Ligands</b>',1)[1].split("</table>",3)
-    # HTML table to text adapted from https://www.geeksforgeeks.org/convert-html-table-into-csv-file-in-python/
-    ligands_section = "</table>".join(ligands_section_exp[:2])
-    ligands_end_of_hrefs = ligands_section.split("</a>")
-    # This rather complex list comprehension on the next line is just iterating 
-    # on the a href pieces from this section and getting the text before the 
-    # closing </a> tag
-    ligands_list = ", ".join([x.split()[-1] for x in ligands_end_of_hrefs[:-1]])
-    #print(ligands_list)
+    # Parse resolution. If none reported, use 'NA'
+    if 'Resolution:' in raw_txt:
+        resolution = raw_txt.split(
+            'Resolution:',1)[1].split("&Aring;",1)[0].split(
+            "<td align=left>")[-1].strip()+" Å"
+    else:
+        resolution = "NA"
+    # Parse R value. If none reported, use 'NA'
+    if 'R-factor:' in raw_txt:
+        r_value = raw_txt.split(
+            'R-factor:',1)[1].split("&nbsp;&nbsp;&nbsp;&nbsp;",1)[0].split(
+            "<td class=ntxt valign=top>")[-1].strip()
+    else:
+        r_value = "NA"
+    # Parse ligands. If none reported, use 'None'
+    if '<b>Ligands</b>' in raw_txt:
+        ligands_section_exp = raw_txt.split(
+            '<b>Ligands</b>',1)[1].split("</table>",3)
+        # HTML table to text adapted from https://www.geeksforgeeks.org/convert-html-table-into-csv-file-in-python/
+        ligands_section = "</table>".join(ligands_section_exp[:2])
+        ligands_end_of_hrefs = ligands_section.split("</a>")
+        # This rather complex list comprehension on the next line is just 
+        # iterating on the a href pieces from this section & getting the text 
+        # before the closing </a> tag. The join puts commas between ligands if 
+        # there are more than one.
+        the_ligands = ", ".join(
+            [x.split()[-1] for x in ligands_end_of_hrefs[:-1]])
+    else:
+        the_ligands = "None"
     data_dict = { 'PDB id' : [pdb_code],
     'Resolution':[resolution],
     'R value':[r_value],
-    'Ligands':[ligands_list]
+    'Ligands':[the_ligands]
         }
 
     # Storing the data into Pandas 
@@ -278,7 +287,7 @@ def pdbsum_stats_and_info_adpated_example(pdb_code, return_df = True,
 
     Adapted from the main function in `blast_to_df.py`
     '''
-    df = get_protein_statsningo_table(pdb_code)
+    df = get_protein_statsninfo_table(pdb_code)
 
 
         
@@ -360,8 +369,9 @@ if __name__ == "__main__" and '__file__' in globals():
     import argparse
     parser = argparse.ArgumentParser(prog='pdbsum_stats_and_info_adpated_example.py',
         description="pdbsum_stats_and_info_adpated_example.py \
-        Takes a PDB code and gets some details & brings the information it into \
-        Python as a dataframe and saves a file of \
+        Takes a PDB code and gets information about the resolution, R-value, \
+        & ligands bound, and brings the information into \
+        Python as a dataframe. It saves a file of \
         that dataframe for use elsewhere. Optionally, it can \
         also return that dataframe for use inside a Jupyter notebook. \
         Meant to be a utility script for working \
