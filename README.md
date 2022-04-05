@@ -51,4 +51,6 @@ Related resources by others
 
 - [bioptools](https://github.com/ACRMGroup/bioptools) has [pdbsplitchains](https://github.com/ACRMGroup/bioptools#pdbsplitchains) that Split a PDB file into separate files for each chain. (See [here](https://www.biostars.org/p/9513505/#9513508).) The package has other scripts with structure-related abilities.
 
+- `exploder.py` by Tom Peacock [here](https://github.com/tp-peacock/pdbTools) looks to be meant to separate chains in a protein complex for visualization purposes, so you can have a scene where looks like complex pulled apart some like parts manuals often show assemblies in 'exploded view'.
+
 -  See more related tools [here](https://github.com/fomightez/structurework/tree/master/python_scripts#related-resources-by-others).
