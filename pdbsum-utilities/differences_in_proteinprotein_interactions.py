@@ -156,7 +156,7 @@ if not os.path.isfile(file_needed):
     sys.stderr.write("\nObtaining script containing a function to use to parse "
         "the data files from PDBsum "
         "...\n")
-  # based on http://amoffat.github.io/sh/
+    # based on http://amoffat.github.io/sh/
     from sh import curl
     curl("-OL",
         "https://raw.githubusercontent.com/fomightez/structurework/master"
