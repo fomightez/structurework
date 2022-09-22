@@ -161,6 +161,23 @@ if not os.path.isfile(file_needed):
     curl("-OL",
         "https://raw.githubusercontent.com/fomightez/structurework/master"
         "/pdbsum-utilities/"+file_needed)
+    #NOTE the curl step should be able to be replaced by the following, the
+    # process will first get tested in `replace_unusual_nts_within_FASTA.py`.
+    # Importantly, using Python's requests for this step will mean it is more
+    # portable on platforms, such as old ones, than `from sh import curl` b/d
+    # even though Windows 10 has curl now, I'm not 100% sure `from sh 
+    # import curl` works on Windows 10 because at http://amoffat.github.io/sh/ 
+    # it still says windows not supported.
+    # Use of requests to get a file and save code from GitHub using requests 
+    # based on https://stackoverflow.com/a/69393018/8508004
+    '''
+    import requests
+    url = ("https://raw.githubusercontent.com/fomightez/structurework/master"
+        "/pdbsum-utilities/"+file_needed)
+    r = requests.get(url, allow_redirects=True)
+    with open(file_needed, 'wb') as streamhandler:
+        streamhandler.write(r.content)
+    '''
     # verify that worked & ask for it to be done manually if fails
     if not os.path.isfile(file_needed):
         github_link = ("https://github.com/fomightez/structurework/tree"
