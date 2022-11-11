@@ -164,7 +164,7 @@ if not os.path.isfile(file_needed):
     #NOTE the curl step should be able to be replaced by the following, the
     # process will first get tested in `replace_unusual_nts_within_FASTA.py`.
     # Importantly, using Python's requests for this step will mean it is more
-    # portable on platforms, such as old ones, than `from sh import curl` b/d
+    # portable on platforms, such as old ones, than `from sh import curl` b/c
     # even though Windows 10 has curl now, I'm not 100% sure `from sh 
     # import curl` works on Windows 10 because at http://amoffat.github.io/sh/ 
     # it still says windows not supported.
