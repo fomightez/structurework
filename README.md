@@ -54,3 +54,13 @@ Related resources by others
 - `exploder.py` by Tom Peacock [here](https://github.com/tp-peacock/pdbTools) looks to be meant to separate chains in a protein complex for visualization purposes, so you can have a scene where looks like complex pulled apart some like parts manuals often show assemblies in 'exploded view'.
 
 -  See more related tools [here](https://github.com/fomightez/structurework/tree/master/python_scripts#related-resources-by-others).
+
+See also
+--------
+
+[My sequencework repo](https://github.com/fomightez/sequencework/) - for utilities and code dealing with nucleic and protein sequences
+
+[My proteomicswork repo](https://github.com/fomightez/proteinwork/) - for utilities and code dealing with proteomicss analysis
+
+
+
