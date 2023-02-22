@@ -60,7 +60,7 @@ See also
 
 [My sequencework repo](https://github.com/fomightez/sequencework/) - for utilities and code dealing with nucleic and protein sequences
 
-[My proteomicswork repo](https://github.com/fomightez/proteinwork/) - for utilities and code dealing with proteomicss analysis
+[My proteomicswork repo](https://github.com/fomightez/roteomicswork/) - for utilities and code dealing with proteomicss analysis
 
 
 
