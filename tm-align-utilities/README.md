@@ -24,3 +24,12 @@ For example, there is a demo of code to use part of a sequence alignment to cons
 	- Determine residues that match to a reference from multiple sequence alignment and use to construct fit commands
 
 * [a gist](https://gist.github.com/fomightez/2601c0f5a13b85cd21b9377169c79836) I forked from [Joao Rodrigues](https://gist.github.com/JoaoRodrigues/e3a4f2139d10888c679eb1657a4d7080) for aligning structures using Biopython. See [here](http://thread.gmane.org/gmane.comp.python.bio.general/8782/focus=8783) about it.
+
+
+* Installing TM-align for use on command line (tmalign):
+what is stated at https://zhanggroup.org/TM-align/ under the section 'TM-align download' didn't look overly user-friendly but 
+https://anaconda.org/bioconda/tmalign  says conda command is:
+
+```shell
+conda install -c bioconda tmalign
+``` 
