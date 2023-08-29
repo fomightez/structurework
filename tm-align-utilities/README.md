@@ -1,5 +1,7 @@
 # TM-align-utilities
 
+Note that US-align is the version of TM-align to be developed going forward. [the TM-align github page](https://github.com/kad-ecoli/TMalign) sends you to [USalign](https://github.com/pylelab/USalign) with the note about the TM-align repo of "This repo is outdated. Please use https://github.com/pylelab/USalign instead".
+
 Utility scripts for working with data from [Tm-align](https://zhanggroup.org/TM-align/), an algorithm for protein structure alignment and comparison.
 
 Be sure to see the 'Related' section below, as some of these utility scripts (or the ideas behind them) are also used to layer on structure information to equivalent residues and conservation.
@@ -16,6 +18,8 @@ Notebook [available in sessions launched from here](https://github.com/fomightez
 
 Related
 -------
+
+* US-align working in MyBinder sessions with a demo in the notbeook that opens: [usalign-binder](https://github.com/fomightez/usalign-binder)
 
 * Notebook [available in sessions launched from here](https://github.com/fomightez/cl_demo-binder).  
 For example, there is a demo of code to use part of a sequence alignment to construct fit/compare commands for PyMOL and Jmol
