@@ -1,4 +1,8 @@
-# This uses uv to run. First install `uv` with `pip install uv` then run `!uv run complexes_rawCSV_to_df.py hu.MAP3.0_complexes_wConfidenceScores_total15326_wGenenames_20240922.csv`
+# This is meant to use with `uv` to run. 
+# First install `uv` with `pip install uv` then run `!uv run complexes_rawCSV_to_df.py hu.MAP3.0_complexes_wConfidenceScores_total15326_wGenenames_20240922.csv`
+#-------------------------------------------------------------#
+# Pickled dataframe saved as `'raw_complexes_pickled_df.pkl'`.
+#-------------------------------------------------------------#
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
