@@ -9,9 +9,12 @@ Be sure to see the 'Related' section below as well.
 
 # The scripts
 
-* ??????.py
-> gene name ---> Python-based dataframe of genes with proteins int he complex
+* complexes_rawCSV_to_df.py
+> raw data csv file ---> Python-based dataframe of raw data on all complexes.
+   Pickled dataframe saved as `'raw_complexes_pickled_df.pkl'`.
 
+* ???????.py
+> gene name ---> Python-based dataframe of genes with proteins int the complex
 
 
 #### For running in a Jupyter notebook:
