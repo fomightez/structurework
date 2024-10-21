@@ -31,6 +31,7 @@ See [here](https://github.com/fomightez/humap3-binder) for notebooks demonstrati
 
 Related items by me
 -------------------
+- I use the Unipressed package a lot with working with this data, see my [Unipressed-binder repo](https://github.com/fomightez/Unipressed-binder) for more on working with this package.
 - The PDBePISA has good summaries of data involving all protein chains in structues. See the related series of demo notebooks available at my repo [pdbepisa-binder](https://github.com/fomightez/pdbepisa-binder) for demonstrations of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbepisa-utilities)).
 - The PDBsum has good summaries of data involving all protein chains in structues. See the related series of demo notebooks available at my repo [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) for demonstration of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbsum-utilities)).
 
