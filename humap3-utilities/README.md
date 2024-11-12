@@ -15,6 +15,10 @@ Be sure to see the 'Related' section below as well.
    Pickled dataframe saved as `'raw_complexes_pickled_df.pkl'`. ('pickled' just means stored in a special serialized form easy for Python to access.)  
    The script is meant to be run with`uv` using  `uv run complexes_rawCSV_to_df.py hu.MAP3.0_complexes_wConfidenceScores_total15326_wGenenames_20240922.csv`.
 
+* make_lookup_table_for_extra_info4complexes.py
+> dataframe with UniProt identifiers  ---> dictionary
+This script is meant to be run in a Jupyter notebook `.ipynb` file where the dataframe containing the identifiers is already defined as `df_expanded` and the identifiers are in the `'Uniprot_ACCs'` column. Use `%run -i make_lookup_table_for_extra_info4complexes.py`.
+
 * ???????.py
 > gene name ---> Python-based dataframe of genes with proteins int the complex
 
