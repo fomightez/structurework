@@ -30,6 +30,7 @@ def make_lookup_table_for_extra_info4complexes(df, column_with_identifiers):
             disease_info_list = ['None reported']
         '''
         disease_info_list = []
+        synonyms_info_list =[]
         if 'comments' in uniprot_record:
             for comment in uniprot_record['comments']:
                 if comment['commentType'] == 'DISEASE':
@@ -39,7 +40,11 @@ def make_lookup_table_for_extra_info4complexes(df, column_with_identifiers):
         if not disease_info_list:
             disease_info_list = ['None reported']
         disease_info = '; '.join(disease_info_list[:2])
-        lookup_dict[acc] = {'protein_name':protein_name, 'disease': disease_info}
+        if not synonyms_info_list:
+            synonyms_info_list = ['None reported']
+        disease_info = '; '.join(disease_info_list[:2])
+        synonyms_info = '; '.join(synonyms_info_list)
+        lookup_dict[acc] = {'protein_name':protein_name, 'disease': disease_info, 'synonyms': synonyms_info}
         time.sleep(1.1) # don't slam the API
     return lookup_dict
 lookup_dict = make_lookup_table_for_extra_info4complexes(df_expanded,'Uniprot_ACCs')
