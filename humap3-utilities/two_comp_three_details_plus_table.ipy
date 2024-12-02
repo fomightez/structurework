@@ -1,0 +1,245 @@
+#main collection of details for version 2.0 vs. 3.0 data and making table detailing 
+# Uses `%run -i make_lookup_table_for_extra_info4complexes.py` for now & so needs to be `.ipy` for now.
+pattern = fr'\b{search_term}\b' # Create a regex pattern with word boundaries
+d2_rows_with_term_df = rd2_df[rd2_df['Uniprot_ACCs'].str.contains(pattern, case=False, regex=True) | rd2_df['genenames'].str.contains(pattern, case=False, regex=True)].copy()
+d3_rows_with_term_df = rd3_df[rd3_df['Uniprot_ACCs'].str.contains(pattern, case=False, regex=True) | rd3_df['genenames'].str.contains(pattern, case=False, regex=True)].copy()
+# make the dataframe have each row be a single protein
+# to prepare to use pandas `explode()` to do that, first make the content in be lists
+d2_rows_with_term_df['Uniprot_ACCs'] = d2_rows_with_term_df['Uniprot_ACCs'].str.split()
+d3_rows_with_term_df['Uniprot_ACCs'] = d3_rows_with_term_df['Uniprot_ACCs'].str.split()
+d2_rows_with_term_df['genenames'] = d2_rows_with_term_df['genenames'].str.split()
+d3_rows_with_term_df['genenames'] = d3_rows_with_term_df['genenames'].str.split()
+# Now use explode to create a new row for each element in both columns
+df2_expanded = d2_rows_with_term_df.explode(['Uniprot_ACCs', 'genenames']).copy()
+df3_expanded = d3_rows_with_term_df.explode(['Uniprot_ACCs', 'genenames']).copy()
+# Reset the index 
+df2_expanded = df2_expanded.reset_index(drop=True)
+df3_expanded = df3_expanded.reset_index(drop=True)
+# Display the first few rows of the expanded dataframe
+print(df2_expanded.tail())
+print(" ")
+print(df3_expanded.tail())
+df_expanded = pd.concat([df2_expanded,df3_expanded])
+%run -i make_lookup_table_for_extra_info4complexes.py
+# Use collected information to enhance the dataframes
+pn_dict = {k: v['protein_name'] for k, v in lookup_dict.items()}
+disease_dict = {k: v['disease'] for k, v in lookup_dict.items()}
+synonyms_dict = {k: v['synonyms'] for k, v in lookup_dict.items()}
+df3_expanded['synonyms'] = df3_expanded['Uniprot_ACCs'].map(synonyms_dict)
+df3_expanded['protein_name'] = df3_expanded['Uniprot_ACCs'].map(pn_dict)
+df3_expanded['disease'] = df3_expanded['Uniprot_ACCs'].map(disease_dict)
+conf_val2text_dict = {
+    1: 'Extremely High',
+    2: 'Very High',
+    3: 'High',
+    4: 'Moderate High',
+    5: 'Medium High',
+    6: 'Medium'
+}
+# Use vectorized mapping to convert confidence values to text
+df3_expanded['ComplexConfidence'] = df3_expanded['ComplexConfidence'].map(conf_val2text_dict)
+base_uniprot_url = 'https://www.uniprot.org/uniprotkb/'
+df3_expanded = df3_expanded.assign(Link=base_uniprot_url + df3_expanded['Uniprot_ACCs'])
+
+# do same for 2.0 data
+df2_expanded['synonyms'] = df2_expanded['Uniprot_ACCs'].map(synonyms_dict)
+df2_expanded['protein_name'] = df2_expanded['Uniprot_ACCs'].map(pn_dict)
+df2_expanded['disease'] = df2_expanded['Uniprot_ACCs'].map(disease_dict)
+conf_val2text_dict = {
+    1: 'Extremely High',
+    2: 'Very High',
+    3: 'High',
+    4: 'Moderate High',
+    5: 'Medium High',
+    6: 'Medium'
+}
+# Use vectorized mapping to convert confidence values to text
+df2_expanded['Confidence'] = df2_expanded['Confidence'].map(conf_val2text_dict)
+base_uniprot_url = 'https://www.uniprot.org/uniprotkb/'
+df2_expanded = df2_expanded.assign(Link=base_uniprot_url + df2_expanded['Uniprot_ACCs'])
+
+# Because ranked by size probably correct if the number of shared items doesn't get any better if you re-order. Then failiong that being good result, 
+# fall back to ranking by share members if doesn't seem to work that the shared items never gets any better from ranked size comparisons.
+
+# Get the groups from both dataframes
+df2_groups = df2_expanded.groupby('HuMAP2_ID')['Uniprot_ACCs'].apply(list)
+df3_groups = df3_expanded.groupby('HuMAP3_ID')['Uniprot_ACCs'].apply(list)
+
+# Convert lists to sets
+source1_sets = {idx: set(ids) for idx, ids in df2_groups.items()}
+source2_sets = {idx: set(ids) for idx, ids in df3_groups.items()}
+
+# Sort groups by size
+source1_sorted = sorted(source1_sets.items(), key=lambda x: len(x[1]), reverse=True)
+source2_sorted = sorted(source2_sets.items(), key=lambda x: len(x[1]), reverse=True)
+
+# Function to check shared items
+def get_shared_items(set1, set2):
+    return set1.intersection(set2)
+
+# Function for weighted similarity
+def weighted_similarity(set1, set2, weight_jaccard=0.7):
+    intersection = set1.intersection(set2)
+    union = set1.union(set2)
+    jaccard = len(intersection) / len(union) if union else 0
+    max_possible_intersection = max(len(set1), len(set2))
+    normalized_intersection = len(intersection) / max_possible_intersection if max_possible_intersection != 0 else 0
+    
+    return weight_jaccard * jaccard + (1 - weight_jaccard) * normalized_intersection
+
+# Correspondence tracking
+correspondences = []
+used_source2_indices = set()
+
+# First pass: Try to match by ranking and shared items
+for i, (humap2_id, set1) in enumerate(source1_sorted):
+    # If we've reached the end of source2 sorted list, break
+    if i >= len(source2_sorted):
+        break
+    
+    humap3_id, set2 = source2_sorted[i]
+    
+    # Check shared items
+    shared = get_shared_items(set1, set2)
+    
+    if len(shared) > 1:  # need greater than 1 and not zero because always going to be greater than zero because every complex has to have query identifier
+        correspondences.append({
+            'HuMAP2_ID': humap2_id,
+            'HuMAP3_ID': humap3_id,
+            'HuMAP2_size': len(set1),
+            'HuMAP3_size': len(set2),
+            'shared_items': len(shared),
+            'shared_elements': shared,
+            'weighted_similarity': weighted_similarity(set1, set2)
+        })
+        used_source2_indices.add(i)
+
+# Second pass: Fallback method for unmatched groups
+# Create a list of unused source2 indices
+unused_source2_indices = [
+    j for j in range(len(source2_sorted)) 
+    if j not in used_source2_indices
+]
+
+# Fallback matching
+for humap2_id, set1 in source1_sorted:
+    # Skip if this HuMAP2 ID has already been matched
+    if any(corr['HuMAP2_ID'] == humap2_id for corr in correspondences):
+        continue
+    
+    # Find best match among unused source2 groups
+    best_match = None
+    best_similarity = -1
+    best_unused_index = -1
+    
+    for j in unused_source2_indices:
+        humap3_id, set2 = source2_sorted[j]
+        similarity = weighted_similarity(set1, set2)
+        
+        if similarity > best_similarity:
+            best_match = (humap3_id, set2)
+            best_similarity = similarity
+            best_unused_index = j
+    
+    # Add the best match if found
+    if best_match:
+        humap3_id, set2 = best_match
+        shared = get_shared_items(set1, set2)
+        
+        correspondences.append({
+            'HuMAP2_ID': humap2_id,
+            'HuMAP3_ID': humap3_id,
+            'HuMAP2_size': len(set1),
+            'HuMAP3_size': len(set2),
+            'shared_items': len(shared),
+            'shared_elements': shared,
+            'weighted_similarity': best_similarity
+        })
+        
+        # Remove this index from unused indices
+        unused_source2_indices.remove(best_unused_index)
+
+# Convert to DataFrame for easy viewing
+df_correspondences = pd.DataFrame(correspondences)
+
+# Sort by HuMAP2 ID size
+df_correspondences = df_correspondences.sort_values('HuMAP2_size', ascending=False)
+
+
+# Make summary table  with those correspondences
+# Create a dictionary to map HuMAP2_ID to its corresponding details
+correspondences_dict = {
+    corr['HuMAP2_ID']: {
+        'HuMAP3_ID': corr['HuMAP3_ID'],
+        'size_df3': corr['HuMAP3_size'],
+        'shared_items': corr['shared_items'],
+        'weighted_similarity': corr['weighted_similarity']
+    } for corr in correspondences
+}
+
+# Modify the correspondence creation to use this new matching
+# First, create the base dataframe as before
+df2_sorted = df2_expanded.groupby('HuMAP2_ID').size().sort_values(ascending=False)
+df3_sorted = df3_expanded.groupby('HuMAP3_ID').size().sort_values(ascending=False)
+
+# Convert the series to dataframes
+df2_ranks = df2_sorted.reset_index()
+df3_ranks = df3_sorted.reset_index()
+
+# Rename columns for clarity
+df2_ranks.columns = ['HuMAP2_ID', 'size_df2']
+df3_ranks.columns = ['HuMAP3_ID', 'size_df3']
+
+# Add rank columns
+df2_ranks['rank'] = range(1, len(df2_ranks) + 1)
+df3_ranks['rank'] = range(1, len(df3_ranks) + 1)
+
+# Merge the rankings side by side
+correspondence = pd.merge(
+    df2_ranks,
+    df3_ranks,
+    on='rank',
+    how='outer'
+)
+# Add details from the correspondences
+def get_correspondence_details(row):
+    if pd.notna(row['HuMAP2_ID']) and row['HuMAP2_ID'] in correspondences_dict:
+        details = correspondences_dict[row['HuMAP2_ID']]
+        return pd.Series({
+            #'HuMAP3_ID': details['HuMAP3_ID'],
+            #'size_df3': details['size_df3'],
+            'shared_items': details['shared_items'],
+            'improvement_in_v3': int(details['size_df3'] - row['size_df2'])
+        })
+    return pd.Series({
+        #'HuMAP3_ID': '',
+        #'size_df3': 0,
+        'shared_items': 'na',
+        'improvement_in_v3': 'na'
+    })
+
+correspondence_details = correspondence.apply(get_correspondence_details, axis=1)
+correspondence = pd.concat([correspondence, correspondence_details], axis=1)
+# Calculate coverage ratio
+def cov_ratio(row):
+    if isinstance(row['shared_items'], (int, float)) and row['size_df2'] > 0 and row['size_df3'] > 0:
+        return round(row['shared_items'] / min(row['size_df2'], row['size_df3']) * 100, 2) 
+    else:
+        return 'na'
+
+correspondence['coverage_ratio'] = correspondence.apply(cov_ratio, axis=1)
+
+# Prepare display
+correspondence = correspondence.sort_values('rank')
+correspondence['size_df2'] = correspondence['size_df2'].fillna(0).astype(int)
+correspondence['size_df3'] = correspondence['size_df3'].fillna(0).astype(int)
+
+
+# Create display dataframe
+display_df = correspondence.copy()
+display_df['HuMAP2_ID'] = display_df['HuMAP2_ID'].fillna('')
+display_df['size_df2'] = display_df['size_df2'].replace(0, '')
+
+# Update print statement
+print("\nCorrespondences (considering shared complex members) for version 2 vs. 3 with improvement, shared items, and coverage ratio:")
+print(display_df[['HuMAP2_ID', 'size_df2', 'rank', 'HuMAP3_ID', 'size_df3', 'improvement_in_v3', 'shared_items', 'coverage_ratio']].to_string(index=False))
