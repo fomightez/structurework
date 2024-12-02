@@ -19,6 +19,12 @@ Be sure to see the 'Related' section below as well.
 > dataframe with UniProt identifiers  ---> dictionary
 This script is meant to be run in a Jupyter notebook `.ipynb` file where the dataframe containing the identifiers is already defined as `df_expanded` and the identifiers are in the `'Uniprot_ACCs'` column. Use `%run -i make_lookup_table_for_extra_info4complexes.py`.
 
+* modularized code for `Highlight_differences_between_hu.MAP2_and_hu.MAP3_data.ipynb` and `Using_snakemake_to_highlight_differences_between_hu.MAP2_and_hu.MAP3_data_for_multiple_indentifiers.ipynb`
+> several scripts are modularized code for the referenced notebooks that won't probbaly be much use elsewhere without refactoring:
+- `two_comp_three_details_plus_table.ipy`
+- `look_for_proteins_going_missing.py`
+- `look_for_majority_complex_member_going_missing.py`
+
 * ???????.py
 > gene name ---> Python-based dataframe of genes with proteins int the complex
 
