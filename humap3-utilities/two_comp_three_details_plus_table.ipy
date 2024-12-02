@@ -17,8 +17,8 @@ df2_expanded = df2_expanded.reset_index(drop=True)
 df3_expanded = df3_expanded.reset_index(drop=True)
 # Display the first few rows of the expanded dataframe
 # print(df2_expanded.tail()) #UNCOMMENT FOR DEBUGGING
-print(" ")  #UNCOMMENT FOR DEBUGGING
-print(df3_expanded.tail())  #UNCOMMENT FOR DEBUGGING
+#print(" ")  #UNCOMMENT FOR DEBUGGING
+#print(df3_expanded.tail())  #UNCOMMENT FOR DEBUGGING
 df_expanded = pd.concat([df2_expanded,df3_expanded])
 %run -i make_lookup_table_for_extra_info4complexes.py
 # Use collected information to enhance the dataframes
