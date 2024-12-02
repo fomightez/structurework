@@ -21,9 +21,9 @@ This script is meant to be run in a Jupyter notebook `.ipynb` file where the dat
 
 * modularized code for `Highlight_differences_between_hu.MAP2_and_hu.MAP3_data.ipynb` and `Using_snakemake_to_highlight_differences_between_hu.MAP2_and_hu.MAP3_data_for_multiple_indentifiers.ipynb` in [humap3-binder](https://github.com/fomightez/humap3-binder)
 > several scripts are modularized code for the referenced notebooks that won't probbaly be much use elsewhere without refactoring:
-- `two_comp_three_details_plus_table.ipy`
-- `look_for_proteins_going_missing.py`
-- `look_for_majority_complex_member_going_missing.py`
+   - `two_comp_three_details_plus_table.ipy`
+   - `look_for_proteins_going_missing.py`
+   - `look_for_majority_complex_member_going_missing.py`
 
 * ???????.py
 > gene name ---> Python-based dataframe of genes with proteins int the complex
