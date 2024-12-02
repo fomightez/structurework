@@ -58,4 +58,4 @@ def check_disappearing_items(df_correspondences, df2_expanded, df3_expanded):
         return None, something_dropped_completely
 
 # Call the function
-disappearing_df, something_dropped_completely = check_disappearing_items(correspondence, df2_expanded, df3_expanded)
+disappearing_df, something_dropped_completely = check_disappearing_items(df_correspondences, df2_expanded, df3_expanded)
