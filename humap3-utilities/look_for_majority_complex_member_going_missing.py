@@ -1,4 +1,4 @@
-# TAlso make sure nothing that is in the majority of complexes in hu.MAP 2.0 data disappears entirely from hu.MAP 3.0 data.
+# Also make sure nothing that is in the majority of complexes in hu.MAP 2.0 data disappears entirely from hu.MAP 3.0 data.
 # That can only occur as the case if `something_dropped_completely`, that we've already check on, is True
 majority_item_dropped_completely = False #set up by declaring false
 if something_dropped_completely:
