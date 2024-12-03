@@ -28,7 +28,10 @@ if something_dropped_completely:
         if item in majority_identifiers:
             majority_item_dropped_completely = (item not in df3_expanded['Uniprot_ACCs'].to_list())
             if majority_item_dropped_completely:
-                print(f"  - {item} IS IN MAJORITY OF Hu.MAP2.0 COMPLEXES YET NOT IN ANY Hu.MAP3.0 {search_term}-complexes!!! (PERHAPS CONCERNING?)")
+                all_accs = df['Uniprot_ACCs'].tolist()
+                acc_counts = pd.Series(all_accs).value_counts()
+                acc_counts_dict = acc_counts.to_dict()
+                print(f"  - {item} IS IN MAJORITY OF Hu.MAP2.0 COMPLEXES ({acc_counts_dict[item]} of {total_complexes}) YET NOT IN ANY Hu.MAP3.0 {search_term}-complexes!!! (PERHAPS CONCERNING?)")
                 majority_item_dropped_completely = True
     if majority_item_dropped_completely == False:
         print("NONE")
