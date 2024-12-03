@@ -32,7 +32,7 @@ if something_dropped_completely:
                 all_accs = df2_expanded['Uniprot_ACCs'].tolist()
                 acc_counts = pd.Series(all_accs).value_counts()
                 acc_counts_dict = acc_counts.to_dict()
-                print(f"  - {item} IS IN MAJORITY OF Hu.MAP2.0 COMPLEXES ({acc_counts_dict[item]} of {total_complexes}) YET NOT IN ANY Hu.MAP3.0 {search_term}-complexes!!! (PERHAPS CONCERNING?)")
+                print(f"  - {item} IS IN MAJORITY OF Hu.MAP2.0 COMPLEXES ({acc_counts_dict[item]} of {total_complexes}) YET NOT IN ANY {len(df.groupby('HuMAP3_ID')['Uniprot_ACCs'].unique())} Hu.MAP3.0 {search_term}-complexes!!! (PERHAPS CONCERNING?)")
                 majority_item_dropped_completely = True
     if majority_item_dropped_completely == False:
         print("NONE")
