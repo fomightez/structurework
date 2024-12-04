@@ -44,8 +44,8 @@ Related items by me
 - [My humap3-binder repo](https://github.com/fomightez/humap3-binder)
 - [My humap2-binder repo](https://github.com/fomightez/humap3-binder)
 - I use the Unipressed package a lot with working with this data, see my [Unipressed-binder repo](https://github.com/fomightez/Unipressed-binder) for more on working with this package.
-- The PDBePISA has good summaries of data involving all protein chains in structues. See the related series of demo notebooks available at my repo [pdbepisa-binder](https://github.com/fomightez/pdbepisa-binder) for demonstrations of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbepisa-utilities)).
-- The PDBsum has good summaries of data involving all protein chains in structues. See the related series of demo notebooks available at my repo [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) for demonstration of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbsum-utilities)).
+- The PDBePISA has good summaries of data involving protein chains in structues of complexes. See the related series of demo notebooks available at my repo [pdbepisa-binder](https://github.com/fomightez/pdbepisa-binder) for demonstrations of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbepisa-utilities)).
+- The PDBsum has good summaries of data involving protein chains in structues of complexes. See the related series of demo notebooks available at my repo [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) for demonstration of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbsum-utilities)).
 
 ## Related items by others
 
