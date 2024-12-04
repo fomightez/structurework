@@ -28,7 +28,7 @@ if 'lookup_dict' not in locals():
     # `%run -i make_lookup_table_for_extra_info4complexes.py` in order to restore
     # and this section will get skipped. 
     lookup_dict = {}
-    accs = set(df_expanded[column_with_identifiers].to_list())
+    accs = set(df_expanded['Uniprot_ACCs'].to_list())
     for acc in accs:
         mock_data_string = "LOOKUP TABLE WITH THIS INFORMATION NOT MADE. SEE CODE AND UNCOMMENT A LINE TO GET ACTUAL DATA."
         lookup_dict[acc] = {'protein_name':mock_data_string, 'disease': mock_data_string, 'synonyms': mock_data_string}
