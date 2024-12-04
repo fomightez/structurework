@@ -251,6 +251,6 @@ display_df = correspondence.copy()
 display_df['HuMAP2_ID'] = display_df['HuMAP2_ID'].fillna('')
 display_df['size_df2'] = display_df['size_df2'].replace(0, '')
 
-# Update print statement
+# Instead of displaying the 'display dataframe', use text only to make table that can easily be moved elsewhere
 print("\nCorrespondences (considering shared complex members) for version 2 vs. 3 with improvement, shared items, and coverage ratio:")
 print(display_df[['HuMAP2_ID', 'size_df2', 'rank', 'HuMAP3_ID', 'size_df3', 'improvement_in_v3', 'shared_items', 'coverage_ratio']].to_string(index=False))
