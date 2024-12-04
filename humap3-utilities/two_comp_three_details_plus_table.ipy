@@ -1,4 +1,4 @@
-#main collection of details for version 2.0 vs. 3.0 data and making table detailing 
+#Main collection of details for version 2.0 vs. 3.0 data and making table detailing 
 # Uses `%run -i make_lookup_table_for_extra_info4complexes.py` for now & so needs to be `.ipy` for now.
 pattern = fr'\b{search_term}\b' # Create a regex pattern with word boundaries
 d2_rows_with_term_df = rd2_df[rd2_df['Uniprot_ACCs'].str.contains(pattern, case=False, regex=True) | rd2_df['genenames'].str.contains(pattern, case=False, regex=True)].copy()
@@ -20,7 +20,18 @@ df3_expanded = df3_expanded.reset_index(drop=True)
 #print(" ")  #UNCOMMENT FOR DEBUGGING
 #print(df3_expanded.tail())  #UNCOMMENT FOR DEBUGGING
 df_expanded = pd.concat([df2_expanded,df3_expanded])
-%run -i make_lookup_table_for_extra_info4complexes.py
+#%run -i make_lookup_table_for_extra_info4complexes.py # This adds a lot of time and the additional information is currently not used; uncomment this line if you later decide you need that added information to explore more
+if 'lookup_dict' not in locals():
+    # make a mock dictionary lookup_dict to use since not making lookup table in
+    # the interest of saving time since that information presently not used.
+    # Just uncomment the line above that is 
+    # `%run -i make_lookup_table_for_extra_info4complexes.py` in order to restore
+    # and this section will get skipped. 
+    lookup_dict = {}
+    accs = set(df_expanded[column_with_identifiers].to_list())
+    for acc in accs:
+        mock_data_string = "LOOKUP TABLE WITH THIS INFORMATION NOT MADE. SEE CODE AND UNCOMMENT A LINE TO GET ACTUAL DATA."
+        lookup_dict[acc] = {'protein_name':mock_data_string, 'disease': mock_data_string, 'synonyms': mock_data_string}
 # Use collected information to enhance the dataframes
 pn_dict = {k: v['protein_name'] for k, v in lookup_dict.items()}
 disease_dict = {k: v['disease'] for k, v in lookup_dict.items()}
