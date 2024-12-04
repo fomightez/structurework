@@ -26,7 +26,7 @@ Several scripts are modularized code for the referenced notebooks that won't pro
    - `look_for_majority_complex_member_going_missing.py`
 
 * ???????.py
-> gene name ---> Python-based dataframe of genes with proteins int the complex
+> Placeholder for example input ---> Placeholder for example result
 
 
 #### For running in a Jupyter notebook:
