@@ -7,10 +7,10 @@ if something_dropped_completely:
     majority_identifiers = []
     def find_majority_uniprot_accs(df):
         # Group by HuMAP2_ID and get unique Uniprot_ACCs for each complex
-        complex_accs = df.groupby('HuMAP2_ID')['Uniprot_ACCs'].unique()
+        accs_per_complex_id_series = df.groupby('HuMAP2_ID')['Uniprot_ACCs'].unique()
         
         # Count total number of unique complexes
-        total_complexes = len(complex_accs)
+        total_complexes = len(accs_per_complex_id_series)
         
         # Flatten and count occurrences of each Uniprot ACC across complexes
         all_accs = df['Uniprot_ACCs'].tolist()
@@ -20,8 +20,7 @@ if something_dropped_completely:
         majority_accs = acc_counts[acc_counts >= 0.51 * total_complexes].index.tolist()
         
         return majority_accs
-    if find_majority_uniprot_accs(df2_expanded):
-        majority_identifiers = find_majority_uniprot_accs(df2_expanded)
+    majority_identifiers = find_majority_uniprot_accs(df2_expanded)
     # Now check none of those `majority_identifiers` match the disappearing ones dropped completely
     print("\nHu.MAP2.0-Majority Complex Members Disappearing in Hu.MAP3.0 data:")
     for item in list(set.union(*disappearing_df['lost_items'])): # note `list(set.union(*disappearing_df['lost_items']))` gets the unique set members from the 'lost_items' column
