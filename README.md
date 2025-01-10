@@ -15,9 +15,14 @@ Collection of links to launchable Jupyter environment where various structure/fu
 
 - [cl_demo-binder](https://github.com/fomightez/cl_demo-binder) - launchable, working Jupyter-based environment that has a collection of demonstrations of useful resources on command line (or useable in Jupyter sessions) for manipulating structure files.
 
+- [PDBmodelComparator](https://github.com/fomightez/PDBmodelComparator) - launchable, working Jupyter-based environment that has a collection of demonstrations of resources generating overviews between models of a series of related macromolecular structures available in the Protein Data Bank. If you have two or more models of essentially the same structure and are wondering which one has the information you seek, this tool is for you. It allows you to update the summaries as more related structures are solved. Additionally, it makes a separate summary of which structure has the most of a each chain represented. The information incorporated can be customized with addiitonal knowledge. It allows you to quickly & programmatically update the summaries as more related structures are solved.
+
+
 - [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) - launchable, working Jupyter-based environment that has a collection of demonstrations of my useful resources for analyzing data from [PDBsum](http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=index.html). The [pdbsum-utilities sub-folder in this repo](https://github.com/fomightez/structurework/tree/master/pdbsum_utilities) is related as it host many of the scripts and code backing the data analyses.
 
 - [PDBrenum](https://github.com/fomightez/PDBrenum) - So far I have made a repo [here](https://github.com/fomightez/PDBrenum) where the main software is already installed and runs the pipeline in sessions served by MyBinder.org. I placed a demonstration notebook `demo.ipynb` in there in addition to the `PDBrenum.ipynb` the author's provided. (I actually haven't discerned the purpose of that notebook yet, maybe it is clear in the article?) My demo notebook steps through using it in the sessions. Additionally, I give advice on how you can use `PDBrenum.py` to map chain IDs in PDB files to UniProt IDs [here](https://www.biostars.org/p/9540519/#9540582), relying on the SIFTS data which underlies the `PDBrenum.py` process, and have expanded that to a demostration notebook, `chainID_mapping_to_UniProt_id_demo.ipynb`.
+
+- [pdbepisa-binder](https://github.com/fomightez/pdbepisa-binder) - Analysis of PDBePISA-related data via active Jupyter sessions provided via MyBinder.org. Adapt the demonstrations to analyze your favorite structures.
 
 - [pymol-binder](https://github.com/fomightez/pymol-binder)
 
