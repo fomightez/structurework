@@ -31,10 +31,9 @@ See [here](https://github.com/fomightez/PDBMmodelCompator) for notebooks demonst
 
 Related items by me
 -------------------
-
-- - The PDBePISA has good summaries of data involving protein chains in structues of complexes. See the related series of demo notebooks available at my repo [pdbepisa-binder](https://github.com/fomightez/pdbepisa-binder) for demonstrations of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbepisa-utilities)).
-- - The PDBsum has good summaries of data involving protein chains in structues of complexes. See the related series of demo notebooks available at my repo [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) for demonstration of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbsum-utilities)).
-- - [My humap3-binder repo](https://github.com/fomightez/humap3-binder)
+- The PDBePISA has good summaries of data involving protein chains in structues of complexes. See the related series of demo notebooks available at my repo [pdbepisa-binder](https://github.com/fomightez/pdbepisa-binder) for demonstrations of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbepisa-utilities)).
+- The PDBsum has good summaries of data involving protein chains in structues of complexes. See the related series of demo notebooks available at my repo [pdbsum-binder](https://github.com/fomightez/pdbsum-binder) for demonstration of related scripts (scripts listed [here](https://github.com/fomightez/structurework/tree/master/pdbsum-utilities)).
+- [My humap3-binder repo](https://github.com/fomightez/humap3-binder)
 
 ## Related items by others
 
