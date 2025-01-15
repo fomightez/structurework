@@ -13,6 +13,7 @@ Be sure to see the 'Related' section below as well.
 > PDB identifier code ---> information on missing residues per chain
 
 Meant to use Python code to recapitulate what Eric Martz's FirstGlance in Jmol gives in its report on missing residues pane.
+Note that to make sure this recapitulates what Eric Martz's FirstGlance in Jmol gives, some tests are run on  my [PDBMmodelCompator repo](https://github.com/fomightez/PDBMmodelCompator). (This is planned to be made to be automated for any commit eventually.)
 
 
 * ???????.py
