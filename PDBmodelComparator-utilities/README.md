@@ -15,6 +15,8 @@ Be sure to see the 'Related' section below as well.
 Meant to use Python code to recapitulate what Eric Martz's FirstGlance in Jmol gives in its report on missing residues pane.  
 Note that to make sure this recapitulates what Eric Martz's FirstGlance in Jmol gives, some tests are run for a few PDB files on my [PDBMmodelCompator repo](https://github.com/fomightez/PDBMmodelCompator). (This is planned to be made to be automated for any commit eventually.) To explore the tests, go [here](https://github.com/fomightez/PDBMmodelCompator), click '`launch binder`', and then open the notebook [(Technical) Jupyter Notebook testing if output of utility script `missing_residue_detailer.py` makes same content as FirstGlance in Jmol](additional_nbs/test_missing_residue_detailer.ipynb) under the 'Technical Section'. Also see [here](https://github.com/fomightez/PDBmodelComparator/tree/main/additional_nbs/tests/README.md).
 
+This script works with browser-based computing environments powered by WebAssembly, like Pyodide / JupyterLite!
+
 * ???????.py
 > Placeholder for example input ---> Placeholder for example result
 
