@@ -163,8 +163,9 @@ def fetch_pdbheader(pdb_id):
     '''
     Take a PDB accession code and return the PDB file header
 
-    lifted/adapted directly from https://github.com/fomightez/sequencework/blob/master/LookUpTaxon/LookUpTaxonFA.py , based on http://boscoh.com/protein/fetching-pdb-files-remotely-in-pure-python-code and http://www.pdb.org/pdb/static.do?p=download/http/index.html
-    THIS CODE IS GOOD. Works on Anaconda Cloud but today MyBinder connection seemed initially bad because says it times but `fetch_pdbheader_using_requests` worked after waiting a long time. And then this worked in same MyBinder session, so who knows! Seems fine!
+    lifted/adapted directly from https://github.com/fomightez/sequencework/blob/master/LookUpTaxon/LookUpTaxonFA.py , based on http://boscoh.com/protein/fetching-pdb-files-remotely-in-pure-python-code and http://www.pdb.org/pdb/static.do?p=download/http/index.html & more universal for outside of MyBinder than `curl`!
+    THIS CODE IS GOOD. Works on Anaconda Cloud but today MyBinder connection seemed initially bad because says it times out. an earlier version of `fetch_pdbheader_using_requests` using same endpoint as this draft worked after waiting a long time. And then this worked in same MyBinder session, so who knows! Seems fine!
+    SEE `fetch_pdbheader_using_requests()` below as it will be more adaptable to WASM because uses the RCSB's CORS-enabled REST API endpoint instead.
     '''
     url = f'http://www.rcsb.org/pdb/files/{pdb_id}.pdb?headerOnly=YES'
     with urlopen(url) as response:
@@ -172,12 +173,13 @@ def fetch_pdbheader(pdb_id):
  
 def fetch_pdbheader_using_requests(pdb_id):
     """
-    Take a PDB accession code and return the PDB file header
+    Take a PDB accession code and return the PDB file header using RCSB's CORS-enabled REST API endpoint.
+    See https://data.rcsb.org/#data-api
 
-    Version of `fetch_pdbheader()` from above but with requests that may be better handled by PDB when connecting via a MyBinder-hosted session
+    Version of `fetch_pdbheader()` from above but with requests and better access endpoint that  is more universal & easily adapted for outside of MyBinder sessions, even WASM!
     """
-    url = f'http://www.rcsb.org/pdb/files/{pdb_id}.pdb?headerOnly=YES'
-    response = requests.get(url)
+    url = f'https://files.rcsb.org/header/{pdb_id.upper()}.pdb'
+    response = requests.get(url, allow_redirects=True)
     response.raise_for_status()  # Raise an exception for non-200 status codes
     return response.text
 
