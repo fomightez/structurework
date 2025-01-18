@@ -4,7 +4,8 @@ __license__ = "MIT"
 __version__ = "0.1.0"
 
 
-# NOT THe ACTUALmissing_residue_detailer.py by Wayne Decatur THIS IS JUST A STARTING POINT #THAT WILL MAKE UP MATCH TO FIRST GLANCE IN JMOL for 4dqo SO TEST WITH PYTEST CAN 
+# NOT THe ACTUALmissing_residue_detailer.py by Wayne Decatur THIS IS JUST A STARTING POINT
+#THAT WILL MAKE UP MATCH TO FIRST GLANCE IN JMOL for 4dqo SO TEST WITH PYTEST CAN 
 #BE RUN TO SEE IF PYTEST WORKING 'IN THEORY' BEFORE THIS SCRIPT ACTUALLY DOES WHAT IT IS MEANT TO DO
 # ver 0.1
 #
@@ -171,17 +172,20 @@ def fetch_pdbheader(pdb_id):
     with urlopen(url) as response:
         return response.read()
  
-def fetch_pdbheader_using_requests(pdb_id):
+def fetch_pdbheader_using_requests_and_API(pdb_id):
     """
     Take a PDB accession code and return the PDB file header using RCSB's CORS-enabled REST API endpoint.
     See https://data.rcsb.org/#data-api
 
-    Version of `fetch_pdbheader()` from above but with requests and better access endpoint that  is more universal & easily adapted for outside of MyBinder sessions, even WASM!
+    Version of `fetch_pdbheader()` from above but with requests and better 
+    access endpoint that is more universal & works for outside of 
+    MyBinder-served sessions, even WASM! Both ipykernel & pyodide-compatible. 
     """
     url = f'https://files.rcsb.org/header/{pdb_id.upper()}.pdb'
     response = requests.get(url, allow_redirects=True)
     response.raise_for_status()  # Raise an exception for non-200 status codes
     return response.text
+
 
 
 def generate_output_file_name(pdb_id,  suffix_4_results):
@@ -237,8 +241,9 @@ def generate_missing_report(PDBid, return_report_string = True):
     '''
     missing_report = ""
 
-    ### DELETE THIS SECTION WHEN MORE MATURE. FOR NOW IT WILL BE TESTABLE and 
-    # work by cheating for one PDB code.
+    ### THIS SPECIAL CONDITIONAL only if concern if you are developer, Wayne.
+    # Doesn't really makedetails, just copies previously sourced HTML for `4dqo`
+    # from FirstGlance in Jmol.
     STILL_IN_EARLY_DEVELOPMENT = True
     if STILL_IN_EARLY_DEVELOPMENT:
         file_needed = generate_output_file_name(PDBid, suffix_4_results)
@@ -249,11 +254,16 @@ def generate_missing_report(PDBid, return_report_string = True):
             stub_placeholder_string = "script to generate this in the works!"
             write_string_to_file(stub_placeholder_string, file_needed)
             missing_report = stub_placeholder_string
-        return
-    ### DELETE THE ABOVE SECTION WHEN MORE MATURE.
+        sys.stderr.write("Uncomment the `return` on line 257 under control of the \
+            `if STILL_IN_EARLY_DEVELOPMENT:` if you want to skip testing fetching the \
+            header from PDB to make the tests run faster.")
+        #return # UNCOMMENT THIS IF PYTEST STEP IS BRING SLOW & YOU PREFER TO STOP HERE INSTEAD OF CONTINUING ON AND TEST GETTING THE PDB HEADER BECAUSE IT CAN BE SLOWER at TIMES.
+    ### END OF SPECIAL DEVELOPMENT CONDITIONAL. 
 
-    PDBheaderhandler = fetch_pdbheader(PDBid)
+    PDBheaderhandler = fetch_pdbheader_using_requests_and_API(PDBid)
     print (PDBheaderhandler[0:2800])
+
+    
     #PDBPageList.append(PDBhandler) #DECIDED I DIDN'T NEED #couldn't pass each to a list entry with Full entries from NCBI because read in in batches so would add more than one anyway
 
     '''
