@@ -237,9 +237,6 @@ def generate_missing_report(PDBid, return_report_string = True):
     '''
     missing_report = ""
 
-    PDBheaderhandler = fetch_pdbheader(PDBid)
-    print (PDBheaderhandler[0:2800])
-
     ### DELETE THIS SECTION WHEN MORE MATURE. FOR NOW IT WILL BE TESTABLE and 
     # work by cheating for one PDB code.
     STILL_IN_EARLY_DEVELOPMENT = True
@@ -252,7 +249,11 @@ def generate_missing_report(PDBid, return_report_string = True):
             stub_placeholder_string = "script to generate this in the works!"
             write_string_to_file(stub_placeholder_string, file_needed)
             missing_report = stub_placeholder_string
+        return
     ### DELETE THE ABOVE SECTION WHEN MORE MATURE.
+
+    PDBheaderhandler = fetch_pdbheader(PDBid)
+    print (PDBheaderhandler[0:2800])
     #PDBPageList.append(PDBhandler) #DECIDED I DIDN'T NEED #couldn't pass each to a list entry with Full entries from NCBI because read in in batches so would add more than one anyway
 
     '''
