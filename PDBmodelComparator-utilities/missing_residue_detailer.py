@@ -172,13 +172,13 @@ def fetch_pdbheader(pdb_id):
     with urlopen(url) as response:
         return response.read()
  
-def fetch_pdbheader_using_requests_and_API(pdb_id):
+def fetch_pdbheader_using_requests(pdb_id):
     """
-    Take a PDB accession code and return the PDB file header using RCSB's CORS-enabled REST API endpoint.
-    See https://data.rcsb.org/#data-api
+    Take a PDB accession code and return the PDB file header using RCSB's Direct file access server with CORS headers
+    See https://www.wwpdb.org/ftp/pdb-ftp-sites
 
-    Version of `fetch_pdbheader()` from above but with requests and better 
-    access endpoint that is more universal & works for outside of 
+    Version of `fetch_pdbheader()` from above but with requests and because
+    happens to have CORS headers enabled is more universal & works for outside of 
     MyBinder-served sessions, even WASM! Both ipykernel & pyodide-compatible. 
     """
     url = f'https://files.rcsb.org/header/{pdb_id.upper()}.pdb'
@@ -260,7 +260,7 @@ def generate_missing_report(PDBid, return_report_string = True):
         #return # UNCOMMENT THIS IF PYTEST STEP IS BRING SLOW & YOU PREFER TO STOP HERE INSTEAD OF CONTINUING ON AND TEST GETTING THE PDB HEADER BECAUSE IT CAN BE SLOWER at TIMES.
     ### END OF SPECIAL DEVELOPMENT CONDITIONAL. 
 
-    PDBheaderhandler = fetch_pdbheader_using_requests_and_API(PDBid)
+    PDBheaderhandler = fetch_pdbheader_using_requests(PDBid)
     print (PDBheaderhandler[0:2800])
 
     
