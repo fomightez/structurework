@@ -17,6 +17,22 @@ Note that to make sure this recapitulates what Eric Martz's FirstGlance in Jmol 
 
 This script works with browser-based computing environments powered by WebAssembly, like Pyodide / JupyterLite!
 
+Because getting the header for the structure from the Protein Data Bank is a critical initial step in this script functioning every effort has been made to make that retrieval automatic & robust. However, as it involves a network connection, it is subject to the intricacies that can be involved in web traffic, such as firewalls and dropped connections. To make it so getting the PDB header isn't an impassable hurdle to using this script, there is the option to supply the header content as text in a file. **Importantly, being able to supply a file with the equivalent header details allows one to use structure models not yet released along with those that are with the [PDBMmodelCompator](https://github.com/fomightez/PDBMmodelCompator).** (The use of `missing_residue_detailer.py` is actually the first step in the the [PDBMmodelCompator](https://github.com/fomightez/PDBMmodelCompator) process.) The 'header' file doesn't even need to contain the official text that will be available along with the structure on the Protein Data Bank site. You can edit two sections of a header to have the equivalent data for the structure of interest. This is because as long as two sections, `REMARK 465` and `SEQRES` section are valid PDB header format and composed of data salient to the structure of interest, the script `missing_residue_detailer.py` will work.
+
+To supply the PDB header text in a file, place the text obtained from the Protein Data Bank (or equivalent for unreleased structures) in your current working directory with the file name with the content matching the convention of the PDB id code following by `_header4missing.txt`; case doesn't matter for the PDB identifier portion. For example, for [PDB entry 1D66](https://www.rcsb.org/structure/1d66) the file to place in your current working directory would have a name looking like:
+
+```text
+1d66_header4missing.txt
+```
+With that file in place, you'd then call the script like normal using the same PDB id code as in the file name. For example, issue the command:
+
+```text
+python missing_residue_detailer.py 1d66
+```
+
+The unique file suffix `_header4missing.txt` as part of the signal of which file to ise is to make it less likely you'd have a file that would match the convention without you having opted to use this approach.  
+
+
 * ???????.py
 > Placeholder for example input ---> Placeholder for example result
 
