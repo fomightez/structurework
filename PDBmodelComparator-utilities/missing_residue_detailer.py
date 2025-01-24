@@ -6,7 +6,8 @@ __version__ = "0.1.0"
 
 # NOT THe ACTUALmissing_residue_detailer.py by Wayne Decatur THIS IS JUST A STARTING POINT
 #THAT WILL MAKE UP MATCH TO FIRST GLANCE IN JMOL for 4dqo SO TEST WITH PYTEST CAN 
-#BE RUN TO SEE IF PYTEST WORKING 'IN THEORY' BEFORE THIS SCRIPT ACTUALLY DOES WHAT IT IS MEANT TO DO
+#BE RUN TO SEE IF PYTEST WORKING 'IN THEORY' BEFORE THIS SCRIPT ACTUALLY DOES WHAT IT IS MEANT TO DO.
+# I ALSO ADDED IT HANDLING READING FILES TO TEST THAT ABILITY NOW. 
 # ver 0.1
 #
 #*******************************************************************************
@@ -80,6 +81,9 @@ report_html_text = generate_missing_report("6w6v")
 #
 suffix_4_results = "_missing_residue_details.html" #this will be appended to PDB 
 # identifier to make output name
+file_input_suffix = "_header4missing.txt" #this can be used as a unique signal 
+# to use file as input source of PDB file header content instead of fetching 
+# online
 
 #
 #*******************************************************************************
@@ -112,6 +116,7 @@ suffix_4_results = "_missing_residue_details.html" #this will be appended to PDB
 
 import sys
 import os
+import fnmatch
 from urllib.request import urlopen
 import requests
 try:
@@ -187,6 +192,67 @@ def fetch_pdbheader_using_requests(pdb_id):
     return response.text
 
 
+def extract_remark465_and_seqres(pdb_header_text):
+    """
+    Extracts REMARK 465 and SEQRES sections from PDB header text.
+
+    Args:
+        pdb_header_text: PDB header text as a string.
+
+    Returns:
+        Tuple containing REMARK 465 text and SEQRES text as strings.
+    """
+    remark_465_text = ""
+    seqres_text = ""
+    for line in pdb_header_text.split("\n"):
+        if line.startswith("REMARK 465"):
+            remark_465_text += line + "\n"
+        elif line.startswith("SEQRES"):
+            seqres_text += line + "\n"
+    return remark_465_text, seqres_text
+
+def is_valid_pdb_header_to_determine_missing(pdb_header_text):
+    '''
+    Checks if a PDB header text seems valid as far as determining missing 
+    residues. 
+    If it seems to have the sections I need, the header or part of it is
+     probably valid far as this script is concerned.
+
+    Args:
+        pdb_header_text: PDB header text as a string.
+
+    Returns:
+        True if the header contains REMARK 465 and SEQRES sections, False 
+        otherwise.
+    '''
+    remark_465_text, seqres_text = extract_remark465_and_seqres(pdb_header_text)
+    return bool(remark_465_text and seqres_text)
+
+def get_pdb_header_text(pdb_id, file_input_suffix=file_input_suffix):
+    """
+    Gets PDB header text, prioritizing local file if it exists.
+
+    Args:
+        pdb_id: PDB accession code.
+        file_input_suffix: Suffix for local file.
+
+    Returns:
+        PDB file header as a string.
+    """
+    pattern = f"{pdb_id.lower()}{file_input_suffix}"
+    for filename in os.listdir("."):
+        if fnmatch.fnmatch(filename.lower(), pattern):
+            try:
+                with open(filename, "r") as f:
+                    pdb_header_text = f.read()
+                if is_valid_pdb_header_to_determine_missing(
+                    pdb_header_text):
+                    return pdb_header_text
+                else:
+                   sys.stderr.write(f"Local file {filename} doesn't seem to be valid. Using web fallback to try and retrieve a header of a PDB file matching this PDb id code.")
+            except Exception as e:
+                sys.stderr.write(f"Error reading local file {filename}. Using web fallback. Error: {e}")
+                return fetch_pdbheader_using_requests(pdb_id)
 
 def generate_output_file_name(pdb_id,  suffix_4_results):
     '''
@@ -249,7 +315,10 @@ def generate_missing_report(PDBid, return_report_string = True):
         file_needed = generate_output_file_name(PDBid, suffix_4_results)
         if PDBid == "4dqo":
             write_string_to_file(fgij_4dqo_main_table_html, file_needed)
-            missing_report = fgij_4dqo_main_table_html,
+            missing_report = fgij_4dqo_main_table_html
+        elif PDBid == "0rid": # add this in to allow testing file handling for this special PDB code
+            text_from_using_file_as_input = get_pdb_header_text(PDBid)
+            write_string_to_file(text_from_using_file_as_input, file_needed)
         else:
             stub_placeholder_string = "script to generate this in the works!"
             write_string_to_file(stub_placeholder_string, file_needed)
