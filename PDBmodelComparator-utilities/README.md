@@ -2,7 +2,7 @@
 
 Utility scripts for working with the PDBMmodelComparator.
 
-A set of Jupyter notebooks that include demonstrations of all these scripts is launchable in active form right in your browser is at my [PDBMmodelComparator repo](https://github.com/fomightez/PDBmodelComparator). Just go [there](https://github.com/fomightez/pdbepisa-binder) and click the `launch binder` badge to get started.
+A set of Jupyter notebooks that include demonstrations of all these scripts is launchable in active form right in your browser is at my [PDBMmodelComparator repo](https://github.com/fomightez/PDBmodelComparator). Just go [there](https://github.com/fomightez/PDBmodelComparator) and click the `launch binder` badge to get started.
 
 Be sure to see the 'Related' section below as well.
 
