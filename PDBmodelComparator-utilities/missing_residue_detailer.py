@@ -254,9 +254,9 @@ def generate_missing_report(PDBid, return_report_string = True):
             stub_placeholder_string = "script to generate this in the works!"
             write_string_to_file(stub_placeholder_string, file_needed)
             missing_report = stub_placeholder_string
-        sys.stderr.write("Uncomment the `return` on line 257 under control of the \
-            `if STILL_IN_EARLY_DEVELOPMENT:` if you want to skip testing fetching the \
-            header from PDB to make the tests run faster.")
+        sys.stderr.write("Comment out the `return` on line 260 under control of the \
+            `if STILL_IN_EARLY_DEVELOPMENT:` if you want to test fetching the \
+            header from PDB, which is currently skipped to make the tests 'run' even if not accurately testing at this stage.")
         return #COMMENT THIS RETURN OUT IF YOU PREFER TO STOP HERE INSTEAD OF CONTINUING ON AND TEST GETTING THE PDB HEADER BECAUSE THIS DRAFT NOT BROUGHT UP TO CURRENT AND GLITCH ON LARGE PDB FILE HEADERS.
     ### END OF SPECIAL DEVELOPMENT CONDITIONAL. 
 
