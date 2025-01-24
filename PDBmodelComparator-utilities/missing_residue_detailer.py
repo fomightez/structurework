@@ -166,7 +166,7 @@ def fetch_pdbheader(pdb_id):
 
     lifted/adapted directly from https://github.com/fomightez/sequencework/blob/master/LookUpTaxon/LookUpTaxonFA.py , based on http://boscoh.com/protein/fetching-pdb-files-remotely-in-pure-python-code and http://www.pdb.org/pdb/static.do?p=download/http/index.html & more universal for outside of MyBinder than `curl`!
     THIS CODE IS GOOD. Works on Anaconda Cloud but today MyBinder connection seemed initially bad because says it times out. an earlier version of `fetch_pdbheader_using_requests` using same endpoint as this draft worked after waiting a long time. And then this worked in same MyBinder session, so who knows! Seems fine!
-    SEE `fetch_pdbheader_using_requests()` below as it will be more adaptable to WASM because uses the RCSB's CORS-enabled REST API endpoint instead.
+    SEE `fetch_pdbheader_using_requests()` below as it will be more adaptable to WASM because uses the RCSB's CORS-enabledDirect file access server instead.
     '''
     url = f'http://www.rcsb.org/pdb/files/{pdb_id}.pdb?headerOnly=YES'
     with urlopen(url) as response:
@@ -257,11 +257,13 @@ def generate_missing_report(PDBid, return_report_string = True):
         sys.stderr.write("Uncomment the `return` on line 257 under control of the \
             `if STILL_IN_EARLY_DEVELOPMENT:` if you want to skip testing fetching the \
             header from PDB to make the tests run faster.")
-        #return # UNCOMMENT THIS IF PYTEST STEP IS BRING SLOW & YOU PREFER TO STOP HERE INSTEAD OF CONTINUING ON AND TEST GETTING THE PDB HEADER BECAUSE IT CAN BE SLOWER at TIMES.
+        return #COMMENT THIS RETURN OUT IF YOU PREFER TO STOP HERE INSTEAD OF CONTINUING ON AND TEST GETTING THE PDB HEADER BECAUSE THIS DRAFT NOT BROUGHT UP TO CURRENT AND GLITCH ON LARGE PDB FILE HEADERS.
     ### END OF SPECIAL DEVELOPMENT CONDITIONAL. 
 
-    PDBheaderhandler = fetch_pdbheader_using_requests(PDBid)
-    print (PDBheaderhandler[0:2800])
+    if PDBid == "0rid": # this one doesn't exist and is meant to test file 
+        # handling which is not built in to this older draft yet
+        PDBheaderhandler = fetch_pdbheader_using_requests(PDBid)
+        print (PDBheaderhandler[0:1500])
 
     
     #PDBPageList.append(PDBhandler) #DECIDED I DIDN'T NEED #couldn't pass each to a list entry with Full entries from NCBI because read in in batches so would add more than one anyway
