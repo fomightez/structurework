@@ -316,7 +316,7 @@ def generate_missing_report(PDBid, return_report_string = True):
         if PDBid == "4dqo":
             write_string_to_file(fgij_4dqo_main_table_html, file_needed)
             missing_report = fgij_4dqo_main_table_html
-        elif PDBid == "4tst": # add this in to allow testing prioritizing local file handling; this is for a non-existant PDB code, see https://proteopedia.org/wiki/index.php/Believe_It_or_Not
+        elif PDBid == "4tst": # add this in to allow testing prioritizing local file handling; this is for a non-existent PDB code, see https://proteopedia.org/wiki/index.php/Believe_It_or_Not
             text_from_using_file_as_input = get_pdb_header_text(PDBid)
             write_string_to_file(text_from_using_file_as_input, file_needed)
         else:
